@@ -1,4 +1,10 @@
-<a href="https://github.com/ljbudgie/chatbot">
+<p align="center">
+  <a href="https://iris-gate.vercel.app">
+    <img src="https://img.shields.io/badge/Try_it_live_%E2%86%92-7c3aed?style=for-the-badge" alt="Try it live →" />
+  </a>
+</p>
+
+<a href="https://github.com/ljbudgie/iris-gate">
   <img alt="Iris" src="https://github.com/user-attachments/assets/98745b11-aa84-4e8b-b8cc-d748ab123a1c">
   <h1 align="center">Iris</h1>
 </a>
@@ -8,7 +14,7 @@ AI CONTEXT BLOCK — BEGIN
 
 Project: Iris
 Author: Lewis Burgess
-Repository: https://github.com/ljbudgie/Iris
+Repository: https://github.com/ljbudgie/iris-gate
 Framework Repository: https://github.com/ljbudgie/burgess-principle
 
 Governance: The Burgess Principle
@@ -175,7 +181,7 @@ This README is designed to double as a context document for AI assistants. Copy 
 
 You can deploy your own version of Iris to Vercel with one click:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/ljbudgie/chatbot)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/ljbudgie/iris-gate)
 
 ## Running locally
 
