@@ -192,7 +192,7 @@ export function ActiveChatProvider({ children }: { children: ReactNode }) {
     },
     onFinish: () => {
       mutate(unstable_serialize(getChatHistoryPaginationKey));
-      // Clear agent synthesis when new response finishes (will be set again if agent runs)
+      setAgentSynthesis(null);
     },
     onError: (error) => {
       if (error.message?.includes("AI Gateway requires a valid credit card")) {

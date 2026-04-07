@@ -272,8 +272,8 @@ export async function POST(request: Request) {
               .filter((m) => m.role === "user")
               .at(-1)
               ?.parts?.filter((p) => p.type === "text")
-              .map((p) => p.text)
-              .join("") ?? "";
+              ?.map((p) => p.text)
+              ?.join("") ?? "";
 
           if (baseText && userQuery) {
             const modelName = modelConfig?.name ?? chatModel;

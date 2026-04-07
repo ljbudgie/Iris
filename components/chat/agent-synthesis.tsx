@@ -40,7 +40,7 @@ function PureAgentSynthesis({ synthesis }: { synthesis: AgentSynthesisData }) {
       </div>
 
       {synthesis.error ? (
-        <p className="text-[12px] text-muted-foreground italic">
+        <p className="italic text-[12px] text-muted-foreground">
           {synthesis.error}
         </p>
       ) : (
