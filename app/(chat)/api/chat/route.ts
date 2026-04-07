@@ -22,6 +22,7 @@ import { type RequestHints, systemPrompt } from "@/lib/ai/prompts";
 import { getLanguageModel } from "@/lib/ai/providers";
 import { createDocument } from "@/lib/ai/tools/create-document";
 import { editDocument } from "@/lib/ai/tools/edit-document";
+import { generateBurgessLetter } from "@/lib/ai/tools/generate-burgess-letter";
 import { getWeather } from "@/lib/ai/tools/get-weather";
 import { requestSuggestions } from "@/lib/ai/tools/request-suggestions";
 import { suggestFollowUps } from "@/lib/ai/tools/suggest-follow-ups";
@@ -207,6 +208,7 @@ export async function POST(request: Request) {
                   "updateDocument",
                   "requestSuggestions",
                   "suggestFollowUps",
+                  "generateBurgessLetter",
                 ],
           providerOptions: {
             ...(modelConfig?.gatewayOrder && {
@@ -235,6 +237,11 @@ export async function POST(request: Request) {
               modelId: chatModel,
             }),
             suggestFollowUps,
+            generateBurgessLetter: generateBurgessLetter({
+              session,
+              dataStream,
+              modelId: chatModel,
+            }),
           },
           experimental_telemetry: {
             isEnabled: isProductionEnvironment,
