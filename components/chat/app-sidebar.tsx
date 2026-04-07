@@ -5,6 +5,7 @@ import {
   MessageSquareIcon,
   PanelLeftIcon,
   PenSquareIcon,
+  ShieldCheckIcon,
   TrashIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -140,6 +141,23 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                       <Link href="/review" onClick={() => setOpenMobile(false)}>
                         <EyeIcon className="size-4" />
                         <span className="text-[13px]">Review queue</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
+                {user && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      asChild
+                      className="rounded-lg text-sidebar-foreground/60 transition-colors duration-150 hover:text-sidebar-foreground"
+                      tooltip="Federation Providers"
+                    >
+                      <Link
+                        href="/federation"
+                        onClick={() => setOpenMobile(false)}
+                      >
+                        <ShieldCheckIcon className="size-4" />
+                        <span className="text-[13px]">Providers</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>

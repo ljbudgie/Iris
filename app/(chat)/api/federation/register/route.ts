@@ -5,6 +5,7 @@ import {
   getProvider,
   registerProvider,
   removeProvider,
+  updateGovernanceStatus,
 } from "@/lib/federation/registry";
 import { providerRegistrationSchema } from "@/lib/federation/types";
 
@@ -98,4 +99,50 @@ export async function DELETE(request: Request) {
   }
 
   return Response.json({ success: true });
+}
+
+/**
+ * PATCH /api/federation/register
+ *
+ * Update a provider's governance status (promote to SOVEREIGN or demote to NULL).
+ * This is the "human judicial mind" action that marks a provider as reviewed.
+ */
+export async function PATCH(request: Request) {
+  const session = await auth();
+  if (!session?.user) {
+    return new IrisError("unauthorized:federation").toResponse();
+  }
+
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return new IrisError("bad_request:federation").toResponse();
+  }
+
+  const { id, governanceStatus } = body as {
+    id?: string;
+    governanceStatus?: string;
+  };
+
+  if (
+    !id ||
+    (governanceStatus !== "SOVEREIGN" && governanceStatus !== "NULL")
+  ) {
+    return Response.json(
+      {
+        code: "bad_request:federation",
+        message:
+          'Invalid payload. Provide "id" and "governanceStatus" ("SOVEREIGN" or "NULL").',
+      },
+      { status: 400 }
+    );
+  }
+
+  const updated = updateGovernanceStatus(id, governanceStatus);
+  if (!updated) {
+    return new IrisError("not_found:federation").toResponse();
+  }
+
+  return Response.json(updated);
 }
