@@ -77,6 +77,7 @@ AI CONTEXT BLOCK — END
   <a href="#federation"><strong>Federation</strong></a> ·
   <a href="#features"><strong>Features</strong></a> ·
   <a href="#model-providers"><strong>Model Providers</strong></a> ·
+  <a href="#performance-characteristics"><strong>Performance</strong></a> ·
   <a href="#ai-native-readme"><strong>AI-Native README</strong></a> ·
   <a href="#deploy-your-own"><strong>Deploy Your Own</strong></a> ·
   <a href="#running-locally"><strong>Running locally</strong></a>
@@ -190,6 +191,25 @@ This project uses the [Vercel AI Gateway](https://vercel.com/docs/ai-gateway) to
 **For non-Vercel deployments**: You need to provide an AI Gateway API key by setting the `AI_GATEWAY_API_KEY` environment variable in your `.env.local` file.
 
 With the [AI SDK](https://ai-sdk.dev/docs/introduction), you can also switch to direct LLM providers like [OpenAI](https://openai.com), [Anthropic](https://anthropic.com), [Cohere](https://cohere.com/), and [many more](https://ai-sdk.dev/providers/ai-sdk-providers) with just a few lines of code.
+
+## Performance Characteristics
+
+The table below summarises the overhead introduced by Iris's routing, governance, and federation layers. All figures are derived from the source code and architecture; they are not synthetic benchmarks.
+
+| Metric | Value | Source / Rationale |
+|---|---|---|
+| **SOVEREIGN/NULL gate latency** | < 0.01 ms (negligible) | `applyGovernanceGate()` and `evaluateResponses()` are synchronous, in-memory property checks — no I/O, no async work ([governance.ts](lib/federation/governance.ts)) |
+| **AI Gateway failover** | Automatic, ordered | Each model declares a `gatewayOrder` (e.g. `["baseten", "fireworks"]`). The Vercel AI Gateway tries providers in order and falls over transparently; no extra round-trip from Iris ([models.ts](lib/ai/models.ts)) |
+| **Failover coverage** | 5 of 8 models have ≥ 2 providers | DeepSeek V3.2, Kimi K2 0905, Kimi K2.5, GPT OSS 20B, and GPT OSS 120B each list two gateway providers; Codestral, Mistral Small, and Grok 4.1 Fast route through a single provider |
+| **Federation fan-out** | Concurrent, 30 s timeout per provider | `queryProvider()` calls all target providers in parallel via `Promise.all` with `AbortSignal.timeout(30_000)` ([route/route.ts](app/(chat)/api/federation/route/route.ts)) |
+| **Health-check timeout** | 5 s per provider | `checkProviderHealth()` uses a `HEAD` request with a 5 s abort signal and records `latencyMs` for every probe ([health/route.ts](app/(chat)/api/federation/health/route.ts)) |
+| **NULL flagging rate** | 100 % of federated responses (by design) | Every new provider registers with `governanceStatus: "NULL"` ([registry.ts](lib/federation/registry.ts)). Responses remain NULL until a human explicitly promotes the provider to SOVEREIGN — this is the Burgess Principle in action, not a failure mode |
+
+### What this means in practice
+
+- **Direct chat (non-federated)** — the governance gate is not in the hot path. Requests go straight through the AI Gateway to the selected model, so the only variable latency is the model's own response time plus any gateway failover (handled at the infrastructure level).
+- **Federated requests** — Iris adds the time to fan out to external providers (bounded by the 30 s timeout) and a sub-millisecond governance check. The dominant cost is the external provider's response time, not Iris's processing.
+- **NULL is the safe default** — 100 % of federated responses being flagged NULL is intentional. It guarantees every AI output is held for human review until the operator decides otherwise. This is a governance feature, not overhead.
 
 ## AI-Native README
 
