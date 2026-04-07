@@ -90,7 +90,7 @@ export function ActiveChatProvider({ children }: { children: ReactNode }) {
       setCurrentModelId(id);
       setHasChosenModel(true);
     },
-    [],
+    [setCurrentModelId],
   );
 
   const dismissModelChoice = useCallback(() => {

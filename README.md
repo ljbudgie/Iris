@@ -153,7 +153,7 @@ When a new chat starts, Iris greets the user with a lightweight onboarding step 
 > I help route your requests across powerful models while enforcing human governance (SOVEREIGN/NULL via the Burgess Principle).
 > For this conversation, which model would you prefer?
 
-Clickable buttons for every model in the lineup are displayed, along with a **Dismiss — use smart default** option that picks the default model (`moonshotai/kimi-k2-0905`) and skips straight to chatting.
+Clickable buttons for every model in the lineup are displayed, along with a **Dismiss — use smart default** option that picks the configured default model and skips straight to chatting.
 
 Once a model is chosen (or the default is accepted), the greeting transitions to the standard "What can I help with?" prompt and the normal chat flow continues — streaming, side-panel artifacts, and the existing SOVEREIGN/NULL gate with the "Mark as SOVEREIGN" button all work exactly as before.
 
