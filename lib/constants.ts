@@ -14,7 +14,7 @@ export const guestRegex =
 export const DUMMY_PASSWORD = generateDummyPassword();
 
 export const MAX_FILE_UPLOAD_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
-export const MAX_IP_MESSAGES_PER_HOUR = 10;
+export const MAX_IP_MESSAGES_PER_HOUR = 100;
 export const IP_RATE_LIMIT_TTL_SECONDS = 60 * 60; // 1 hour
 
 export const suggestions = [
