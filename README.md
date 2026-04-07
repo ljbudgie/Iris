@@ -15,7 +15,7 @@
   <h1 align="center">Iris</h1>
 </a>
 
-<p align="center"><em>Iris Gate routes AI requests through multiple models with mandatory human governance via the Burgess Principle.</em></p>
+<p align="center"><em>Iris routes AI requests through multiple models with mandatory human governance via the Burgess Principle.</em></p>
 
 <!--
 AI CONTEXT BLOCK — BEGIN
@@ -65,6 +65,10 @@ AI CONTEXT BLOCK — END
 
 <p align="center">
   An open-source AI assistant and <a href="#federation">federation layer</a> built on <a href="#the-burgess-principle">The Burgess Principle</a>&nbsp;— the idea that a human judicial mind must be applied to the specific facts of every specific case. Iris isn't just another chatbot: it's a governance layer that can wrap <em>any</em> AI provider in an accountability framework, ensuring no output reaches a user without the opportunity for human review.
+</p>
+
+<p align="center">
+  <sub><strong>Note on naming:</strong> The product is called <strong>Iris</strong>. The repository name <code>iris-gate</code> refers to the SOVEREIGN/NULL governance gate at the heart of the project — the checkpoint where every AI output is flagged for human review before it can be considered authoritative.</sub>
 </p>
 
 <p align="center">
