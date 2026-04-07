@@ -1,5 +1,6 @@
+import { GeistSans } from "geist/font";
+import { GeistMono } from "geist/font/mono";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -16,17 +17,8 @@ export const viewport = {
   maximumScale: 1,
 };
 
-const geist = Geist({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-geist",
-});
-
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-geist-mono",
-});
+const geist = GeistSans;
+const geistMono = GeistMono;
 
 const LIGHT_THEME_COLOR = "hsl(260 20% 97%)";
 const DARK_THEME_COLOR = "hsl(260 20% 7%)";

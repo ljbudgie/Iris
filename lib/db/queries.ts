@@ -23,7 +23,6 @@ import {
   chat,
   type DBMessage,
   document,
-  type HumanReviewRequest,
   humanReviewRequest,
   message,
   type Suggestion,
@@ -96,7 +95,9 @@ export async function saveChat({
 
 export async function deleteChatById({ id }: { id: string }) {
   try {
-    await db.delete(humanReviewRequest).where(eq(humanReviewRequest.chatId, id));
+    await db
+      .delete(humanReviewRequest)
+      .where(eq(humanReviewRequest.chatId, id));
     await db.delete(vote).where(eq(vote.chatId, id));
     await db.delete(message).where(eq(message.chatId, id));
     await db.delete(stream).where(eq(stream.chatId, id));
@@ -124,7 +125,9 @@ export async function deleteAllChatsByUserId({ userId }: { userId: string }) {
 
     const chatIds = userChats.map((c) => c.id);
 
-    await db.delete(humanReviewRequest).where(inArray(humanReviewRequest.chatId, chatIds));
+    await db
+      .delete(humanReviewRequest)
+      .where(inArray(humanReviewRequest.chatId, chatIds));
     await db.delete(vote).where(inArray(vote.chatId, chatIds));
     await db.delete(message).where(inArray(message.chatId, chatIds));
     await db.delete(stream).where(inArray(stream.chatId, chatIds));

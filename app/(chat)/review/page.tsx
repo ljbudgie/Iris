@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { HumanReviewRequest } from "@/lib/db/schema";
 
@@ -11,7 +11,7 @@ export default function ReviewQueuePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<ReviewStatus | "all">("all");
 
-  const fetchReviews = async () => {
+  const fetchReviews = useCallback(async () => {
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/api/review`
@@ -26,24 +26,21 @@ export default function ReviewQueuePage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchReviews();
-  }, []);
+  }, [fetchReviews]);
 
   const handleResolve = async (
     reviewId: string,
     status: "approved" | "rejected"
   ) => {
-    const res = fetch(
-      `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/api/review`,
-      {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reviewId, status }),
-      }
-    );
+    const res = fetch(`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/api/review`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ reviewId, status }),
+    });
 
     toast.promise(res, {
       loading: `${status === "approved" ? "Approving" : "Rejecting"}...`,
@@ -56,9 +53,7 @@ export default function ReviewQueuePage() {
   };
 
   const filteredReviews =
-    filter === "all"
-      ? reviews
-      : reviews.filter((r) => r.status === filter);
+    filter === "all" ? reviews : reviews.filter((r) => r.status === filter);
 
   const pendingCount = reviews.filter((r) => r.status === "pending").length;
 
@@ -68,7 +63,7 @@ export default function ReviewQueuePage() {
         <div>
           <h1 className="text-xl font-semibold">Human Review Queue</h1>
           <p className="mt-1 text-muted-foreground text-sm">
-            {pendingCount} pending review{pendingCount !== 1 ? "s" : ""}
+            {pendingCount} pending review{pendingCount === 1 ? "" : "s"}
           </p>
         </div>
         <div className="flex gap-1 rounded-lg border p-0.5">
@@ -132,8 +127,7 @@ function ReviewCard({
       "border-yellow-500/30 bg-yellow-500/5 text-yellow-600 dark:text-yellow-400",
     approved:
       "border-green-500/30 bg-green-500/5 text-green-600 dark:text-green-400",
-    rejected:
-      "border-red-500/30 bg-red-500/5 text-red-600 dark:text-red-400",
+    rejected: "border-red-500/30 bg-red-500/5 text-red-600 dark:text-red-400",
   };
 
   const status = review.status as ReviewStatus;
@@ -152,9 +146,7 @@ function ReviewCard({
               {new Date(review.createdAt).toLocaleString()}
             </span>
           </div>
-          {review.reason && (
-            <p className="mt-1 text-sm">{review.reason}</p>
-          )}
+          {review.reason && <p className="mt-1 text-sm">{review.reason}</p>}
         </div>
       </div>
 

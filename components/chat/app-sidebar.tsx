@@ -137,10 +137,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                       className="rounded-lg text-sidebar-foreground/60 transition-colors duration-150 hover:text-sidebar-foreground"
                       tooltip="Review Queue"
                     >
-                      <Link
-                        href="/review"
-                        onClick={() => setOpenMobile(false)}
-                      >
+                      <Link href="/review" onClick={() => setOpenMobile(false)}>
                         <EyeIcon className="size-4" />
                         <span className="text-[13px]">Review queue</span>
                       </Link>
