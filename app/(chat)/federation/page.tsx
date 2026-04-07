@@ -30,7 +30,7 @@ export default function FederationProvidersPage() {
     fetchProviders();
   }, [fetchProviders]);
 
-  const handleUpdateStatus = async (
+  const handleUpdateStatus = (
     id: string,
     governanceStatus: "SOVEREIGN" | "NULL"
   ) => {
