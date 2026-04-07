@@ -67,6 +67,12 @@ export const getWeather = tool({
       `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m&hourly=temperature_2m&daily=sunrise,sunset&timezone=auto`
     );
 
+    if (!response.ok) {
+      return {
+        error: `Weather API returned status ${response.status}. Please try again later.`,
+      };
+    }
+
     const weatherData = await response.json();
 
     if ("city" in input) {

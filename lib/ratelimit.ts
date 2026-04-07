@@ -1,10 +1,11 @@
 import { createClient } from "redis";
 
-import { isProductionEnvironment } from "@/lib/constants";
+import {
+  IP_RATE_LIMIT_TTL_SECONDS,
+  isProductionEnvironment,
+  MAX_IP_MESSAGES_PER_HOUR,
+} from "@/lib/constants";
 import { IrisError } from "@/lib/errors";
-
-const MAX_MESSAGES = 10;
-const TTL_SECONDS = 60 * 60;
 
 let client: ReturnType<typeof createClient> | null = null;
 
@@ -37,15 +38,16 @@ export async function checkIpRateLimit(ip: string | undefined) {
     const [count] = await redis
       .multi()
       .incr(key)
-      .expire(key, TTL_SECONDS, "NX")
+      .expire(key, IP_RATE_LIMIT_TTL_SECONDS, "NX")
       .exec();
 
-    if (typeof count === "number" && count > MAX_MESSAGES) {
+    if (typeof count === "number" && count > MAX_IP_MESSAGES_PER_HOUR) {
       throw new IrisError("rate_limit:chat");
     }
   } catch (error) {
     if (error instanceof IrisError) {
       throw error;
     }
+    console.error("Redis rate limit check failed:", error);
   }
 }

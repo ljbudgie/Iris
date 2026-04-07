@@ -8,7 +8,9 @@ import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://chat.vercel.ai"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL ?? "https://chat.vercel.ai"
+  ),
   title: "Iris",
   description: "An open-source AI assistant built on The Burgess Principle.",
 };
