@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import { chatModels, type ChatModel } from "@/lib/ai/models";
 import { ModelSelectorLogo } from "@/components/ai-elements/model-selector";
+import { type ChatModel, chatModels } from "@/lib/ai/models";
 import { SparklesIcon } from "./icons";
 
 type GreetingProps = {
@@ -61,7 +61,7 @@ export const Greeting = ({
         initial={{ opacity: 0, y: 10 }}
         transition={{ delay: 0.35, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       >
-        Hi! I&apos;m Iris 👋
+        Hi, I&apos;m Iris ✨
       </motion.div>
       <motion.div
         animate={{ opacity: 1, y: 0 }}
@@ -69,10 +69,10 @@ export const Greeting = ({
         initial={{ opacity: 0, y: 10 }}
         transition={{ delay: 0.5, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       >
-        I help route your requests across powerful models while enforcing human
-        governance (SOVEREIGN/NULL via the Burgess Principle).
+        I connect you to the most powerful AI models and intelligently match
+        each request to the best one for the job.
         <br />
-        For this conversation, which model would you prefer?
+        Which model would you like to start with?
       </motion.div>
       <motion.div
         animate={{ opacity: 1, y: 0 }}

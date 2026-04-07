@@ -149,9 +149,9 @@ This means you can point any AI bot — your own fine-tuned model, a third-party
 
 When a new chat starts, Iris greets the user with a lightweight onboarding step before the first message:
 
-> **Hi! I'm Iris 👋**
-> I help route your requests across powerful models while enforcing human governance (SOVEREIGN/NULL via the Burgess Principle).
-> For this conversation, which model would you prefer?
+> **Hi, I'm Iris ✨**
+> I connect you to the most powerful AI models and intelligently match each request to the best one for the job.
+> Which model would you like to start with?
 
 Clickable buttons for every model in the lineup are displayed, along with a **Dismiss — use smart default** option that picks the configured default model and skips straight to chatting.
 
