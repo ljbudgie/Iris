@@ -19,7 +19,6 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command";
 
 export function CommandPalette() {
@@ -67,7 +66,6 @@ export function CommandPalette() {
           >
             <PenSquareIcon className="size-4" />
             <span>New chat</span>
-            <CommandShortcut>⌘N</CommandShortcut>
           </CommandItem>
           <CommandItem
             onSelect={() =>
@@ -79,7 +77,6 @@ export function CommandPalette() {
           >
             <SearchIcon className="size-4" />
             <span>Focus input</span>
-            <CommandShortcut>/</CommandShortcut>
           </CommandItem>
         </CommandGroup>
 
