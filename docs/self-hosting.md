@@ -55,6 +55,7 @@ Edit `.env.local`:
 AUTH_SECRET=your-random-secret-here
 
 # Local PostgreSQL connection string
+# Adjust username/password if your local Postgres requires authentication
 POSTGRES_URL=postgresql://localhost:5432/iris_local
 
 # Optional: Redis for resumable streams (omit if not needed)

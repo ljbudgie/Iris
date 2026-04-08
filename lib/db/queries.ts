@@ -854,7 +854,7 @@ export async function exportUserData({ userId }: { userId: string }) {
       userSuggestions,
       userAuditEntries,
     ] = await Promise.all([
-      db.select().from(user).where(eq(user.id, userId)),
+      db.select().from(user).where(eq(user.id, userId)).limit(1),
       db
         .select()
         .from(chat)
@@ -897,11 +897,13 @@ export async function exportUserData({ userId }: { userId: string }) {
 
     // Strip the password hash from the export — the user does not need it
     // and it should never leave the server.
-    const safeUser = userData.map(({ password: _, ...rest }) => rest);
+    const [firstUser] = userData;
+    const { password: _, ...safeUserData } =
+      firstUser ?? ({} as Record<string, unknown>);
 
     return {
       exportedAt: new Date().toISOString(),
-      user: safeUser[0] ?? null,
+      user: firstUser ? safeUserData : null,
       chats: userChats,
       messages: userMessages,
       votes: userVotes,

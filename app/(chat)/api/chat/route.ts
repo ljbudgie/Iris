@@ -282,7 +282,7 @@ export async function POST(request: Request) {
         );
 
         // Audit trail: persist turn metadata (non-blocking, with retry)
-        saveChatAuditEntry({
+        const auditEntry = {
           chatId: id,
           userId: session.user?.id ?? "",
           modelId: chatModel,
@@ -290,22 +290,17 @@ export async function POST(request: Request) {
           completionTokens: usage?.outputTokens ?? 0,
           totalTokens: usage?.totalTokens ?? 0,
           toolsInvoked,
-          governanceStatus: governanceStatus ?? "SOVEREIGN",
-        }).catch((firstError) => {
+          governanceStatus: (governanceStatus ?? "SOVEREIGN") as
+            | "SOVEREIGN"
+            | "NULL",
+        };
+
+        saveChatAuditEntry(auditEntry).catch((firstError) => {
           console.error(
             "[Iris] Audit trail write failed — retrying once:",
             firstError
           );
-          saveChatAuditEntry({
-            chatId: id,
-            userId: session.user?.id ?? "",
-            modelId: chatModel,
-            promptTokens: usage?.inputTokens ?? 0,
-            completionTokens: usage?.outputTokens ?? 0,
-            totalTokens: usage?.totalTokens ?? 0,
-            toolsInvoked,
-            governanceStatus: governanceStatus ?? "SOVEREIGN",
-          }).catch((retryError) => {
+          saveChatAuditEntry(auditEntry).catch((retryError) => {
             console.error(
               "[Iris] Audit trail write failed after retry — budget tracking may be affected:",
               retryError
