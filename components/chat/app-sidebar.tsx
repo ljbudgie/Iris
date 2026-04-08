@@ -1,7 +1,9 @@
 "use client";
 
 import {
+  ClipboardListIcon,
   EyeIcon,
+  FileTextIcon,
   PanelLeftIcon,
   PenSquareIcon,
   ShieldCheckIcon,
@@ -10,7 +12,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { User } from "next-auth";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useSWRConfig } from "swr";
 import { unstable_serialize } from "swr/infinite";
@@ -51,6 +53,42 @@ export function AppSidebar({ user }: { user: User | undefined }) {
   const { setOpenMobile, toggleSidebar } = useSidebar();
   const { mutate } = useSWRConfig();
   const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false);
+
+  // Fetch aggregate governance status from federation providers
+  const [governanceLabel, setGovernanceLabel] = useState<
+    "SOVEREIGN" | "NULL" | "NO_PROVIDERS"
+  >("NO_PROVIDERS");
+
+  const refreshGovernance = useCallback(async () => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/api/federation/register`
+      );
+      if (!res.ok) {
+        return;
+      }
+      const providers: { governanceStatus: string }[] = await res.json();
+      if (providers.length === 0) {
+        setGovernanceLabel("NO_PROVIDERS");
+        return;
+      }
+      const allSovereign = providers.every(
+        (p) => p.governanceStatus === "SOVEREIGN"
+      );
+      setGovernanceLabel(allSovereign ? "SOVEREIGN" : "NULL");
+    } catch {
+      // Governance badge is non-critical; log in dev for debugging
+      if (process.env.NODE_ENV === "development") {
+        console.warn("Failed to fetch governance status");
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      refreshGovernance();
+    }
+  }, [user, refreshGovernance]);
 
   const handleDeleteAll = () => {
     setShowDeleteAllDialog(false);
@@ -162,6 +200,40 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 )}
+                {user && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      asChild
+                      className="rounded-lg text-sidebar-foreground/60 transition-colors duration-150 hover:text-sidebar-foreground"
+                      tooltip="Letter Templates"
+                    >
+                      <Link
+                        href="/templates"
+                        onClick={() => setOpenMobile(false)}
+                      >
+                        <FileTextIcon className="size-4" />
+                        <span className="text-[13px]">Templates</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
+                {user && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      asChild
+                      className="rounded-lg text-sidebar-foreground/60 transition-colors duration-150 hover:text-sidebar-foreground"
+                      tooltip="Audit Log"
+                    >
+                      <Link
+                        href="/audit"
+                        onClick={() => setOpenMobile(false)}
+                      >
+                        <ClipboardListIcon className="size-4" />
+                        <span className="text-[13px]">Audit log</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
@@ -174,10 +246,22 @@ export function AppSidebar({ user }: { user: User | undefined }) {
             role="status"
           >
             <div className="flex size-4 shrink-0 items-center justify-center">
-              <div className="size-1.5 rounded-full bg-amber-500/80" />
+              <div
+                className={`size-1.5 rounded-full ${
+                  governanceLabel === "SOVEREIGN"
+                    ? "bg-green-500/80"
+                    : governanceLabel === "NULL"
+                      ? "bg-amber-500/80"
+                      : "bg-muted-foreground/30"
+                }`}
+              />
             </div>
             <span className="font-medium text-muted-foreground/60 group-data-[collapsible=icon]:hidden">
-              NULL — awaiting review
+              {governanceLabel === "SOVEREIGN"
+                ? "SOVEREIGN — reviewed"
+                : governanceLabel === "NULL"
+                  ? "NULL — awaiting review"
+                  : "No providers registered"}
             </span>
           </div>
           {user && <SidebarUserNav user={user} />}
