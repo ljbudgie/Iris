@@ -2,7 +2,6 @@
   "recommendations": [
     "biomejs.biome",
     "bradlc.vscode-tailwindcss",
-    "dbaeumer.vscode-eslint",
     "ms-playwright.playwright",
     "yoavbls.pretty-ts-errors"
   ]
