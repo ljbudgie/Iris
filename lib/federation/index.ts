@@ -11,6 +11,8 @@ export {
   removeProvider,
   updateGovernanceStatus,
 } from "./registry";
+export type { ToolName } from "./tool-permissions";
+export { getPermittedTools, isToolPermitted } from "./tool-permissions";
 export type {
   FederatedMessage,
   FederatedRouteResponse,

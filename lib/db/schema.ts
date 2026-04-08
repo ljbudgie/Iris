@@ -2,6 +2,7 @@ import type { InferSelectModel } from "drizzle-orm";
 import {
   boolean,
   foreignKey,
+  integer,
   json,
   pgTable,
   primaryKey,
@@ -156,3 +157,31 @@ export const humanReviewRequest = pgTable("HumanReviewRequest", {
 });
 
 export type HumanReviewRequest = InferSelectModel<typeof humanReviewRequest>;
+
+export const chatAuditLog = pgTable("ChatAuditLog", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  chatId: uuid("chatId")
+    .notNull()
+    .references(() => chat.id),
+  messageId: uuid("messageId"),
+  userId: uuid("userId")
+    .notNull()
+    .references(() => user.id),
+  /** The model used for this turn. */
+  modelId: varchar("modelId", { length: 128 }),
+  /** Number of prompt tokens consumed. */
+  promptTokens: integer("promptTokens").notNull().default(0),
+  /** Number of completion tokens consumed. */
+  completionTokens: integer("completionTokens").notNull().default(0),
+  /** Total tokens consumed in this turn. */
+  totalTokens: integer("totalTokens").notNull().default(0),
+  /** Tool names invoked during this turn, stored as JSON array. */
+  toolsInvoked: json("toolsInvoked").$type<string[]>().default([]),
+  /** Governance status at time of response. */
+  governanceStatus: varchar("governanceStatus", {
+    enum: ["SOVEREIGN", "NULL"],
+  }),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+});
+
+export type ChatAuditLog = InferSelectModel<typeof chatAuditLog>;
