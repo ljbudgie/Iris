@@ -122,7 +122,11 @@ const PurePreviewMessage = ({
           })}
           data-testid="message-content"
           key={key}
-          style={message.role === "user" ? { background: "rgba(124, 58, 237, 0.08)" } : undefined}
+          style={
+            message.role === "user"
+              ? { background: "rgba(124, 58, 237, 0.08)" }
+              : undefined
+          }
         >
           <MessageResponse>{sanitizeText(part.text)}</MessageResponse>
         </MessageContent>

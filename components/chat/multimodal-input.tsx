@@ -542,8 +542,8 @@ function PureMultimodalInput({
               className={cn(
                 "h-7 w-7 rounded-xl transition-all duration-200",
                 input.trim()
-                  ? "bg-primary text-primary-foreground hover:opacity-85 active:scale-95"
-                  : "bg-muted text-muted-foreground/25 cursor-not-allowed"
+                  ? "bg-[#7c3aed] text-white hover:opacity-85 active:scale-95"
+                  : "bg-[#1e1e28] text-[#52525b] cursor-not-allowed"
               )}
               data-testid="send-button"
               disabled={!input.trim() || uploadQueue.length > 0}
@@ -664,7 +664,10 @@ function PureModelSelectorCompact({
         <Button
           className="h-8 max-w-[240px] justify-between gap-2 rounded-lg border border-[#27272a] px-2.5 text-[11px] text-[#a1a1aa] transition-all duration-200 hover:border-[rgba(124,58,237,0.3)] hover:text-[#e4e4e7]"
           data-testid="model-selector"
-          style={{ background: "var(--surface-2)", fontFamily: "var(--font-geist-mono), monospace" }}
+          style={{
+            background: "var(--surface-2)",
+            fontFamily: "var(--font-geist-mono), monospace",
+          }}
           variant="ghost"
         >
           {provider && <ModelSelectorLogo provider={provider} />}

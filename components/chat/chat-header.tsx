@@ -99,7 +99,9 @@ function PureChatHeader({
       >
         <span>{statusLabel}</span>
         <span className="mx-2">&middot;</span>
-        <span>{providerCount} PROVIDER{providerCount !== 1 ? "S" : ""}</span>
+        <span>
+          {providerCount} PROVIDER{providerCount === 1 ? "" : "S"}
+        </span>
         <span className="mx-2">&middot;</span>
         <span>GOVERNANCE: {governanceLabel}</span>
       </div>
@@ -127,7 +129,9 @@ function PureChatHeader({
         >
           <span
             className="text-sm font-semibold tracking-[0.2em] uppercase text-[#e4e4e7]"
-            style={{ fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace" }}
+            style={{
+              fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace",
+            }}
           >
             IRIS
           </span>

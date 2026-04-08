@@ -63,7 +63,10 @@ export const Greeting = () => {
         <div className="relative flex items-center justify-center">
           <div
             className="absolute size-20 rounded-full"
-            style={{ background: "radial-gradient(circle, rgba(124, 58, 237, 0.05) 0%, transparent 70%)" }}
+            style={{
+              background:
+                "radial-gradient(circle, rgba(124, 58, 237, 0.05) 0%, transparent 70%)",
+            }}
           />
           <div className="relative flex size-10 items-center justify-center text-[#7c3aed]">
             <SparklesIcon size={24} />
@@ -72,13 +75,17 @@ export const Greeting = () => {
         <div className="text-center">
           <h1
             className="text-lg font-semibold tracking-[0.2em] uppercase text-[#e4e4e7]"
-            style={{ fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace" }}
+            style={{
+              fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace",
+            }}
           >
             IRIS
           </h1>
           <p
             className="mt-1 text-[10px] font-medium uppercase tracking-[0.12em] text-[#52525b]"
-            style={{ fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace" }}
+            style={{
+              fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace",
+            }}
           >
             Governance Layer
           </p>
@@ -88,7 +95,7 @@ export const Greeting = () => {
       {/* Federation status — key-value pairs in a single row, no cards */}
       <motion.div
         animate={{ opacity: 1, y: 0 }}
-        className="flex w-full max-w-sm items-start justify-center gap-12 sm:gap-16"
+        className="flex w-full max-w-sm flex-col items-center justify-center gap-6 sm:flex-row sm:gap-16"
         initial={{ opacity: 0, y: 12 }}
         transition={{ delay: 0.25, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       >

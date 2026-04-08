@@ -9,10 +9,7 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div
-      className="flex h-dvh w-screen"
-      style={{ background: "#08080c" }}
-    >
+    <div className="flex h-dvh w-screen" style={{ background: "#08080c" }}>
       <div
         className="flex w-full flex-col p-8 xl:w-[600px] xl:shrink-0 xl:rounded-r-2xl xl:border-r md:p-16"
         style={{ background: "#0f0f14", borderColor: "#27272a" }}
@@ -29,7 +26,10 @@ export default function AuthLayout({
             <div className="mb-2">
               <span
                 className="text-sm font-semibold tracking-[0.2em] uppercase text-[#e4e4e7]"
-                style={{ fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace" }}
+                style={{
+                  fontFamily:
+                    "var(--font-geist-mono), 'JetBrains Mono', monospace",
+                }}
               >
                 IRIS
               </span>
@@ -43,9 +43,7 @@ export default function AuthLayout({
         <div className="flex items-center gap-1.5 pt-8 text-[13px] text-[#52525b]">
           Powered by
           <VercelIcon size={14} />
-          <span className="font-medium text-[#a1a1aa]">
-            AI Gateway
-          </span>
+          <span className="font-medium text-[#a1a1aa]">AI Gateway</span>
         </div>
         <div className="flex-1 pt-4">
           <Preview />

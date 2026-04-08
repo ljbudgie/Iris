@@ -109,8 +109,8 @@ function PureVoiceInput({ onTranscript, setInput, disabled }: VoiceInputProps) {
       className={cn(
         "h-7 w-7 rounded-lg border p-1 transition-all duration-200",
         isListening
-          ? "border-primary/40 bg-primary/10 text-primary animate-pulse"
-          : "border-border/40 text-muted-foreground/50 hover:border-border hover:text-foreground"
+          ? "border-[rgba(124,58,237,0.4)] bg-[rgba(124,58,237,0.1)] text-[#7c3aed] animate-pulse"
+          : "border-[#27272a] text-[#52525b] hover:text-[#a1a1aa]"
       )}
       disabled={disabled}
       onClick={(e) => {
@@ -122,9 +122,9 @@ function PureVoiceInput({ onTranscript, setInput, disabled }: VoiceInputProps) {
       variant="ghost"
     >
       {isListening ? (
-        <MicOffIcon className="size-3.5" />
+        <MicOffIcon className="size-4" />
       ) : (
-        <MicIcon className="size-3.5" />
+        <MicIcon className="size-4" />
       )}
     </Button>
   );
