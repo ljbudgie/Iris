@@ -5,7 +5,7 @@ import Link from "next/link";
 import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
-import { SparklesIcon, VercelIcon } from "./icons";
+import { SparklesIcon } from "./icons";
 import { VisibilitySelector, type VisibilityType } from "./visibility-selector";
 
 function PureChatHeader({
@@ -56,9 +56,7 @@ function PureChatHeader({
           <div className="flex size-5 items-center justify-center text-primary">
             <SparklesIcon size={12} />
           </div>
-          <span className="text-sm font-medium text-foreground/70">
-            Iris
-          </span>
+          <span className="text-sm font-medium text-foreground/70">Iris</span>
         </div>
       </div>
     </header>

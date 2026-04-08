@@ -19,6 +19,7 @@ import {
 } from "@/hooks/use-artifact";
 import type { Attachment, ChatMessage } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { ActionPlan } from "./action-plan";
 import { Artifact } from "./artifact";
 import { ChatHeader } from "./chat-header";
 import { DataStreamHandler } from "./data-stream-handler";
@@ -88,6 +89,7 @@ export function ChatShell() {
           />
 
           <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden bg-background md:rounded-tl-[16px] md:border-t md:border-l md:border-border/30">
+            <ActionPlan messages={messages} />
             <Messages
               addToolApprovalResponse={addToolApprovalResponse}
               chatId={chatId}

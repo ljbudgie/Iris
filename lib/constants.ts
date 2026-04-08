@@ -18,8 +18,8 @@ export const MAX_IP_MESSAGES_PER_HOUR = 100;
 export const IP_RATE_LIMIT_TTL_SECONDS = 60 * 60; // 1 hour
 
 export const suggestions = [
-  "What are the advantages of using Next.js?",
-  "Write code to demonstrate Dijkstra's algorithm",
-  "Help me draft a thoughtful email to a colleague",
-  "Explain the key principles of accessible web design",
+  "What is the Burgess Principle and how can it help me?",
+  "Help me challenge an automated decision about my case",
+  "I need to write a formal complaint to a company",
+  "Explain my rights under the Equality Act 2010",
 ];

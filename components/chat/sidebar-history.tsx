@@ -138,9 +138,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
   const filteredChats = useMemo(() => {
     if (!searchQuery.trim()) return allChats;
     const query = searchQuery.toLowerCase();
-    return allChats.filter(
-      (chat) => chat.title?.toLowerCase().includes(query)
-    );
+    return allChats.filter((chat) => chat.title?.toLowerCase().includes(query));
   }, [allChats, searchQuery]);
 
   const handleDelete = () => {
@@ -265,10 +263,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
 
           <SidebarMenu>
             {(() => {
-              if (
-                searchQuery &&
-                filteredChats.length === 0
-              ) {
+              if (searchQuery && filteredChats.length === 0) {
                 return (
                   <div className="px-3 py-4 text-center text-[12px] text-sidebar-foreground/40">
                     No conversations match &ldquo;{searchQuery}&rdquo;
