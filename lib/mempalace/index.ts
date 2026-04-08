@@ -1,4 +1,4 @@
-export { MemPalaceClient, getMemPalaceClient } from "./client";
+export { getMemPalaceClient, MemPalaceClient } from "./client";
 export {
   mempalaceSearch,
   mempalaceSearchSkill,

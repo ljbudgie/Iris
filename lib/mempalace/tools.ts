@@ -33,16 +33,14 @@ export const mempalaceSearch = tool({
       .string()
       .optional()
       .describe("Filter by wing/project name (optional)"),
-    room: z
-      .string()
-      .optional()
-      .describe("Filter by room/topic (optional)"),
+    room: z.string().optional().describe("Filter by room/topic (optional)"),
   }),
   execute: async (input) => {
     const client = getMemPalaceClient();
     if (!client) {
       return {
-        error: "MemPalace is not configured. Set MEMPALACE_MCP_COMMAND to enable palace memory.",
+        error:
+          "MemPalace is not configured. Set MEMPALACE_MCP_COMMAND to enable palace memory.",
       };
     }
     try {
@@ -65,24 +63,23 @@ export const mempalaceStore = tool({
     wing: z
       .string()
       .describe(
-        "Wing/project to file under (e.g. 'wing_user', 'wing_code', project name)",
+        "Wing/project to file under (e.g. 'wing_user', 'wing_code', project name)"
       ),
     room: z
       .string()
       .describe(
-        "Room/topic within the wing (e.g. 'preferences', 'decisions', 'meetings')",
+        "Room/topic within the wing (e.g. 'preferences', 'decisions', 'meetings')"
       ),
     content: z
       .string()
-      .describe(
-        "Verbatim content to store — exact words, never summarised",
-      ),
+      .describe("Verbatim content to store — exact words, never summarised"),
   }),
   execute: async (input) => {
     const client = getMemPalaceClient();
     if (!client) {
       return {
-        error: "MemPalace is not configured. Set MEMPALACE_MCP_COMMAND to enable palace memory.",
+        error:
+          "MemPalace is not configured. Set MEMPALACE_MCP_COMMAND to enable palace memory.",
       };
     }
     try {
@@ -109,7 +106,8 @@ export const mempalaceStatus = tool({
     const client = getMemPalaceClient();
     if (!client) {
       return {
-        error: "MemPalace is not configured. Set MEMPALACE_MCP_COMMAND to enable palace memory.",
+        error:
+          "MemPalace is not configured. Set MEMPALACE_MCP_COMMAND to enable palace memory.",
       };
     }
     try {

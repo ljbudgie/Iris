@@ -28,7 +28,7 @@ import type {
 export class MemPalaceClient {
   private process: ChildProcess | null = null;
   private nextId = 1;
-  private pending = new Map<
+  private readonly pending = new Map<
     number,
     {
       resolve: (value: McpResponse) => void;
@@ -37,8 +37,11 @@ export class MemPalaceClient {
     }
   >();
   private connected = false;
+  private readonly config: MemPalaceConfig;
 
-  constructor(private readonly config: MemPalaceConfig) {}
+  constructor(config: MemPalaceConfig) {
+    this.config = config;
+  }
 
   /**
    * Spawn the MCP server subprocess and perform the initialize handshake.
@@ -113,32 +116,32 @@ export class MemPalaceClient {
   // -----------------------------------------------------------------------
 
   /** Palace overview — total drawers, wing and room counts. */
-  async status(): Promise<unknown> {
+  status(): Promise<unknown> {
     return this.callTool("mempalace_status", {});
   }
 
   /** Semantic search across palace memories. */
-  async search(args: SearchArgs): Promise<unknown> {
+  search(args: SearchArgs): Promise<unknown> {
     return this.callTool("mempalace_search", args);
   }
 
   /** Full taxonomy: wing → room → drawer count. */
-  async getTaxonomy(): Promise<unknown> {
+  getTaxonomy(): Promise<unknown> {
     return this.callTool("mempalace_get_taxonomy", {});
   }
 
   /** Get the AAAK dialect specification. */
-  async getAaakSpec(): Promise<unknown> {
+  getAaakSpec(): Promise<unknown> {
     return this.callTool("mempalace_get_aaak_spec", {});
   }
 
   /** Query the knowledge graph for an entity's relationships. */
-  async kgQuery(args: KgQueryArgs): Promise<unknown> {
+  kgQuery(args: KgQueryArgs): Promise<unknown> {
     return this.callTool("mempalace_kg_query", args);
   }
 
   /** Knowledge graph stats. */
-  async kgStats(): Promise<unknown> {
+  kgStats(): Promise<unknown> {
     return this.callTool("mempalace_kg_stats", {});
   }
 
@@ -147,27 +150,27 @@ export class MemPalaceClient {
   // -----------------------------------------------------------------------
 
   /** File verbatim content into the palace. */
-  async addDrawer(args: AddDrawerArgs): Promise<unknown> {
+  addDrawer(args: AddDrawerArgs): Promise<unknown> {
     return this.callTool("mempalace_add_drawer", args);
   }
 
   /** Add a fact to the knowledge graph. */
-  async kgAdd(args: KgAddArgs): Promise<unknown> {
+  kgAdd(args: KgAddArgs): Promise<unknown> {
     return this.callTool("mempalace_kg_add", args);
   }
 
   /** Write to the agent diary in AAAK format. */
-  async diaryWrite(args: DiaryWriteArgs): Promise<unknown> {
+  diaryWrite(args: DiaryWriteArgs): Promise<unknown> {
     return this.callTool("mempalace_diary_write", args);
   }
 
   /** Read recent diary entries. */
-  async diaryRead(args: DiaryReadArgs): Promise<unknown> {
+  diaryRead(args: DiaryReadArgs): Promise<unknown> {
     return this.callTool("mempalace_diary_read", args);
   }
 
   /** Run a Burgess Principle human-impact review on content. */
-  async burgessReview(content: string): Promise<unknown> {
+  burgessReview(content: string): Promise<unknown> {
     return this.callTool("mempalace_burgess_review", { content });
   }
 
@@ -177,7 +180,7 @@ export class MemPalaceClient {
 
   private async callTool(
     name: string,
-    args: Record<string, unknown>,
+    args: Record<string, unknown>
   ): Promise<unknown> {
     const response = await this.send("tools/call", {
       name,
@@ -186,13 +189,13 @@ export class MemPalaceClient {
 
     if (response.error) {
       throw new Error(
-        `MemPalace tool "${name}" failed: ${response.error.message}`,
+        `MemPalace tool "${name}" failed: ${response.error.message}`
       );
     }
 
     // Parse the JSON text content from the MCP response
     const textContent = response.result?.content?.find(
-      (c) => c.type === "text",
+      (c) => c.type === "text"
     );
     if (textContent) {
       try {
@@ -207,7 +210,7 @@ export class MemPalaceClient {
 
   private send(
     method: string,
-    params: Record<string, unknown>,
+    params: Record<string, unknown>
   ): Promise<McpResponse> {
     if (!this.process?.stdin) {
       throw new Error("MemPalace MCP server is not connected");
@@ -225,9 +228,7 @@ export class MemPalaceClient {
       const timeoutMs = this.config.timeoutMs ?? 10_000;
       const timer = setTimeout(() => {
         this.pending.delete(id);
-        reject(
-          new Error(`MemPalace tool call timed out after ${timeoutMs}ms`),
-        );
+        reject(new Error(`MemPalace tool call timed out after ${timeoutMs}ms`));
       }, timeoutMs);
 
       this.pending.set(id, { resolve, reject, timer });

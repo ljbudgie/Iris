@@ -1,3 +1,4 @@
+import type { ToolSet } from "ai";
 import type { GovernanceStatus } from "@/lib/federation/types";
 import {
   isSkillPermitted,
@@ -76,7 +77,7 @@ class SkillRegistry {
   buildTools(
     ctx: SkillContext,
     governanceStatus: GovernanceStatus | undefined
-  ): Record<string, unknown> {
+  ): ToolSet {
     const tools: Record<string, unknown> = {};
     for (const skill of this.list()) {
       if (!isSkillPermitted(skill, governanceStatus)) {
@@ -86,7 +87,7 @@ class SkillRegistry {
         ? skill.factory(ctx)
         : skill.tool;
     }
-    return tools;
+    return tools as ToolSet;
   }
 
   /**
