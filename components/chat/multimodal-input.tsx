@@ -394,11 +394,7 @@ function PureMultimodalInput({
         attachments.length === 0 &&
         uploadQueue.length === 0 && (
           <div className="flex flex-col items-center gap-4">
-            <GuidedIntake
-              chatId={chatId}
-              onDismiss={() => undefined}
-              sendMessage={sendMessage}
-            />
+            <GuidedIntake chatId={chatId} sendMessage={sendMessage} />
             <SuggestedActions
               chatId={chatId}
               selectedVisibilityType={selectedVisibilityType}

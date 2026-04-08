@@ -5,6 +5,8 @@ import { motion } from "framer-motion";
 import { CheckCircle2Icon, CircleIcon } from "lucide-react";
 import { memo, useMemo } from "react";
 
+const BURGESS_LETTER_TOOL = "tool-generateBurgessLetter" as const;
+
 type ActionStep = {
   id: string;
   label: string;
@@ -23,7 +25,7 @@ function detectBurgessProgress(messages: UIMessage[]): ActionStep[] | null {
     .toLowerCase();
 
   const hasToolCalls = messages.some((m) =>
-    m.parts?.some((p) => p.type === "tool-generateBurgessLetter")
+    m.parts?.some((p) => p.type === BURGESS_LETTER_TOOL)
   );
 
   // Only show the plan if user is in a Burgess-related conversation
@@ -62,7 +64,7 @@ function detectBurgessProgress(messages: UIMessage[]): ActionStep[] | null {
 
   // Step 3: Letter reviewed (user sent a message after the letter was generated)
   const letterToolIndex = messages.findIndex((m) =>
-    m.parts?.some((p) => p.type === "tool-generateBurgessLetter")
+    m.parts?.some((p) => p.type === BURGESS_LETTER_TOOL)
   );
   const letterReviewed =
     letterGenerated &&

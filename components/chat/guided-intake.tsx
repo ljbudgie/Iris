@@ -76,7 +76,7 @@ const intakeCategories: IntakeCategory[] = [
 type GuidedIntakeProps = {
   chatId: string;
   sendMessage: UseChatHelpers<ChatMessage>["sendMessage"];
-  onDismiss: () => void;
+  onDismiss?: () => void;
 };
 
 function PureGuidedIntake({
@@ -117,7 +117,7 @@ function PureGuidedIntake({
             initial={{ opacity: 0 }}
             onClick={() => {
               setIsVisible(false);
-              onDismiss();
+              onDismiss?.();
             }}
             transition={{ delay: 0.1, duration: 0.4 }}
             type="button"
