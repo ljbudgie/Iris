@@ -300,8 +300,8 @@ export async function POST(request: Request) {
           memoryContext = latestUserText
             ? await queryMemoryContext(latestUserText)
             : undefined;
-        } catch {
-          // Memory is non-critical
+        } catch (err) {
+          console.error("[Iris] Memory context query failed:", err);
         }
 
         // Detect the appropriate response template
