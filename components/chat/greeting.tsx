@@ -26,8 +26,9 @@ export const Greeting = () => {
         initial={{ opacity: 0, y: 10 }}
         transition={{ delay: 0.5, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       >
-        Your thoughtful AI companion, guided by human-centered values. Ask a
-        question, get help with a dispute, or explore your rights.
+        I&apos;m here with you. Take your time — there&apos;s no rush. Whether
+        you need help with a dispute, want to explore your rights, or just need
+        someone who&apos;ll actually listen, I&apos;m right here.
       </motion.div>
     </div>
   );

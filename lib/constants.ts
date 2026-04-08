@@ -20,7 +20,7 @@ export const IP_RATE_LIMIT_TTL_SECONDS = 60 * 60; // 1 hour
 export const FEATURED_MODEL_ID = "xai/grok-4.1-fast-non-reasoning";
 
 export const suggestions = [
-  "What is the Burgess Principle and how can it help me?",
+  "I'm dealing with something and could use some support",
   "An organisation treated me unfairly — what are my options?",
-  "Draft a formal letter to challenge a decision",
+  "What is the Burgess Principle and how can it help me?",
 ];

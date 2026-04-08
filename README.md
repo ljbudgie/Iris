@@ -38,7 +38,7 @@
 
 ## Meet Iris
 
-> *Your thoughtful AI companion, guided by human-centred values. Ask a question, get help with a dispute, or explore your rights.*
+> *I'm here with you. Take your time — there's no rush. Whether you need help with a dispute, want to explore your rights, or just need someone who'll actually listen, I'm right here.*
 
 Iris greets you with a **guided onboarding flow** — pick a common situation (benefits dispute, bailiff visit, automated decision, data access request) or jump straight into chatting. No config screens, no API key juggling, no friction.
 
