@@ -1,49 +1,90 @@
-// Web Speech API type declarations
-// These are not included in TypeScript's default DOM lib
+// speech-recognition.d.ts
+// Type declarations for the Web Speech API (SpeechRecognition)
+// Used by Iris for voice input — warm, private, human-first voice interaction
 
-interface SpeechRecognitionEvent extends Event {
-  readonly resultIndex: number;
-  readonly results: SpeechRecognitionResultList;
+declare global {
+  interface SpeechRecognition extends EventTarget {
+    // Core settings
+    continuous: boolean;
+    interimResults: boolean;
+    maxAlternatives: number;
+    lang: string;
+
+    // Event handlers
+    onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null;
+    onerror: ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => any) | null;
+    onend: ((this: SpeechRecognition, ev: Event) => any) | null;
+    onstart: ((this: SpeechRecognition, ev: Event) => any) | null;
+    onspeechend: ((this: SpeechRecognition, ev: Event) => any) | null;
+    onnomatch: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null;
+
+    // Methods
+    start(): void;
+    stop(): void;
+    abort(): void;
+
+    // Optional grammar support
+    grammars: SpeechGrammarList;
+  }
+
+  interface SpeechRecognitionEvent extends Event {
+    readonly resultIndex: number;
+    readonly results: SpeechRecognitionResultList;
+  }
+
+  interface SpeechRecognitionResultList {
+    readonly length: number;
+    item(index: number): SpeechRecognitionResult;
+    [index: number]: SpeechRecognitionResult;
+  }
+
+  interface SpeechRecognitionResult {
+    readonly length: number;
+    item(index: number): SpeechRecognitionAlternative;
+    [index: number]: SpeechRecognitionAlternative;
+    readonly isFinal: boolean;
+  }
+
+  interface SpeechRecognitionAlternative {
+    readonly transcript: string;
+    readonly confidence: number;
+  }
+
+  interface SpeechRecognitionErrorEvent extends Event {
+    readonly error: 
+      | 'no-speech'
+      | 'aborted'
+      | 'audio-capture'
+      | 'network'
+      | 'not-allowed'
+      | 'service-not-allowed'
+      | 'bad-grammar'
+      | 'language-not-supported';
+    readonly message: string;
+  }
+
+  interface SpeechGrammarList {
+    readonly length: number;
+    item(index: number): SpeechGrammar;
+    addFromString(string: string, weight?: number): void;
+    addFromURI(uri: string, weight?: number): void;
+  }
+
+  interface SpeechGrammar {
+    src: string;
+    weight: number;
+  }
+
+  // Global constructors
+  interface Window {
+    SpeechRecognition: new () => SpeechRecognition;
+    webkitSpeechRecognition: new () => SpeechRecognition;
+  }
+
+  // For older browsers (Safari, etc.)
+  interface GlobalEventHandlersEventMap {
+    'speechrecognition': SpeechRecognitionEvent;
+  }
 }
 
-interface SpeechRecognitionResultList {
-  readonly length: number;
-  [index: number]: SpeechRecognitionResult;
-}
-
-interface SpeechRecognitionResult {
-  readonly isFinal: boolean;
-  readonly length: number;
-  [index: number]: SpeechRecognitionAlternative;
-}
-
-interface SpeechRecognitionAlternative {
-  readonly confidence: number;
-  readonly transcript: string;
-}
-
-interface SpeechRecognitionErrorEvent extends Event {
-  readonly error: string;
-  readonly message: string;
-}
-
-interface SpeechRecognition extends EventTarget {
-  continuous: boolean;
-  interimResults: boolean;
-  lang: string;
-  onresult: ((event: SpeechRecognitionEvent) => void) | null;
-  onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
-  onend: (() => void) | null;
-  start(): void;
-  stop(): void;
-  abort(): void;
-}
-
-interface SpeechRecognitionConstructor {
-  new (): SpeechRecognition;
-}
-
-interface Window {
-  SpeechRecognition?: SpeechRecognitionConstructor;
-  webkitSpeechRecognition?: SpeechRecognitionConstructor;
-}
+export {};
