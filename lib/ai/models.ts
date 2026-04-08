@@ -19,6 +19,7 @@ export type ChatModel = {
   name: string;
   provider: string;
   description: string;
+  strengthTag: string;
   gatewayOrder?: string[];
   reasoningEffort?: "none" | "minimal" | "low" | "medium" | "high";
 };
@@ -29,6 +30,7 @@ export const chatModels: ChatModel[] = [
     name: "DeepSeek V3.2",
     provider: "deepseek",
     description: "Fast and capable model with tool use",
+    strengthTag: "Fast reasoning",
     gatewayOrder: ["bedrock", "deepinfra"],
   },
   {
@@ -36,6 +38,7 @@ export const chatModels: ChatModel[] = [
     name: "Codestral",
     provider: "mistral",
     description: "Code-focused model with tool use",
+    strengthTag: "Strong coding",
     gatewayOrder: ["mistral"],
   },
   {
@@ -43,6 +46,7 @@ export const chatModels: ChatModel[] = [
     name: "Mistral Small",
     provider: "mistral",
     description: "Fast vision model with tool use",
+    strengthTag: "Vision & speed",
     gatewayOrder: ["mistral"],
   },
   {
@@ -50,6 +54,7 @@ export const chatModels: ChatModel[] = [
     name: "Kimi K2 0905",
     provider: "moonshotai",
     description: "Fast model with tool use",
+    strengthTag: "Creative & balanced",
     gatewayOrder: ["baseten", "fireworks"],
   },
   {
@@ -57,6 +62,7 @@ export const chatModels: ChatModel[] = [
     name: "Kimi K2.5",
     provider: "moonshotai",
     description: "Moonshot AI flagship model",
+    strengthTag: "Flagship quality",
     gatewayOrder: ["fireworks", "bedrock"],
   },
   {
@@ -64,6 +70,7 @@ export const chatModels: ChatModel[] = [
     name: "GPT OSS 20B",
     provider: "openai",
     description: "Compact reasoning model",
+    strengthTag: "Compact & fast",
     gatewayOrder: ["groq", "bedrock"],
     reasoningEffort: "low",
   },
@@ -72,6 +79,7 @@ export const chatModels: ChatModel[] = [
     name: "GPT OSS 120B",
     provider: "openai",
     description: "Open-source 120B parameter model",
+    strengthTag: "Deep analysis",
     gatewayOrder: ["fireworks", "bedrock"],
     reasoningEffort: "low",
   },
@@ -80,6 +88,7 @@ export const chatModels: ChatModel[] = [
     name: "Grok 4.1 Fast",
     provider: "xai",
     description: "Fast non-reasoning model with tool use",
+    strengthTag: "Ultra-fast chat",
     gatewayOrder: ["xai"],
   },
 ];

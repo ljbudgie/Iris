@@ -367,6 +367,14 @@ const PurePreviewMessage = ({
 export const PreviewMessage = PurePreviewMessage;
 
 export const ThinkingMessage = () => {
+  const phrases = [
+    "Iris is thinking...",
+    "Considering your request...",
+    "Working on it...",
+    "Finding the best approach...",
+  ];
+  const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+
   return (
     <div
       className="group/message w-full"
@@ -382,7 +390,7 @@ export const ThinkingMessage = () => {
 
         <div className="flex h-[calc(13px*1.65)] items-center text-[13px] leading-[1.65]">
           <Shimmer className="font-medium" duration={1}>
-            Thinking...
+            {phrase}
           </Shimmer>
         </div>
       </div>

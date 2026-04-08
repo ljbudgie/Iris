@@ -5,7 +5,7 @@ import Link from "next/link";
 import { memo } from "react";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
-import { VercelIcon } from "./icons";
+import { SparklesIcon, VercelIcon } from "./icons";
 import { VisibilitySelector, type VisibilityType } from "./visibility-selector";
 
 function PureChatHeader({
@@ -35,12 +35,13 @@ function PureChatHeader({
       </Button>
 
       <Link
-        className="flex size-8 items-center justify-center rounded-lg md:hidden"
-        href="https://vercel.com/new/clone?repository-url=https://github.com/ljbudgie/chatbot"
-        rel="noopener noreferrer"
-        target="_blank"
+        className="flex items-center gap-1.5 rounded-lg px-1.5 py-1 md:hidden"
+        href="/"
       >
-        <VercelIcon size={14} />
+        <div className="flex size-5 items-center justify-center text-primary">
+          <SparklesIcon size={12} />
+        </div>
+        <span className="text-sm font-semibold text-foreground">Iris</span>
       </Link>
 
       {!isReadonly && (
@@ -50,19 +51,16 @@ function PureChatHeader({
         />
       )}
 
-      <Button
-        asChild
-        className="hidden rounded-lg bg-primary px-4 text-primary-foreground hover:bg-primary/90 md:ml-auto md:flex"
-      >
-        <Link
-          href="https://vercel.com/new/clone?repository-url=https://github.com/ljbudgie/chatbot"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          <VercelIcon size={16} />
-          Deploy with Vercel
-        </Link>
-      </Button>
+      <div className="hidden md:ml-auto md:flex md:items-center md:gap-2">
+        <div className="flex items-center gap-1.5 rounded-lg px-2 py-1">
+          <div className="flex size-5 items-center justify-center text-primary">
+            <SparklesIcon size={12} />
+          </div>
+          <span className="text-sm font-medium text-foreground/70">
+            Iris
+          </span>
+        </div>
+      </div>
     </header>
   );
 }

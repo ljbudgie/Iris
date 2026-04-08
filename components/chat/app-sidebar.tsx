@@ -2,7 +2,6 @@
 
 import {
   EyeIcon,
-  MessageSquareIcon,
   PanelLeftIcon,
   PenSquareIcon,
   ShieldCheckIcon,
@@ -45,6 +44,7 @@ import {
   AlertDialogTitle,
 } from "../ui/alert-dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { SparklesIcon } from "./icons";
 
 export function AppSidebar({ user }: { user: User | undefined }) {
   const router = useRouter();
@@ -79,7 +79,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                   tooltip="Iris"
                 >
                   <Link href="/" onClick={() => setOpenMobile(false)}>
-                    <MessageSquareIcon className="size-4 text-sidebar-foreground/50" />
+                    <SparklesIcon size={14} />
                   </Link>
                 </SidebarMenuButton>
                 <Tooltip>

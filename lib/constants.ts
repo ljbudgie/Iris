@@ -20,6 +20,6 @@ export const IP_RATE_LIMIT_TTL_SECONDS = 60 * 60; // 1 hour
 export const suggestions = [
   "What are the advantages of using Next.js?",
   "Write code to demonstrate Dijkstra's algorithm",
-  "Help me write an essay about Silicon Valley",
-  "What is the weather in San Francisco?",
+  "Help me draft a thoughtful email to a colleague",
+  "Explain the key principles of accessible web design",
 ];
