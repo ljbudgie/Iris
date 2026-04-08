@@ -1,6 +1,10 @@
 import { GeistSans } from "geist/font";
 import { GeistMono } from "geist/font/mono";
 import type { Metadata } from "next";
+import {
+  AccessibilityProvider,
+  SkipToContent,
+} from "@/components/accessibility";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -69,11 +73,14 @@ export default function RootLayout({
           enableSystem={false}
           forcedTheme="dark"
         >
-          <SessionProvider
-            basePath={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/api/auth`}
-          >
-            <TooltipProvider>{children}</TooltipProvider>
-          </SessionProvider>
+          <AccessibilityProvider>
+            <SessionProvider
+              basePath={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/api/auth`}
+            >
+              <SkipToContent />
+              <TooltipProvider>{children}</TooltipProvider>
+            </SessionProvider>
+          </AccessibilityProvider>
         </ThemeProvider>
       </body>
     </html>

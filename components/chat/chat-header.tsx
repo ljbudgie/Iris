@@ -7,6 +7,8 @@ import { ModelSelectorLogo } from "@/components/ai-elements/model-selector";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
 import { chatModels } from "@/lib/ai/models";
+import { AUTO_MODEL_ID } from "@/lib/ai/smart-router";
+import { SparklesIcon } from "./icons";
 import { VisibilitySelector, type VisibilityType } from "./visibility-selector";
 
 type GovernanceStatus = "SOVEREIGN" | "NULL" | "NO_PROVIDERS";
@@ -54,6 +56,7 @@ function PureChatHeader({
     refreshGovernance();
   }, [refreshGovernance]);
 
+  const isAutoMode = currentModelId === AUTO_MODEL_ID;
   const currentModel = currentModelId
     ? chatModels.find((m) => m.id === currentModelId)
     : undefined;
@@ -145,7 +148,25 @@ function PureChatHeader({
         )}
 
         <div className="ml-auto flex items-center gap-2">
-          {currentModel && (
+          {isAutoMode ? (
+            <div
+              className="flex items-center gap-1.5 rounded-md border px-2.5 py-1"
+              style={{
+                borderColor: "#27272a",
+                background: "var(--surface-2)",
+              }}
+            >
+              <div className="size-3.5 text-[#7c3aed]">
+                <SparklesIcon size={14} />
+              </div>
+              <span
+                className="hidden text-[11px] font-medium text-[#a1a1aa] sm:inline"
+                style={{ fontFamily: "var(--font-geist-mono), monospace" }}
+              >
+                Auto
+              </span>
+            </div>
+          ) : currentModel ? (
             <div
               className="flex items-center gap-1.5 rounded-md border px-2.5 py-1"
               style={{
@@ -164,7 +185,7 @@ function PureChatHeader({
                 {currentModel.name}
               </span>
             </div>
-          )}
+          ) : null}
         </div>
       </div>
     </header>

@@ -83,7 +83,14 @@ function PureMessages({
     <div className="relative flex-1" style={{ background: "var(--surface-1)" }}>
       {messages.length === 0 && !isLoading && (
         <div className="pointer-events-auto absolute inset-0 z-10 flex items-center justify-center">
-          <Greeting />
+          <Greeting
+            onQuickAction={(text) => {
+              sendMessage({
+                role: "user" as const,
+                parts: [{ type: "text" as const, text }],
+              });
+            }}
+          />
         </div>
       )}
       <div
