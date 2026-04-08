@@ -49,6 +49,7 @@ export const mempalaceSearch = tool({
       }
       return await client.search(input);
     } catch (error) {
+      console.error("[Iris] MemPalace search failed:", error);
       return {
         error: `MemPalace search failed: ${error instanceof Error ? error.message : "Unknown error"}`,
       };
@@ -91,6 +92,7 @@ export const mempalaceStore = tool({
         added_by: "iris",
       });
     } catch (error) {
+      console.error("[Iris] MemPalace store failed:", error);
       return {
         error: `MemPalace store failed: ${error instanceof Error ? error.message : "Unknown error"}`,
       };
@@ -116,6 +118,7 @@ export const mempalaceStatus = tool({
       }
       return await client.status();
     } catch (error) {
+      console.error("[Iris] MemPalace status failed:", error);
       return {
         error: `MemPalace status failed: ${error instanceof Error ? error.message : "Unknown error"}`,
       };

@@ -66,10 +66,10 @@ export function getDocumentTimestampByIndex(
 
 export function sanitizeText(text: string) {
   return text
-    .replace('<has_function_call>', '')
-    .replace(/<think>[\s\S]*?<\/think>/gi, '')
-    .replace(/<reasoning>[\s\S]*?<\/reasoning>/gi, '')
-    .replace(/<internal>[\s\S]*?<\/internal>/gi, '')
+    .replaceAll('<has_function_call>', '')
+    .replaceAll(/<think>[\s\S]*?<\/think>/gi, '')
+    .replaceAll(/<reasoning>[\s\S]*?<\/reasoning>/gi, '')
+    .replaceAll(/<internal>[\s\S]*?<\/internal>/gi, '')
     .trim();
 }
 

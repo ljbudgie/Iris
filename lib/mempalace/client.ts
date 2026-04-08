@@ -63,6 +63,16 @@ export class MemPalaceClient {
       throw new Error("Failed to spawn MemPalace MCP server process");
     }
 
+    // Log stderr from the MCP server for transparency
+    if (this.process.stderr) {
+      this.process.stderr.on("data", (data: Buffer) => {
+        console.error(
+          "[Iris] MemPalace MCP server stderr:",
+          data.toString().trim()
+        );
+      });
+    }
+
     const rl = createInterface({ input: this.process.stdout });
 
     rl.on("line", (line: string) => {
@@ -81,6 +91,9 @@ export class MemPalaceClient {
 
     this.process.on("exit", () => {
       this.connected = false;
+      console.error(
+        "[Iris] MemPalace MCP server process exited — palace memory is temporarily unavailable."
+      );
       for (const [, p] of this.pending) {
         clearTimeout(p.timer);
         p.reject(new Error("MemPalace MCP server process exited"));

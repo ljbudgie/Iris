@@ -831,3 +831,85 @@ export async function getAuditLogByUserId({ userId }: { userId: string }) {
     throw new IrisError("bad_request:database", "Failed to get user audit log");
   }
 }
+
+// ---------------------------------------------------------------------------
+// User Data Export (Burgess Principle — user ownership of data)
+// ---------------------------------------------------------------------------
+
+/**
+ * Export all data owned by a user as a single JSON-serialisable object.
+ *
+ * This supports the Burgess Principle's commitment to user ownership of
+ * data and satisfies GDPR Article 15 (right of access) and Article 20
+ * (right to data portability).  Every piece of information Iris holds
+ * about a user is returned — nothing is hidden or withheld.
+ */
+export async function exportUserData({ userId }: { userId: string }) {
+  try {
+    // Fetch all user-owned records in parallel for efficiency
+    const [
+      userData,
+      userChats,
+      userDocuments,
+      userSuggestions,
+      userAuditEntries,
+    ] = await Promise.all([
+      db.select().from(user).where(eq(user.id, userId)),
+      db
+        .select()
+        .from(chat)
+        .where(eq(chat.userId, userId))
+        .orderBy(desc(chat.createdAt)),
+      db
+        .select()
+        .from(document)
+        .where(eq(document.userId, userId))
+        .orderBy(desc(document.createdAt)),
+      db
+        .select()
+        .from(suggestion)
+        .where(eq(suggestion.userId, userId))
+        .orderBy(desc(suggestion.createdAt)),
+      db
+        .select()
+        .from(chatAuditLog)
+        .where(eq(chatAuditLog.userId, userId))
+        .orderBy(desc(chatAuditLog.createdAt)),
+    ]);
+
+    // For each chat, gather messages and votes
+    const chatIds = userChats.map((c) => c.id);
+
+    let userMessages: DBMessage[] = [];
+    let userVotes: { chatId: string; messageId: string; isUpvoted: boolean }[] =
+      [];
+
+    if (chatIds.length > 0) {
+      [userMessages, userVotes] = await Promise.all([
+        db
+          .select()
+          .from(message)
+          .where(inArray(message.chatId, chatIds))
+          .orderBy(asc(message.createdAt)),
+        db.select().from(vote).where(inArray(vote.chatId, chatIds)),
+      ]);
+    }
+
+    // Strip the password hash from the export — the user does not need it
+    // and it should never leave the server.
+    const safeUser = userData.map(({ password: _, ...rest }) => rest);
+
+    return {
+      exportedAt: new Date().toISOString(),
+      user: safeUser[0] ?? null,
+      chats: userChats,
+      messages: userMessages,
+      votes: userVotes,
+      documents: userDocuments,
+      suggestions: userSuggestions,
+      auditLog: userAuditEntries,
+    };
+  } catch (_error) {
+    throw new IrisError("bad_request:database", "Failed to export user data");
+  }
+}

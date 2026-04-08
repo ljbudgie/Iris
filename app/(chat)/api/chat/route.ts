@@ -214,8 +214,21 @@ export async function POST(request: Request) {
     // -----------------------------------------------------------------------
     // Tool permission gating: filter tools by governance status
     // -----------------------------------------------------------------------
-    // Default to SOVEREIGN when no federation provider is active (the user
-    // is interacting directly with Iris, not through a federated provider).
+    // ⚠️  FEDERATION ACTIVATION POINT — this is the single most important
+    // governance decision in Iris.
+    //
+    // Right now this defaults to `undefined` (treated as SOVEREIGN) because
+    // the user is speaking *directly* to Iris — no federation provider is
+    // involved.  Every direct user is sovereign over their own conversation.
+    //
+    // When federation providers are integrated, this value MUST come from
+    // the provider handshake (e.g. the verified registration's governance
+    // status).  A federated provider whose output has NOT been human-reviewed
+    // must be assigned "NULL", which excludes sensitive tools like
+    // `generateBurgessLetter` and flags the response for human review.
+    //
+    // Do NOT weaken this gate.  The SOVEREIGN/NULL binary is the
+    // architectural core of the Burgess Principle at runtime.
     const governanceStatus: GovernanceStatus | undefined = undefined;
     const permittedTools: ToolName[] = getPermittedTools(governanceStatus);
 
@@ -268,7 +281,7 @@ export async function POST(request: Request) {
           (tc: { toolName: string }) => tc.toolName
         );
 
-        // Audit trail: persist turn metadata (non-blocking)
+        // Audit trail: persist turn metadata (non-blocking, with retry)
         saveChatAuditEntry({
           chatId: id,
           userId: session.user?.id ?? "",
@@ -278,8 +291,26 @@ export async function POST(request: Request) {
           totalTokens: usage?.totalTokens ?? 0,
           toolsInvoked,
           governanceStatus: governanceStatus ?? "SOVEREIGN",
-        }).catch(() => {
-          /* audit logging is non-critical */
+        }).catch((firstError) => {
+          console.error(
+            "[Iris] Audit trail write failed — retrying once:",
+            firstError
+          );
+          saveChatAuditEntry({
+            chatId: id,
+            userId: session.user?.id ?? "",
+            modelId: chatModel,
+            promptTokens: usage?.inputTokens ?? 0,
+            completionTokens: usage?.outputTokens ?? 0,
+            totalTokens: usage?.totalTokens ?? 0,
+            toolsInvoked,
+            governanceStatus: governanceStatus ?? "SOVEREIGN",
+          }).catch((retryError) => {
+            console.error(
+              "[Iris] Audit trail write failed after retry — budget tracking may be affected:",
+              retryError
+            );
+          });
         });
 
         if (titlePromise) {
