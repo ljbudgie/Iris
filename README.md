@@ -22,6 +22,7 @@
 <p align="center">
   <a href="#hi-im-iris-"><strong>Meet Iris</strong></a> ·
   <a href="#-features"><strong>Features</strong></a> ·
+  <a href="#-how-iris-compares"><strong>Compare</strong></a> ·
   <a href="#-the-burgess-principle"><strong>Burgess Principle</strong></a> ·
   <a href="#-model-lineup"><strong>Models</strong></a> ·
   <a href="#-deploy-your-own"><strong>Deploy</strong></a> ·
@@ -58,6 +59,30 @@ Once you pick a model (or let Iris decide), you get the full experience: streami
 - **🌍 Country-aware legal guidance** — Geolocation-based selection of the right legal framework (UK GDPR, US CCPA/ADA, EU GDPR, AU Privacy Act, CA PIPEDA)
 - **🔐 Auth.js** — Credential and guest authentication with tiered rate limits
 - **🚀 One-click deploy** — Get your own Iris instance running on Vercel in minutes
+
+---
+
+## 🆚 How Iris Compares
+
+Most AI chatbots are wrappers around a single model focused on general productivity. Iris is purpose-built for **advocacy, accountability, and user protection**. Here's how it stacks up:
+
+| Feature | Iris | ChatGPT | Claude | Gemini | Copilot |
+|---|:---:|:---:|:---:|:---:|:---:|
+| **Open source (MIT)** | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **Multi-model routing** | ✅ 8 models | ❌ Single | ❌ Single | ❌ Single | ❌ Single |
+| **Automatic provider failover** | ✅ 5 providers | ❌ | ❌ | ❌ | ❌ |
+| **Human-review governance gate** | ✅ SOVEREIGN/NULL | ❌ | ❌ | ❌ | ❌ |
+| **Legal letter generation** | ✅ 18 templates | ❌ | ❌ | ❌ | ❌ |
+| **Human-impact scanner** | ✅ 7 areas | ❌ | ❌ | ❌ | ❌ |
+| **Per-turn audit trail** | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **Conversation budgets** | ✅ | ❌ | ❌ | ❌ | ❌ |
+| **Country-aware legal guidance** | ✅ 5 jurisdictions | ❌ | ❌ | ❌ | ❌ |
+| **Self-hostable** | ✅ One-click | ❌ | ❌ | ❌ | ❌ |
+| **Free to use** | ✅ | Freemium | Freemium | Freemium | Freemium |
+| **Artifacts / side panel** | ✅ | ✅ Canvas | ✅ Artifacts | ✅ | ❌ |
+| **Streaming responses** | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+> 💡 Iris isn't trying to replace general-purpose chatbots — it's the only one designed from the ground up to **protect people who've been failed by automated systems**.
 
 ---
 
