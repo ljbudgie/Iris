@@ -23,4 +23,5 @@ export const suggestions = [
   "I'm dealing with something and could use some support",
   "An organisation treated me unfairly — what are my options?",
   "What is the Burgess Principle and how can it help me?",
+  "A decision was made about me without any human involvement",
 ];
