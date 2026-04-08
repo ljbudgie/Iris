@@ -25,13 +25,10 @@ import {
 } from "@/lib/ai/models";
 import { type RequestHints, systemPrompt } from "@/lib/ai/prompts";
 import { getLanguageModel } from "@/lib/ai/providers";
-import { createDocument } from "@/lib/ai/tools/create-document";
-import { editDocument } from "@/lib/ai/tools/edit-document";
-import { generateBurgessLetter } from "@/lib/ai/tools/generate-burgess-letter";
-import { getWeather } from "@/lib/ai/tools/get-weather";
-import { requestSuggestions } from "@/lib/ai/tools/request-suggestions";
-import { suggestFollowUps } from "@/lib/ai/tools/suggest-follow-ups";
-import { updateDocument } from "@/lib/ai/tools/update-document";
+// Skill registry: built-in skills are registered as a side-effect import.
+// This replaces the individual tool imports with a single registry lookup.
+import "@/lib/ai/skills/built-in";
+import { skillRegistry } from "@/lib/ai/skills";
 import { isProductionEnvironment } from "@/lib/constants";
 import {
   createStreamId,
@@ -230,6 +227,14 @@ export async function POST(request: Request) {
     const stream = createUIMessageStream({
       originalMessages: isToolApprovalFlow ? uiMessages : undefined,
       execute: async ({ writer: dataStream }) => {
+        // Build the tools object from the skill registry, passing runtime
+        // context for factory-style skills and filtering by governance.
+        const skillContext = { session, dataStream, modelId: chatModel };
+        const registryTools = skillRegistry.buildTools(
+          skillContext,
+          governanceStatus
+        );
+
         const result = streamText({
           model: getLanguageModel(chatModel),
           system: systemPrompt({ requestHints, supportsTools }),
@@ -244,31 +249,7 @@ export async function POST(request: Request) {
               openai: { reasoningEffort: modelConfig.reasoningEffort },
             }),
           },
-          tools: {
-            getWeather,
-            createDocument: createDocument({
-              session,
-              dataStream,
-              modelId: chatModel,
-            }),
-            editDocument: editDocument({ dataStream, session }),
-            updateDocument: updateDocument({
-              session,
-              dataStream,
-              modelId: chatModel,
-            }),
-            requestSuggestions: requestSuggestions({
-              session,
-              dataStream,
-              modelId: chatModel,
-            }),
-            suggestFollowUps,
-            generateBurgessLetter: generateBurgessLetter({
-              session,
-              dataStream,
-              modelId: chatModel,
-            }),
-          },
+          tools: registryTools,
           experimental_telemetry: {
             isEnabled: isProductionEnvironment,
             functionId: "stream-text",

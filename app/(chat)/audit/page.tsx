@@ -20,7 +20,9 @@ export default function AuditLogPage() {
       const data = await res.json();
       setEntries(data);
     } catch {
-      toast.error("Failed to load audit log. Please check your connection and try again.");
+      toast.error(
+        "Failed to load audit log. Please check your connection and try again."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -70,9 +72,7 @@ export default function AuditLogPage() {
         </div>
       ) : entries.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed py-12 text-center">
-          <p className="text-muted-foreground text-sm">
-            No audit entries yet.
-          </p>
+          <p className="text-muted-foreground text-sm">No audit entries yet.</p>
           <p className="text-muted-foreground/60 text-xs">
             Entries are created automatically when you chat with Iris.
           </p>
@@ -121,9 +121,7 @@ function AuditEntryCard({ entry }: { entry: ChatAuditLog }) {
       </div>
 
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-muted-foreground text-xs">
-        <span>
-          Chat: {entry.chatId.slice(0, 8)}…
-        </span>
+        <span>Chat: {entry.chatId.slice(0, 8)}…</span>
         <span className="tabular-nums">
           Prompt: {(entry.promptTokens ?? 0).toLocaleString()} tokens
         </span>

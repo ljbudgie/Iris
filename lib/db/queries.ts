@@ -828,9 +828,6 @@ export async function getAuditLogByUserId({ userId }: { userId: string }) {
       .orderBy(desc(chatAuditLog.createdAt))
       .limit(100);
   } catch (_error) {
-    throw new IrisError(
-      "bad_request:database",
-      "Failed to get user audit log"
-    );
+    throw new IrisError("bad_request:database", "Failed to get user audit log");
   }
 }

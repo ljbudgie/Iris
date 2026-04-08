@@ -224,10 +224,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                       className="rounded-lg text-sidebar-foreground/60 transition-colors duration-150 hover:text-sidebar-foreground"
                       tooltip="Audit Log"
                     >
-                      <Link
-                        href="/audit"
-                        onClick={() => setOpenMobile(false)}
-                      >
+                      <Link href="/audit" onClick={() => setOpenMobile(false)}>
                         <ClipboardListIcon className="size-4" />
                         <span className="text-[13px]">Audit log</span>
                       </Link>

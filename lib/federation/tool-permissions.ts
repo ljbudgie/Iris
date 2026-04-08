@@ -1,65 +1,33 @@
+import { skillRegistry } from "@/lib/ai/skills/registry";
 import type { GovernanceStatus } from "./types";
 
 /**
  * Tool permission gating based on The Burgess Principle governance status.
  *
- * Tools are classified by sensitivity level. When a provider's governance
- * status is NULL (no human review has occurred), sensitive tools that
- * generate formal outputs on behalf of the user are restricted to prevent
- * unreviewed automated decisions from reaching vulnerable users.
+ * Tool names and sensitivity levels are now derived from the skill registry
+ * (lib/ai/skills/) rather than maintained as separate hardcoded lists.
+ * This ensures a single source of truth for tool metadata and governance.
  *
- * Tools classified as "sensitive" produce formal documents or take actions
- * that could materially affect the user's legal or financial situation.
- * Tools classified as "standard" provide informational or editorial
- * assistance and are safe to use without human review.
+ * The ToolName type is kept as a string alias for backward compatibility
+ * with existing code that references it.
  */
 
-/** The complete set of tool names registered in the chat route. */
-export type ToolName =
-  | "getWeather"
-  | "createDocument"
-  | "editDocument"
-  | "updateDocument"
-  | "requestSuggestions"
-  | "suggestFollowUps"
-  | "generateBurgessLetter";
-
-/**
- * Tools that require SOVEREIGN governance status (human review) before
- * they may be offered.  These tools produce formal outputs that could
- * materially affect a user's legal or financial situation.
- */
-const SENSITIVE_TOOLS: ReadonlySet<ToolName> = new Set([
-  "generateBurgessLetter",
-]);
-
-/**
- * All registered tools in the order expected by the chat route.
- */
-const ALL_TOOLS: readonly ToolName[] = [
-  "getWeather",
-  "createDocument",
-  "editDocument",
-  "updateDocument",
-  "requestSuggestions",
-  "suggestFollowUps",
-  "generateBurgessLetter",
-];
+/** Tool name type — now a string derived from the skill registry. */
+export type ToolName = string;
 
 /**
  * Returns the list of active tools permitted for the given governance
- * status.  When governance is NULL, sensitive tools are filtered out.
+ * status.  Delegates to the skill registry which filters by each skill's
+ * declared sensitivity level.
+ *
+ * When governance is NULL, sensitive skills are filtered out.
  * When governance is SOVEREIGN (or when no governance layer is active),
- * all tools are returned.
+ * all skills are returned.
  */
 export function getPermittedTools(
   governanceStatus: GovernanceStatus | undefined
 ): ToolName[] {
-  if (governanceStatus === "NULL") {
-    return ALL_TOOLS.filter((tool) => !SENSITIVE_TOOLS.has(tool));
-  }
-
-  return [...ALL_TOOLS];
+  return skillRegistry.getPermittedNames(governanceStatus);
 }
 
 /**
@@ -70,9 +38,12 @@ export function isToolPermitted(
   toolName: ToolName,
   governanceStatus: GovernanceStatus | undefined
 ): boolean {
-  if (governanceStatus === "NULL") {
-    return !SENSITIVE_TOOLS.has(toolName);
+  const skill = skillRegistry.get(toolName);
+  if (!skill) {
+    return false;
   }
-
+  if (governanceStatus === "NULL") {
+    return skill.metadata.sensitivity !== "sensitive";
+  }
   return true;
 }
