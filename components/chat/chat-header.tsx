@@ -26,14 +26,18 @@ function PureChatHeader({
   const { state, toggleSidebar, isMobile } = useSidebar();
   const [governanceStatus, setGovernanceStatus] =
     useState<GovernanceStatus>("NO_PROVIDERS");
+  const [providerCount, setProviderCount] = useState(0);
 
   const refreshGovernance = useCallback(async () => {
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/api/federation/register`
       );
-      if (!res.ok) return;
+      if (!res.ok) {
+        return;
+      }
       const providers: { governanceStatus: string }[] = await res.json();
+      setProviderCount(providers.length);
       if (providers.length === 0) {
         setGovernanceStatus("NO_PROVIDERS");
         return;
@@ -60,8 +64,11 @@ function PureChatHeader({
   }
 
   return (
-    <header className="sticky top-0 z-10 flex flex-col bg-sidebar">
-      {/* Governance ribbon */}
+    <header
+      className="sticky top-0 z-10 flex flex-col"
+      style={{ background: "var(--surface-0)" }}
+    >
+      {/* Federation status bar */}
       <div
         aria-label={
           governanceStatus === "SOVEREIGN"
@@ -71,35 +78,68 @@ function PureChatHeader({
               : "No federation providers registered"
         }
         aria-live="polite"
-        className={`flex h-7 items-center justify-center gap-1.5 text-[11px] font-medium transition-colors duration-300 ${
-          governanceStatus === "SOVEREIGN"
-            ? "bg-sovereign-bg text-sovereign"
-            : governanceStatus === "NULL"
-              ? "bg-null-review-bg text-null-review"
-              : "bg-muted/50 text-muted-foreground/50"
-        }`}
+        className="flex h-8 items-center justify-between gap-2 border-b border-border/30 px-3 text-[11px] font-medium tracking-wide uppercase transition-colors duration-300"
         role="status"
-      >
-        <div
-          className={`size-1.5 rounded-full ${
+        style={{
+          background:
             governanceStatus === "SOVEREIGN"
-              ? "bg-sovereign"
+              ? "var(--sovereign-bg)"
               : governanceStatus === "NULL"
-                ? "bg-null-review"
-                : "bg-muted-foreground/30"
-          }`}
-        />
-        <span>
-          {governanceStatus === "SOVEREIGN"
-            ? "SOVEREIGN — human-reviewed path active"
-            : governanceStatus === "NULL"
-              ? "NULL — awaiting your review"
-              : "No providers registered"}
-        </span>
+                ? "var(--null-review-bg)"
+                : "var(--surface-1)",
+        }}
+      >
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
+            <div
+              className={`size-1.5 rounded-full ${
+                governanceStatus === "SOVEREIGN"
+                  ? "bg-sovereign shadow-[0_0_6px_var(--sovereign)]"
+                  : governanceStatus === "NULL"
+                    ? "bg-null-review shadow-[0_0_6px_var(--null-review)]"
+                    : "bg-muted-foreground/30"
+              }`}
+            />
+            <span
+              className={
+                governanceStatus === "SOVEREIGN"
+                  ? "text-sovereign"
+                  : governanceStatus === "NULL"
+                    ? "text-null-review"
+                    : "text-muted-foreground/50"
+              }
+            >
+              {governanceStatus === "SOVEREIGN"
+                ? "Federation Active"
+                : governanceStatus === "NULL"
+                  ? "Awaiting Review"
+                  : "Standby"}
+            </span>
+          </div>
+          <span className="text-muted-foreground/30">·</span>
+          <span className="text-muted-foreground/50">
+            {providerCount} {providerCount === 1 ? "provider" : "providers"}
+          </span>
+          <span className="text-muted-foreground/30">·</span>
+          <span
+            className={
+              governanceStatus === "SOVEREIGN"
+                ? "text-sovereign"
+                : governanceStatus === "NULL"
+                  ? "text-null-review"
+                  : "text-muted-foreground/40"
+            }
+          >
+            {governanceStatus === "NO_PROVIDERS" ? "—" : governanceStatus}
+          </span>
+        </div>
       </div>
 
       {/* Main header bar */}
-      <div className="flex h-14 items-center gap-2 px-3">
+      <div
+        className="flex h-12 items-center gap-2 border-b border-border/20 px-3"
+        style={{ background: "var(--surface-0)" }}
+      >
         <Button
           className="md:hidden"
           onClick={toggleSidebar}
@@ -110,15 +150,14 @@ function PureChatHeader({
         </Button>
 
         <Link
-          className="flex items-center gap-1.5 rounded-lg px-1.5 py-1"
+          className="flex items-center gap-2 rounded-lg px-1.5 py-1 transition-opacity hover:opacity-80"
           href="/"
         >
-          <div className="flex size-5 items-center justify-center text-primary">
-            <SparklesIcon size={12} />
+          <div className="flex size-6 items-center justify-center rounded-md bg-primary/15 text-primary">
+            <SparklesIcon size={13} />
           </div>
-          <span className="text-sm font-semibold text-foreground">Iris</span>
-          <span className="hidden text-xs text-muted-foreground md:inline">
-            Human-first AI
+          <span className="text-sm font-bold tracking-tight text-foreground">
+            IRIS
           </span>
         </Link>
 
@@ -131,12 +170,12 @@ function PureChatHeader({
 
         <div className="ml-auto flex items-center gap-2">
           {currentModel && (
-            <div className="flex items-center gap-1.5 rounded-full border border-border/40 bg-muted/50 px-2.5 py-1">
+            <div className="flex items-center gap-1.5 rounded-md border border-border/30 bg-[var(--surface-1)] px-2.5 py-1">
               <ModelSelectorLogo
                 className="size-3.5 dark:invert"
                 provider={currentModel.provider}
               />
-              <span className="hidden text-xs font-medium text-muted-foreground sm:inline">
+              <span className="hidden text-[11px] font-medium text-muted-foreground sm:inline">
                 {currentModel.name}
               </span>
             </div>

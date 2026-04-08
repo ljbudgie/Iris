@@ -41,9 +41,10 @@ export const VersionFooter = ({
   return (
     <motion.div
       animate={{ opacity: 1 }}
-      className="z-50 flex w-full shrink-0 items-center justify-between gap-3 border-t border-border/50 bg-background px-4 py-3"
+      className="z-50 flex w-full shrink-0 items-center justify-between gap-3 border-t border-border/30 px-4 py-3"
       exit={{ opacity: 0, transition: { duration: 0 } }}
       initial={{ opacity: 0 }}
+      style={{ background: "var(--surface-0)" }}
       transition={{ duration: 0.2 }}
     >
       <div className="flex items-center gap-3">

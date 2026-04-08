@@ -16,7 +16,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         strategy="lazyOnload"
       />
       <DataStreamProvider>
-        <Suspense fallback={<div className="flex h-dvh bg-sidebar" />}>
+        <Suspense
+          fallback={
+            <div
+              className="flex h-dvh"
+              style={{ background: "var(--surface-0)" }}
+            />
+          }
+        >
           <SidebarShell>{children}</SidebarShell>
         </Suspense>
       </DataStreamProvider>
@@ -34,10 +41,13 @@ async function SidebarShell({ children }: { children: React.ReactNode }) {
       <SidebarInset>
         <Toaster
           position="top-center"
-          theme="system"
+          theme="dark"
           toastOptions={{
             className:
-              "!bg-card !text-foreground !border-border/50 !shadow-[var(--shadow-float)]",
+              "!text-foreground !border-border/30 !shadow-[var(--shadow-float)] !backdrop-blur-xl",
+            style: {
+              background: "var(--surface-2)",
+            },
           }}
         />
         <CommandPalette />

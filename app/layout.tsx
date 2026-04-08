@@ -22,8 +22,8 @@ export const viewport = {
 const geist = GeistSans;
 const geistMono = GeistMono;
 
-const LIGHT_THEME_COLOR = "hsl(260 20% 97%)";
-const DARK_THEME_COLOR = "hsl(260 20% 7%)";
+const LIGHT_THEME_COLOR = "hsl(265 30% 6%)";
+const DARK_THEME_COLOR = "hsl(265 30% 6%)";
 const THEME_COLOR_SCRIPT = `\
 (function() {
   var html = document.documentElement;
@@ -64,9 +64,10 @@ export default function RootLayout({
       <body className="antialiased">
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           disableTransitionOnChange
-          enableSystem
+          enableSystem={false}
+          forcedTheme="dark"
         >
           <SessionProvider
             basePath={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/api/auth`}

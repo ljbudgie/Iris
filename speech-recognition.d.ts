@@ -11,12 +11,18 @@ declare global {
     lang: string;
 
     // Event handlers
-    onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null;
-    onerror: ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => any) | null;
+    onresult:
+      | ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any)
+      | null;
+    onerror:
+      | ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => any)
+      | null;
     onend: ((this: SpeechRecognition, ev: Event) => any) | null;
     onstart: ((this: SpeechRecognition, ev: Event) => any) | null;
     onspeechend: ((this: SpeechRecognition, ev: Event) => any) | null;
-    onnomatch: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any) | null;
+    onnomatch:
+      | ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => any)
+      | null;
 
     // Methods
     start(): void;
@@ -51,15 +57,15 @@ declare global {
   }
 
   interface SpeechRecognitionErrorEvent extends Event {
-    readonly error: 
-      | 'no-speech'
-      | 'aborted'
-      | 'audio-capture'
-      | 'network'
-      | 'not-allowed'
-      | 'service-not-allowed'
-      | 'bad-grammar'
-      | 'language-not-supported';
+    readonly error:
+      | "no-speech"
+      | "aborted"
+      | "audio-capture"
+      | "network"
+      | "not-allowed"
+      | "service-not-allowed"
+      | "bad-grammar"
+      | "language-not-supported";
     readonly message: string;
   }
 
@@ -83,7 +89,7 @@ declare global {
 
   // For older browsers (Safari, etc.)
   interface GlobalEventHandlersEventMap {
-    'speechrecognition': SpeechRecognitionEvent;
+    speechrecognition: SpeechRecognitionEvent;
   }
 }
 

@@ -385,7 +385,7 @@ const PureToolbar = ({
     <TooltipProvider delayDuration={0}>
       <motion.div
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        className="fixed right-6 bottom-6 z-50 flex cursor-pointer flex-col items-center rounded-3xl border bg-background py-1 shadow-lg"
+        className="fixed right-6 bottom-6 z-50 flex cursor-pointer flex-col items-center rounded-3xl border border-border/30 py-1 shadow-lg backdrop-blur-xl"
         exit={{ opacity: 0, y: -20, transition: { duration: 0.1 } }}
         initial={{ opacity: 0, y: -20, scale: 1 }}
         onAnimationComplete={() => {
@@ -410,6 +410,7 @@ const PureToolbar = ({
           setIsToolbarVisible(true);
         }}
         ref={toolbarRef}
+        style={{ background: "var(--surface-2)" }}
         transition={{ type: "spring", stiffness: 300, damping: 25 }}
       >
         {onClose && (

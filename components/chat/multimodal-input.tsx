@@ -421,7 +421,7 @@ function PureMultimodalInput({
       </div>
 
       <PromptInput
-        className="[&>div]:rounded-2xl [&>div]:border [&>div]:border-border/40 [&>div]:bg-card/80 [&>div]:shadow-[var(--shadow-composer)] [&>div]:backdrop-blur-sm [&>div]:transition-all [&>div]:duration-300 [&>div]:focus-within:border-primary/20 [&>div]:focus-within:shadow-[var(--shadow-composer-focus)]"
+        className="[&>div]:rounded-2xl [&>div]:border [&>div]:border-border/30 [&>div]:shadow-[var(--shadow-composer)] [&>div]:backdrop-blur-sm [&>div]:transition-all [&>div]:duration-300 [&>div]:focus-within:border-primary/25 [&>div]:focus-within:shadow-[var(--shadow-composer-focus)]"
         onSubmit={() => {
           if (input.startsWith("/")) {
             const query = input.slice(1).trim();
@@ -662,12 +662,16 @@ function PureModelSelectorCompact({
     <ModelSelector onOpenChange={setOpen} open={open}>
       <ModelSelectorTrigger asChild>
         <Button
-          className="h-7 max-w-[200px] justify-between gap-1.5 rounded-lg px-2 text-[12px] text-muted-foreground transition-colors hover:text-foreground"
+          className="h-8 max-w-[240px] justify-between gap-2 rounded-lg border border-border/30 px-2.5 text-[12px] text-muted-foreground transition-all duration-200 hover:border-primary/30 hover:text-foreground"
           data-testid="model-selector"
+          style={{ background: "var(--surface-2)" }}
           variant="ghost"
         >
           {provider && <ModelSelectorLogo provider={provider} />}
           <ModelSelectorName>{selectedModel.name}</ModelSelectorName>
+          <span className="hidden text-[10px] text-muted-foreground/40 sm:inline">
+            {provider}
+          </span>
         </Button>
       </ModelSelectorTrigger>
       <ModelSelectorContent>

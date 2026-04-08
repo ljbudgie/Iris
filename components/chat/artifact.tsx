@@ -308,7 +308,10 @@ function PureArtifact({
   const artifactPanel = (
     <>
       {sidebarState !== "collapsed" && (
-        <div className="flex h-[calc(3.5rem+1px)] shrink-0 items-center justify-between border-b border-border/50 px-4">
+        <div
+          className="flex h-[calc(3.5rem+1px)] shrink-0 items-center justify-between border-b border-border/30 px-4"
+          style={{ background: "var(--surface-0)" }}
+        >
           <div className="flex items-center gap-3">
             <ArtifactCloseButton />
             <div className="flex flex-col gap-0.5">
@@ -318,11 +321,11 @@ function PureArtifact({
               <div className="flex items-center gap-2">
                 {isContentDirty ? (
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                    <div className="size-1.5 animate-pulse rounded-full bg-amber-500" />
+                    <div className="size-1.5 animate-pulse rounded-full bg-null-review" />
                     Saving...
                   </div>
                 ) : document ? (
-                  <div className="text-xs text-muted-foreground">
+                  <div className="text-xs text-muted-foreground/60">
                     {`Updated ${formatDistance(new Date(document.createdAt), new Date(), { addSuffix: true })}`}
                   </div>
                 ) : artifact.status === "streaming" ? (
@@ -336,7 +339,10 @@ function PureArtifact({
                   <div className="h-3 w-24 animate-pulse rounded bg-muted-foreground/10" />
                 )}
                 {documents && documents.length > 1 && (
-                  <div className="rounded-md bg-muted px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-muted-foreground">
+                  <div
+                    className="rounded-md px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-muted-foreground/50"
+                    style={{ background: "var(--surface-2)" }}
+                  >
                     v{currentVersionIndex + 1}/{documents.length}
                   </div>
                 )}
@@ -346,7 +352,7 @@ function PureArtifact({
         </div>
       )}
       <div
-        className="relative flex-1 overflow-y-auto bg-background"
+        className="relative flex-1 overflow-y-auto"
         data-slot="artifact-content"
         onScroll={() => {
           const el = artifactContentRef.current;
@@ -358,6 +364,7 @@ function PureArtifact({
           userScrolledArtifact.current = !atBottom;
         }}
         ref={artifactContentRef}
+        style={{ background: "var(--surface-1)" }}
       >
         <artifactDefinition.content
           content={
@@ -433,7 +440,7 @@ function PureArtifact({
           width: "100dvw",
           borderRadius: 0,
         }}
-        className="fixed inset-0 z-50 flex h-dvh flex-col overflow-hidden bg-sidebar"
+        className="fixed inset-0 z-50 flex h-dvh flex-col overflow-hidden backdrop-blur-xl"
         data-testid="artifact"
         exit={{ opacity: 0, scale: 0.95 }}
         initial={{
@@ -444,6 +451,7 @@ function PureArtifact({
           width: artifact.boundingBox.width,
           borderRadius: 50,
         }}
+        style={{ background: "var(--surface-0)" }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
       >
         {artifactPanel}
@@ -453,8 +461,9 @@ function PureArtifact({
 
   return (
     <div
-      className="flex h-dvh min-w-0 flex-1 flex-col overflow-hidden border-l border-border/50 bg-sidebar transition-[flex] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]"
+      className="flex h-dvh min-w-0 flex-1 flex-col overflow-hidden border-l border-border/30 backdrop-blur-xl transition-[flex] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]"
       data-testid="artifact"
+      style={{ background: "var(--surface-0)" }}
     >
       {artifactPanel}
     </div>

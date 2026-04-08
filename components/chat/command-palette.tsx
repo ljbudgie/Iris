@@ -26,34 +26,28 @@ export function CommandPalette() {
   const router = useRouter();
   const { setTheme, resolvedTheme } = useTheme();
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        setOpen((prev) => !prev);
-      }
-    },
-    []
-  );
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      e.preventDefault();
+      setOpen((prev) => !prev);
+    }
+  }, []);
 
   useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
-  const runCommand = useCallback(
-    (command: () => void) => {
-      setOpen(false);
-      command();
-    },
-    []
-  );
+  const runCommand = useCallback((command: () => void) => {
+    setOpen(false);
+    command();
+  }, []);
 
   return (
     <CommandDialog
       description="Search commands and navigate Iris"
-      open={open}
       onOpenChange={setOpen}
+      open={open}
       title="Command Palette"
     >
       <CommandInput placeholder="Type a command or search…" />
@@ -61,9 +55,7 @@ export function CommandPalette() {
         <CommandEmpty>No results found.</CommandEmpty>
 
         <CommandGroup heading="Chat">
-          <CommandItem
-            onSelect={() => runCommand(() => router.push("/"))}
-          >
+          <CommandItem onSelect={() => runCommand(() => router.push("/"))}>
             <PenSquareIcon className="size-4" />
             <span>New chat</span>
           </CommandItem>

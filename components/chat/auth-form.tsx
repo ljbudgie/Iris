@@ -23,12 +23,13 @@ export function AuthForm({
         <Input
           autoComplete="email"
           autoFocus
-          className="h-10 rounded-lg border-border/40 bg-muted/40 text-sm transition-all focus:border-primary/30 focus:bg-muted/60 focus:ring-1 focus:ring-primary/20"
+          className="h-10 rounded-lg border-border/30 text-sm transition-all focus:border-primary/30 focus:ring-1 focus:ring-primary/20"
           defaultValue={defaultEmail}
           id="email"
           name="email"
           placeholder="you@someo.ne"
           required
+          style={{ background: "var(--surface-2)" }}
           type="email"
         />
       </div>
@@ -38,11 +39,12 @@ export function AuthForm({
           Password
         </Label>
         <Input
-          className="h-10 rounded-lg border-border/40 bg-muted/40 text-sm transition-all focus:border-primary/30 focus:bg-muted/60 focus:ring-1 focus:ring-primary/20"
+          className="h-10 rounded-lg border-border/30 text-sm transition-all focus:border-primary/30 focus:ring-1 focus:ring-primary/20"
           id="password"
           name="password"
           placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
           required
+          style={{ background: "var(--surface-2)" }}
           type="password"
         />
       </div>

@@ -117,7 +117,9 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                   tooltip="Iris"
                 >
                   <Link href="/" onClick={() => setOpenMobile(false)}>
-                    <SparklesIcon size={14} />
+                    <div className="flex size-6 items-center justify-center rounded-md bg-primary/15 text-primary">
+                      <SparklesIcon size={14} />
+                    </div>
                   </Link>
                 </SidebarMenuButton>
                 <Tooltip>
@@ -134,8 +136,11 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                   </TooltipContent>
                 </Tooltip>
               </div>
+              <span className="text-[13px] font-bold tracking-tight text-foreground/80 group-data-[collapsible=icon]:hidden">
+                IRIS
+              </span>
               <div className="group-data-[collapsible=icon]:hidden">
-                <SidebarTrigger className="text-sidebar-foreground/60 transition-colors duration-150 hover:text-sidebar-foreground" />
+                <SidebarTrigger className="text-sidebar-foreground/40 transition-colors duration-150 hover:text-sidebar-foreground" />
               </div>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -236,29 +241,30 @@ export function AppSidebar({ user }: { user: User | undefined }) {
           </SidebarGroup>
           <SidebarHistory user={user} />
         </SidebarContent>
-        <SidebarFooter className="border-t border-sidebar-border pt-2 pb-3">
+        <SidebarFooter className="border-t border-sidebar-border/50 pt-2 pb-3">
           <div
             aria-live="polite"
-            className="flex h-7 items-center gap-2 rounded-lg px-2 text-[11px] group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
+            className="flex h-8 items-center gap-2 rounded-lg border border-border/20 px-2 text-[11px] group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:border-0"
             role="status"
+            style={{ background: "var(--surface-1)" }}
           >
             <div className="flex size-4 shrink-0 items-center justify-center">
               <div
                 className={`size-1.5 rounded-full ${
                   governanceLabel === "SOVEREIGN"
-                    ? "bg-green-500/80"
+                    ? "bg-sovereign shadow-[0_0_6px_var(--sovereign)]"
                     : governanceLabel === "NULL"
-                      ? "bg-amber-500/80"
+                      ? "bg-null-review shadow-[0_0_6px_var(--null-review)]"
                       : "bg-muted-foreground/30"
                 }`}
               />
             </div>
-            <span className="font-medium text-muted-foreground/60 group-data-[collapsible=icon]:hidden">
+            <span className="font-medium uppercase tracking-wider text-muted-foreground/50 group-data-[collapsible=icon]:hidden">
               {governanceLabel === "SOVEREIGN"
-                ? "SOVEREIGN — reviewed"
+                ? "Sovereign"
                 : governanceLabel === "NULL"
-                  ? "NULL — awaiting review"
-                  : "No providers registered"}
+                  ? "Null"
+                  : "No providers"}
             </span>
           </div>
           {user && <SidebarUserNav user={user} />}
