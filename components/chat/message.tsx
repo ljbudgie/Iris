@@ -376,13 +376,13 @@ export const PreviewMessage = PurePreviewMessage;
 
 export const ThinkingMessage = () => {
   const phrases = [
-    "Reviewing impact on your rights...",
-    "Ensuring a human can always step in...",
-    "Considering your specific situation...",
-    "Looking at this with care and dignity...",
-    "Making sure you're seen, not just processed...",
-    "Thinking through this thoughtfully...",
-    "Checking what's fair for your case...",
+    "Reviewing impact on your rights\u2026",
+    "Ensuring a human can always step in\u2026",
+    "Considering your specific situation\u2026",
+    "Looking at this with care and dignity\u2026",
+    "Making sure you're seen, not just processed\u2026",
+    "Thinking through this thoughtfully\u2026",
+    "Checking what's fair for your case\u2026",
   ];
   const phrase = phrases[Math.floor(Math.random() * phrases.length)];
 

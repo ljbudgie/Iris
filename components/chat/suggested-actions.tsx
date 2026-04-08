@@ -28,7 +28,7 @@ function PureSuggestedActions({ chatId, sendMessage }: SuggestedActionsProps) {
       parts: [
         {
           type: "text",
-          text: "Hi \u2014 I already know the Burgess Principle. Let's get started.",
+          text: "Hi \u2014 I already know the Burgess Principle. Let\u2019s get started.",
         },
       ],
     });
