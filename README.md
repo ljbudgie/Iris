@@ -143,9 +143,35 @@ Iris uses the [Vercel AI Gateway](https://vercel.com/docs/ai-gateway) to route a
 
 ## 🚀 Deploy Your Own
 
-Get your own Iris up and running with one click:
+### One-click deploy (recommended)
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/ljbudgie/Iris)
+
+This button:
+- Forks the repo to your GitHub account
+- Creates a new Vercel project
+- Deploys Iris instantly
+
+After deployment, add your API keys (for Grok, Kimi, DeepSeek, etc.) in the Vercel dashboard under **Environment Variables** (see [`.env.example`](.env.example)).
+
+### Manual steps (if you prefer)
+
+1. Click **Fork** on this repo (top-right)
+2. Go to [vercel.com](https://vercel.com) and sign in with GitHub
+3. Click **New Project** → Import your forked repo
+4. Deploy (Vercel auto-detects Next.js)
+5. Add your model API keys in **Project Settings → Environment Variables** (see [`.env.example`](.env.example))
+
+Your own Iris will be live at `your-username-iris.vercel.app` (or connect a custom domain).
+
+### Customisation ideas
+
+Once deployed, you can:
+- Change the default model
+- Update colours and branding
+- Modify the Burgess Principle prompts
+- Add or remove models in [`lib/ai/models.ts`](lib/ai/models.ts)
+- Extend the federation layer
 
 ---
 
