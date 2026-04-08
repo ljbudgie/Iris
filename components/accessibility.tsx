@@ -87,9 +87,9 @@ function getDefaults(): AccessibilitySettings {
     fontSize: "medium",
     highContrast: "normal",
     reducedMotion:
-      typeof window !== "undefined"
-        ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        : false,
+      typeof window === "undefined"
+        ? false
+        : window.matchMedia("(prefers-reduced-motion: reduce)").matches,
     screenReaderAnnouncements: true,
   };
 }
@@ -106,11 +106,7 @@ function saveSettings(settings: AccessibilitySettings): void {
  * Accessibility provider — wraps the app and provides accessibility
  * settings and controls to all children.
  */
-export function AccessibilityProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export function AccessibilityProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<AccessibilitySettings>(getDefaults);
 
   // Load from localStorage on mount
@@ -120,8 +116,7 @@ export function AccessibilityProvider({
 
   // Apply font size to document
   useEffect(() => {
-    document.documentElement.style.fontSize =
-      FONT_SIZE_MAP[settings.fontSize];
+    document.documentElement.style.fontSize = FONT_SIZE_MAP[settings.fontSize];
   }, [settings.fontSize]);
 
   // Apply high contrast class

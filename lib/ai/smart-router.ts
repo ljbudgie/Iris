@@ -287,15 +287,13 @@ export function extractTextFromParts(
 ): string {
   return parts
     .filter((p) => p.type === "text" && p.text)
-    .map((p) => p.text!)
+    .map((p) => p.text ?? "")
     .join(" ");
 }
 
 /**
  * Check if any parts contain file attachments.
  */
-export function hasFileAttachments(
-  parts: Array<{ type: string }>
-): boolean {
+export function hasFileAttachments(parts: Array<{ type: string }>): boolean {
   return parts.some((p) => p.type === "file");
 }

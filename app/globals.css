@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 @import "katex/dist/katex.min.css";
 
@@ -10,8 +10,8 @@
 @plugin "@tailwindcss/typography";
 
 @theme inline {
-  --font-jetbrains: 'JetBrains Mono', ui-monospace, monospace;
-  --font-geist-sans: 'Geist Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-jetbrains: "JetBrains Mono", ui-monospace, monospace;
+  --font-geist-sans: "Geist Sans", ui-sans-serif, system-ui, sans-serif;
 
   --color-iris-bg: #08080c;
   --color-iris-surface: #0f0f14;

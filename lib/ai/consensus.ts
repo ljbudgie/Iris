@@ -62,17 +62,13 @@ export async function runConsensus({
   const results = await Promise.allSettled(
     validModelIds.map(async (modelId) => {
       const model = chatModels.find((m) => m.id === modelId);
-      const modelConfig = model
-        ? { order: model.gatewayOrder }
-        : undefined;
+      const modelConfig = model ? { order: model.gatewayOrder } : undefined;
 
       const result = await generateText({
         model: getLanguageModel(modelId),
         system: systemPrompt,
         prompt: userMessage,
-        providerOptions: modelConfig
-          ? { gateway: modelConfig }
-          : undefined,
+        providerOptions: modelConfig ? { gateway: modelConfig } : undefined,
       });
 
       return {
@@ -106,9 +102,7 @@ export async function runConsensus({
   scored.sort((a, b) => b.score - a.score);
 
   const primary = scored[0].response;
-  const alternatives = scored
-    .slice(1)
-    .map((s) => s.response);
+  const alternatives = scored.slice(1).map((s) => s.response);
 
   return {
     primary,

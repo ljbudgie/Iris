@@ -32,7 +32,11 @@ export async function queryMemoryContext(
       limit: 3,
     })) as MemorySearchResult;
 
-    if (!results || !Array.isArray(results.results) || results.results.length === 0) {
+    if (
+      !results ||
+      !Array.isArray(results.results) ||
+      results.results.length === 0
+    ) {
       return undefined;
     }
 
@@ -121,9 +125,7 @@ function buildMemoryFact(
 
   // Truncate to reasonable size for storage
   const truncatedUser =
-    userMessage.length > 200
-      ? `${userMessage.slice(0, 200)}...`
-      : userMessage;
+    userMessage.length > 200 ? `${userMessage.slice(0, 200)}...` : userMessage;
   const truncatedAssistant =
     assistantResponse.length > 300
       ? `${assistantResponse.slice(0, 300)}...`

@@ -147,8 +147,7 @@ export const Greeting = ({
             key={action.label}
             onClick={() => onQuickAction?.(action.message)}
             style={{
-              fontFamily:
-                "'JetBrains Mono', var(--font-geist-mono), monospace",
+              fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace",
               borderColor: "#27272a",
               background: "var(--surface-2)",
             }}
@@ -169,7 +168,9 @@ export const Greeting = ({
         <div className="flex flex-col items-center gap-1.5">
           <span
             className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#52525b]"
-            style={{ fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace" }}
+            style={{
+              fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace",
+            }}
           >
             Federation
           </span>
@@ -192,13 +193,17 @@ export const Greeting = ({
         <div className="flex flex-col items-center gap-1.5">
           <span
             className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#52525b]"
-            style={{ fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace" }}
+            style={{
+              fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace",
+            }}
           >
             Providers
           </span>
           <span
             className="text-[14px] tabular-nums text-[#a1a1aa]"
-            style={{ fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace" }}
+            style={{
+              fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace",
+            }}
           >
             {providerCount}
           </span>
@@ -207,7 +212,9 @@ export const Greeting = ({
         <div className="flex flex-col items-center gap-1.5">
           <span
             className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#52525b]"
-            style={{ fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace" }}
+            style={{
+              fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace",
+            }}
           >
             Governance
           </span>

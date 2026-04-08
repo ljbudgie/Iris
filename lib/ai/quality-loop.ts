@@ -128,7 +128,11 @@ export function evaluateResponse({
   }
 
   // ---- Model appropriateness ----
-  if (intent === "code" && !modelId.includes("codestral") && !modelId.includes("deepseek")) {
+  if (
+    intent === "code" &&
+    !modelId.includes("codestral") &&
+    !modelId.includes("deepseek")
+  ) {
     // Code intent but non-code model was used
     issues.push("wrong_model");
     score -= 1;
@@ -173,7 +177,6 @@ function getFallbackModel(
 
   const candidates = fallbackMap[intent] ?? fallbackMap.general;
   return (
-    candidates.find((id) => id !== currentModelId) ??
-    "moonshotai/kimi-k2-0905"
+    candidates.find((id) => id !== currentModelId) ?? "moonshotai/kimi-k2-0905"
   );
 }

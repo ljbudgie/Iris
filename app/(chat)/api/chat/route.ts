@@ -17,13 +17,13 @@ import {
   countAssistantTurns,
 } from "@/lib/ai/conversation-budget";
 import { entitlementsByUserType } from "@/lib/ai/entitlements";
+import { queryMemoryContext } from "@/lib/ai/memory";
 import {
   allowedModelIds,
   chatModels,
   DEFAULT_CHAT_MODEL,
   getCapabilities,
 } from "@/lib/ai/models";
-import { queryMemoryContext } from "@/lib/ai/memory";
 import { type RequestHints, systemPrompt } from "@/lib/ai/prompts";
 import { getLanguageModel } from "@/lib/ai/providers";
 import {
@@ -115,9 +115,7 @@ export async function POST(request: Request) {
           )
         : "";
       const hasFiles = message?.parts
-        ? hasFileAttachments(
-            message.parts as Array<{ type: string }>
-          )
+        ? hasFileAttachments(message.parts as Array<{ type: string }>)
         : false;
 
       if (latestText) {

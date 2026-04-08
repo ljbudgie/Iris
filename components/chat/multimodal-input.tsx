@@ -3,13 +3,7 @@
 import type { UseChatHelpers } from "@ai-sdk/react";
 import type { UIMessage } from "ai";
 import equal from "fast-deep-equal";
-import {
-  ArrowUpIcon,
-  BrainIcon,
-  EyeIcon,
-  LockIcon,
-  WrenchIcon,
-} from "lucide-react";
+import { ArrowUpIcon, BrainIcon, EyeIcon, WrenchIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import {
@@ -655,16 +649,21 @@ function PureModelSelectorCompact({
   const isAutoMode = selectedModelId === AUTO_MODEL_ID;
   const selectedModel = isAutoMode
     ? null
-    : activeModels.find((m: ChatModel) => m.id === selectedModelId) ??
+    : (activeModels.find((m: ChatModel) => m.id === selectedModelId) ??
       activeModels.find((m: ChatModel) => m.id === DEFAULT_CHAT_MODEL) ??
-      activeModels[0];
+      activeModels[0]);
   const provider = selectedModel ? selectedModel.id.split("/")[0] : null;
 
   // Group models by strength category
-  const strengthGroups: Record<string, { models: ChatModel[]; description: string }> = {
+  const strengthGroups: Record<
+    string,
+    { models: ChatModel[]; description: string }
+  > = {
     Fast: {
       models: activeModels.filter((m) =>
-        ["mistral/mistral-small", "xai/grok-4.1-fast-non-reasoning"].includes(m.id)
+        ["mistral/mistral-small", "xai/grok-4.1-fast-non-reasoning"].includes(
+          m.id
+        )
       ),
       description: "Quick responses, low latency",
     },
@@ -676,7 +675,11 @@ function PureModelSelectorCompact({
     },
     Powerful: {
       models: activeModels.filter((m) =>
-        ["deepseek/deepseek-v3.2", "openai/gpt-oss-120b", "openai/gpt-oss-20b"].includes(m.id)
+        [
+          "deepseek/deepseek-v3.2",
+          "openai/gpt-oss-120b",
+          "openai/gpt-oss-20b",
+        ].includes(m.id)
       ),
       description: "Deep reasoning and analysis",
     },
@@ -708,7 +711,9 @@ function PureModelSelectorCompact({
           ) : (
             <>
               {provider && <ModelSelectorLogo provider={provider} />}
-              <ModelSelectorName>{selectedModel?.name ?? "Auto"}</ModelSelectorName>
+              <ModelSelectorName>
+                {selectedModel?.name ?? "Auto"}
+              </ModelSelectorName>
               <span className="hidden text-[10px] text-[#52525b] sm:inline">
                 {provider}
               </span>
@@ -749,7 +754,7 @@ function PureModelSelectorCompact({
           </ModelSelectorGroup>
 
           {/* Grouped by strength */}
-          {Object.entries(strengthGroups).map(([groupName, { models, description }]) => {
+          {Object.entries(strengthGroups).map(([groupName, { models }]) => {
             if (models.length === 0) {
               return null;
             }

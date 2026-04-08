@@ -27,19 +27,17 @@ export const webSearch = tool({
   description:
     "Search the web for real-time information. Use when the user asks about current events, recent news, live data, or anything that requires up-to-date information.",
   inputSchema: z.object({
-    query: z
-      .string()
-      .describe("The search query to look up on the web"),
+    query: z.string().describe("The search query to look up on the web"),
   }),
-  execute: async ({ query }) => {
+  execute: ({ query }) => {
     // This is a stub — in production, wire to a search API
     // (SerpAPI, Brave Search, or the Grok web search endpoint)
-    return {
+    return Promise.resolve({
       status: "web_search_requested",
       query,
       message:
         "Web search capability is configured but requires a search API key. The model should use its built-in knowledge or inform the user.",
-    };
+    });
   },
 });
 
@@ -54,18 +52,16 @@ export const executeCode = tool({
     language: z
       .enum(["python", "javascript", "typescript"])
       .describe("The programming language of the code"),
-    code: z
-      .string()
-      .describe("The code to execute"),
+    code: z.string().describe("The code to execute"),
   }),
-  execute: async ({ language, code }) => {
-    return {
+  execute: ({ language, code }) => {
+    return Promise.resolve({
       status: "execution_requested",
       language,
       code,
       message:
         "Code execution capability is configured but requires a sandboxed runtime. Present the code with expected output analysis.",
-    };
+    });
   },
 });
 
@@ -84,32 +80,25 @@ export const mathCalculation = tool({
       .optional()
       .describe("A description of what the calculation represents"),
   }),
-  execute: async ({ expression, description }) => {
-    try {
-      // Basic safe math evaluation — supports arithmetic
-      // In production, use a proper math engine like mathjs
-      const sanitised = expression.replace(/[^0-9+\-*/().%\s^]/g, "");
+  execute: ({ expression, description }) => {
+    // Basic safe math evaluation — supports arithmetic
+    // In production, use a proper math engine like mathjs
+    const sanitised = expression.replace(/[^0-9+\-*/().%\s^]/g, "");
 
-      if (!sanitised.trim()) {
-        return {
-          expression,
-          result: "Could not parse expression — please use standard mathematical notation.",
-          description,
-        };
-      }
-
-      return {
+    if (!sanitised.trim()) {
+      return Promise.resolve({
         expression,
         result:
-          "Mathematical expression received. The model should solve this using its reasoning capabilities.",
+          "Could not parse expression — please use standard mathematical notation.",
         description,
-      };
-    } catch {
-      return {
-        expression,
-        error: "Calculation failed — please verify the expression.",
-        description,
-      };
+      });
     }
+
+    return Promise.resolve({
+      expression,
+      result:
+        "Mathematical expression received. The model should solve this using its reasoning capabilities.",
+      description,
+    });
   },
 });
