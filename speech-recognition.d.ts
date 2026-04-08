@@ -2,8 +2,8 @@
  * Web Speech API — SpeechRecognition type declarations.
  *
  * These ambient types supplement TypeScript's built-in DOM lib which does not
- * yet ship the Web Speech API interfaces.  They follow the living spec at
- * https://wicg.github.io/speech-api/ and the MDN documentation.
+ * yet ship the Web Speech API interfaces.  They follow the WICG community
+ * draft specification at https://wicg.github.io/speech-api/ and MDN docs.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API
  */
