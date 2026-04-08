@@ -42,6 +42,7 @@ import {
   DEFAULT_CHAT_MODEL,
   type ModelCapabilities,
 } from "@/lib/ai/models";
+import { FEATURED_MODEL_ID } from "@/lib/constants";
 import type { Attachment, ChatMessage } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import {
@@ -770,7 +771,7 @@ function PureModelSelectorCompact({
                       <ModelSelectorLogo provider={logoProvider} />
                       <ModelSelectorName>{model.name}</ModelSelectorName>
                       <div className="ml-auto flex items-center gap-2 text-foreground/70">
-                        {model.id === "xai/grok-4.1-fast-non-reasoning" && (
+                        {model.id === FEATURED_MODEL_ID && (
                           <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-semibold text-primary">
                             Featured
                           </span>
