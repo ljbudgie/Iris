@@ -15,6 +15,11 @@ import { generateBurgessLetter } from "@/lib/ai/tools/generate-burgess-letter";
 import { getWeather } from "@/lib/ai/tools/get-weather";
 import { requestSuggestions } from "@/lib/ai/tools/request-suggestions";
 import { suggestFollowUps } from "@/lib/ai/tools/suggest-follow-ups";
+import {
+  executeCode,
+  mathCalculation,
+  webSearch,
+} from "@/lib/ai/tools/tool-execution";
 import { updateDocument } from "@/lib/ai/tools/update-document";
 import {
   mempalaceSearchSkill,
@@ -137,6 +142,43 @@ const builtInSkills: SkillDefinition[] = [
   requestSuggestionsSkill,
   followUpSkill,
   burgessLetterSkill,
+  // Tool execution skills
+  {
+    metadata: {
+      name: "webSearch",
+      description:
+        "Search the web for real-time information, current events, and live data.",
+      version: "1.0.0",
+      sensitivity: "standard",
+      tags: ["web", "search", "realtime"],
+      requiresContext: false,
+    },
+    tool: webSearch,
+  },
+  {
+    metadata: {
+      name: "executeCode",
+      description:
+        "Execute code snippets and return results. Supports Python, JavaScript, TypeScript.",
+      version: "1.0.0",
+      sensitivity: "standard",
+      tags: ["code", "execution", "sandbox"],
+      requiresContext: false,
+    },
+    tool: executeCode,
+  },
+  {
+    metadata: {
+      name: "mathCalculation",
+      description:
+        "Perform mathematical calculations — arithmetic, algebra, statistics, data analysis.",
+      version: "1.0.0",
+      sensitivity: "standard",
+      tags: ["math", "calculation", "data"],
+      requiresContext: false,
+    },
+    tool: mathCalculation,
+  },
 ];
 
 for (const skill of builtInSkills) {
