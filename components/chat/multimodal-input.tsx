@@ -421,7 +421,7 @@ function PureMultimodalInput({
       </div>
 
       <PromptInput
-        className="[&>div]:rounded-xl [&>div]:border [&>div]:border-[#27272a] [&>div]:transition-all [&>div]:duration-300 [&>div]:focus-within:border-[rgba(124,58,237,0.5)] [&>div]:focus-within:shadow-[0_0_0_3px_rgba(124,58,237,0.1)]"
+        className="[&>div]:rounded-xl [&>div]:border [&>div]:border-[var(--color-iris-border)] [&>div]:bg-[var(--color-iris-surface)] [&>div]:transition-all [&>div]:duration-300 [&>div]:focus-within:border-[rgba(124,58,237,0.4)] [&>div]:focus-within:shadow-[0_0_0_3px_rgba(124,58,237,0.08)]"
         onSubmit={() => {
           if (input.startsWith("/")) {
             const query = input.slice(1).trim();
