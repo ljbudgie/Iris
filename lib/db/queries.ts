@@ -20,7 +20,9 @@ import { IrisError } from "../errors";
 import { generateUUID } from "../utils";
 import {
   type Chat,
+  type ChatAuditLog,
   chat,
+  chatAuditLog,
   type DBMessage,
   document,
   humanReviewRequest,
@@ -95,6 +97,7 @@ export async function saveChat({
 
 export async function deleteChatById({ id }: { id: string }) {
   try {
+    await db.delete(chatAuditLog).where(eq(chatAuditLog.chatId, id));
     await db
       .delete(humanReviewRequest)
       .where(eq(humanReviewRequest.chatId, id));
@@ -125,6 +128,9 @@ export async function deleteAllChatsByUserId({ userId }: { userId: string }) {
 
     const chatIds = userChats.map((c) => c.id);
 
+    await db
+      .delete(chatAuditLog)
+      .where(inArray(chatAuditLog.chatId, chatIds));
     await db
       .delete(humanReviewRequest)
       .where(inArray(humanReviewRequest.chatId, chatIds));
@@ -731,6 +737,93 @@ export async function getHumanReviewRequestByMessageId({
     throw new IrisError(
       "bad_request:database",
       "Failed to get human review request by message id"
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Chat Audit Trail
+// ---------------------------------------------------------------------------
+
+export async function saveChatAuditEntry({
+  chatId,
+  messageId,
+  userId,
+  modelId,
+  promptTokens,
+  completionTokens,
+  totalTokens,
+  toolsInvoked,
+  governanceStatus,
+}: {
+  chatId: string;
+  messageId?: string;
+  userId: string;
+  modelId?: string;
+  promptTokens?: number;
+  completionTokens?: number;
+  totalTokens?: number;
+  toolsInvoked?: string[];
+  governanceStatus?: "SOVEREIGN" | "NULL";
+}) {
+  try {
+    const [entry] = await db
+      .insert(chatAuditLog)
+      .values({
+        chatId,
+        messageId: messageId ?? null,
+        userId,
+        modelId: modelId ?? null,
+        promptTokens: promptTokens ?? 0,
+        completionTokens: completionTokens ?? 0,
+        totalTokens: totalTokens ?? 0,
+        toolsInvoked: toolsInvoked ?? [],
+        governanceStatus: governanceStatus ?? null,
+        createdAt: new Date(),
+      })
+      .returning();
+
+    return entry;
+  } catch (_error) {
+    throw new IrisError(
+      "bad_request:database",
+      "Failed to save chat audit entry"
+    );
+  }
+}
+
+export async function getChatAuditLog({ chatId }: { chatId: string }) {
+  try {
+    return await db
+      .select()
+      .from(chatAuditLog)
+      .where(eq(chatAuditLog.chatId, chatId))
+      .orderBy(asc(chatAuditLog.createdAt));
+  } catch (_error) {
+    throw new IrisError(
+      "bad_request:database",
+      "Failed to get chat audit log"
+    );
+  }
+}
+
+export async function getChatTokenUsage({ chatId }: { chatId: string }) {
+  try {
+    const entries = await db
+      .select({
+        totalTokens: chatAuditLog.totalTokens,
+      })
+      .from(chatAuditLog)
+      .where(eq(chatAuditLog.chatId, chatId));
+
+    return entries.reduce(
+      (sum, entry) => sum + ((entry.totalTokens as number) ?? 0),
+      0,
+    );
+  } catch (_error) {
+    throw new IrisError(
+      "bad_request:database",
+      "Failed to get chat token usage"
     );
   }
 }
