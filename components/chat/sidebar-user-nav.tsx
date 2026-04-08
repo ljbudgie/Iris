@@ -71,11 +71,11 @@ export function SidebarUserNav({ user }: { user: User }) {
                   {isGuest ? "Guest" : user?.email}
                 </span>
                 {isGuest && (
-                  <span className="ml-auto rounded border border-border/30 px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-muted-foreground/50">
+                  <span className="rounded border border-border/30 px-1.5 py-0.5 text-[9px] uppercase tracking-wider text-muted-foreground/50">
                     Guest
                   </span>
                 )}
-                <ChevronUp className="ml-auto size-3.5 text-sidebar-foreground/40" />
+                <ChevronUp className="ml-auto size-3.5 shrink-0 text-sidebar-foreground/40" />
               </SidebarMenuButton>
             )}
           </DropdownMenuTrigger>
