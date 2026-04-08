@@ -19,6 +19,6 @@ export const IP_RATE_LIMIT_TTL_SECONDS = 60 * 60; // 1 hour
 
 export const suggestions = [
   "What is the Burgess Principle and how can it help me?",
-  "Help me challenge an unfair decision",
-  "I need to write a formal complaint",
+  "An organisation treated me unfairly — what are my options?",
+  "Draft a formal letter to challenge a decision",
 ];

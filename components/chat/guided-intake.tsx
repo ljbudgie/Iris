@@ -29,7 +29,7 @@ const intakeCategories: IntakeCategory[] = [
     label: "Benefits dispute",
     description: "PIP, Universal Credit, ESA, or Council Tax Reduction",
     prompt:
-      "I'm having a problem with my benefits. I'd like help writing a Burgess Principle letter to request a human review of my case.",
+      "I'm having a problem with my benefits and need a human to review my case. Can you help me put together a Burgess Principle letter?",
   },
   {
     id: "bailiffs",
@@ -37,7 +37,7 @@ const intakeCategories: IntakeCategory[] = [
     label: "Bailiff or enforcement",
     description: "Threats, visits, or forced entry attempts",
     prompt:
-      "I'm dealing with bailiffs or enforcement agents and need help. I'd like a Burgess Principle letter to ensure my case has been properly reviewed by a human.",
+      "Bailiffs have contacted me and I'm not sure my case was properly reviewed. Walk me through my rights and help me respond.",
   },
   {
     id: "automated",
@@ -45,7 +45,7 @@ const intakeCategories: IntakeCategory[] = [
     label: "Automated decision",
     description: "A system made a decision without human review",
     prompt:
-      "An automated system made a decision about me without any human reviewing my specific situation. I want to challenge this under Article 22 and the Burgess Principle.",
+      "A decision was made about me by an automated system with no human involvement. I'd like to challenge this under Article 22 and the Burgess Principle.",
   },
   {
     id: "council",
@@ -53,7 +53,7 @@ const intakeCategories: IntakeCategory[] = [
     label: "Council tax or fines",
     description: "Parking fines, council demands, or local authority issues",
     prompt:
-      "I've received a council tax demand or fine that I believe is unfair. I'd like help writing a Burgess Principle letter to challenge it.",
+      "I've received a council tax demand or fine that seems wrong. Help me understand how to challenge it.",
   },
   {
     id: "data",
@@ -61,7 +61,7 @@ const intakeCategories: IntakeCategory[] = [
     label: "Access my data",
     description: "Subject Access Request or Freedom of Information",
     prompt:
-      "I want to find out what data an organisation holds about me or request information from a public body. Please help me with a DSAR or FOI request using the Burgess Principle.",
+      "I'd like to find out what data an organisation holds about me. Can you guide me through a Subject Access Request or FOI?",
   },
   {
     id: "other",
@@ -69,7 +69,7 @@ const intakeCategories: IntakeCategory[] = [
     label: "Something else",
     description: "Any institutional unfairness or dispute",
     prompt:
-      "I'm dealing with a situation where I feel an organisation hasn't treated me fairly. Can you help me understand my options and write a Burgess Principle letter?",
+      "I feel an organisation hasn't treated me fairly but I'm not sure where to start. What are my options?",
   },
 ];
 

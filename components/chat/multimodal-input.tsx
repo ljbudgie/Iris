@@ -670,7 +670,7 @@ function PureModelSelectorCompact({
         </Button>
       </ModelSelectorTrigger>
       <ModelSelectorContent>
-        <ModelSelectorInput placeholder="Search models..." />
+        <ModelSelectorInput placeholder="Search models… try Grok" />
         <ModelSelectorList>
           {(() => {
             const curatedIds = new Set(chatModels.map((m) => m.id));
@@ -770,6 +770,11 @@ function PureModelSelectorCompact({
                       <ModelSelectorLogo provider={logoProvider} />
                       <ModelSelectorName>{model.name}</ModelSelectorName>
                       <div className="ml-auto flex items-center gap-2 text-foreground/70">
+                        {model.id === "xai/grok-4.1-fast-non-reasoning" && (
+                          <span className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[9px] font-semibold text-primary">
+                            Featured
+                          </span>
+                        )}
                         {capabilities?.[model.id]?.tools && (
                           <WrenchIcon className="size-3.5" />
                         )}
