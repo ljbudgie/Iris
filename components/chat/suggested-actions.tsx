@@ -28,38 +28,33 @@ function PureSuggestedActions({ chatId, sendMessage }: SuggestedActionsProps) {
       parts: [
         {
           type: "text",
-          text: "Hi — I already know the Burgess Principle. Let's get started.",
+          text: "Hi \u2014 I already know the Burgess Principle. Let\u2019s get started.",
         },
       ],
     });
   }, [chatId, sendMessage]);
 
   return (
-    <div className="flex w-full flex-col gap-2">
+    <div className="flex w-full flex-col gap-3">
       <div
-        className="flex w-full gap-2.5 overflow-x-auto pb-1 sm:grid sm:grid-cols-2 sm:overflow-visible"
+        className="flex w-full gap-2.5 overflow-x-auto pb-1 no-scrollbar"
         data-testid="suggested-actions"
-        style={{
-          scrollbarWidth: "none",
-          WebkitOverflowScrolling: "touch",
-          msOverflowStyle: "none",
-        }}
       >
         {suggestedActions.map((suggestedAction, index) => (
           <motion.div
             animate={{ opacity: 1, y: 0 }}
-            className="min-w-[200px] shrink-0 sm:min-w-0 sm:shrink"
+            className="shrink-0"
             exit={{ opacity: 0, y: 16 }}
             initial={{ opacity: 0, y: 16 }}
             key={suggestedAction}
             transition={{
               delay: 0.06 * index,
               duration: 0.4,
-              ease: [0.22, 1, 0.36, 1],
+              ease: [0.34, 1.56, 0.64, 1],
             }}
           >
             <Suggestion
-              className="h-auto w-full whitespace-nowrap rounded-xl border border-border/30 px-4 py-3 text-left text-[12px] leading-relaxed text-muted-foreground/70 backdrop-blur-sm transition-all duration-200 sm:whitespace-normal sm:p-4 sm:text-[13px] hover:-translate-y-0.5 hover:border-primary/25 hover:text-foreground hover:shadow-[var(--shadow-card)]"
+              className="h-auto whitespace-nowrap rounded-full border px-4 py-2 text-left text-[13px] leading-relaxed transition-all duration-200 hover:border-[rgba(124,58,237,0.4)]"
               onClick={(suggestion) => {
                 window.history.pushState(
                   {},
@@ -70,6 +65,11 @@ function PureSuggestedActions({ chatId, sendMessage }: SuggestedActionsProps) {
                   role: "user",
                   parts: [{ type: "text", text: suggestion }],
                 });
+              }}
+              style={{
+                borderColor: "#27272a",
+                background: "transparent",
+                color: "#9ca3af",
               }}
               suggestion={suggestedAction}
             >
@@ -85,7 +85,7 @@ function PureSuggestedActions({ chatId, sendMessage }: SuggestedActionsProps) {
         transition={{ delay: 0.3, duration: 0.4 }}
       >
         <button
-          className="text-[11px] text-muted-foreground/50 transition-colors hover:text-muted-foreground"
+          className="text-[12px] text-[#52525b] transition-colors hover:text-[#a1a1aa]"
           onClick={handleSkip}
           type="button"
         >

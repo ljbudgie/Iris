@@ -421,7 +421,7 @@ function PureMultimodalInput({
       </div>
 
       <PromptInput
-        className="[&>div]:rounded-2xl [&>div]:border [&>div]:border-border/30 [&>div]:shadow-[var(--shadow-composer)] [&>div]:backdrop-blur-sm [&>div]:transition-all [&>div]:duration-300 [&>div]:focus-within:border-primary/25 [&>div]:focus-within:shadow-[var(--shadow-composer-focus)]"
+        className="[&>div]:rounded-xl [&>div]:border [&>div]:border-[#27272a] [&>div]:transition-all [&>div]:duration-300 [&>div]:focus-within:border-[rgba(124,58,237,0.5)] [&>div]:focus-within:shadow-[0_0_0_3px_rgba(124,58,237,0.1)]"
         onSubmit={() => {
           if (input.startsWith("/")) {
             const query = input.slice(1).trim();
@@ -475,7 +475,7 @@ function PureMultimodalInput({
           </div>
         )}
         <PromptInputTextarea
-          className="min-h-24 text-[13px] leading-relaxed px-4 pt-3.5 pb-1.5 placeholder:text-muted-foreground/35"
+          className="min-h-[52px] text-[13px] leading-relaxed px-4 pt-3.5 pb-1.5 placeholder:text-[#52525b]"
           data-testid="multimodal-input"
           onChange={handleInput}
           onKeyDown={(e) => {
@@ -542,8 +542,8 @@ function PureMultimodalInput({
               className={cn(
                 "h-7 w-7 rounded-xl transition-all duration-200",
                 input.trim()
-                  ? "bg-primary text-primary-foreground hover:opacity-85 active:scale-95"
-                  : "bg-muted text-muted-foreground/25 cursor-not-allowed"
+                  ? "bg-[#7c3aed] text-white hover:opacity-85 active:scale-95"
+                  : "bg-[#1e1e28] text-[#52525b] cursor-not-allowed"
               )}
               data-testid="send-button"
               disabled={!input.trim() || uploadQueue.length > 0}
@@ -613,10 +613,10 @@ function PureAttachmentsButton({
   return (
     <Button
       className={cn(
-        "h-7 w-7 rounded-lg border border-border/40 p-1 transition-colors",
+        "h-7 w-7 rounded-lg border border-[#27272a] p-1 transition-colors",
         hasVision
-          ? "text-foreground hover:border-border hover:text-foreground"
-          : "text-muted-foreground/30 cursor-not-allowed"
+          ? "text-[#52525b] hover:text-[#a1a1aa]"
+          : "text-[#52525b]/30 cursor-not-allowed"
       )}
       data-testid="attachments-button"
       disabled={status !== "ready" || !hasVision}
@@ -626,7 +626,7 @@ function PureAttachmentsButton({
       }}
       variant="ghost"
     >
-      <PaperclipIcon size={14} style={{ width: 14, height: 14 }} />
+      <PaperclipIcon size={18} style={{ width: 18, height: 18 }} />
     </Button>
   );
 }
@@ -662,14 +662,17 @@ function PureModelSelectorCompact({
     <ModelSelector onOpenChange={setOpen} open={open}>
       <ModelSelectorTrigger asChild>
         <Button
-          className="h-8 max-w-[240px] justify-between gap-2 rounded-lg border border-border/30 px-2.5 text-[12px] text-muted-foreground transition-all duration-200 hover:border-primary/30 hover:text-foreground"
+          className="h-8 max-w-[240px] justify-between gap-2 rounded-lg border border-[#27272a] px-2.5 text-[11px] text-[#a1a1aa] transition-all duration-200 hover:border-[rgba(124,58,237,0.3)] hover:text-[#e4e4e7]"
           data-testid="model-selector"
-          style={{ background: "var(--surface-2)" }}
+          style={{
+            background: "var(--surface-2)",
+            fontFamily: "var(--font-geist-mono), monospace",
+          }}
           variant="ghost"
         >
           {provider && <ModelSelectorLogo provider={provider} />}
           <ModelSelectorName>{selectedModel.name}</ModelSelectorName>
-          <span className="hidden text-[10px] text-muted-foreground/40 sm:inline">
+          <span className="hidden text-[10px] text-[#52525b] sm:inline">
             {provider}
           </span>
         </Button>

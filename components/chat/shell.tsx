@@ -91,8 +91,8 @@ export function ChatShell() {
           />
 
           <div
-            className="relative flex min-h-0 flex-1 flex-col overflow-hidden md:rounded-tl-[16px] md:border-t md:border-l md:border-border/20"
-            style={{ background: "var(--surface-1)" }}
+            className="relative flex min-h-0 flex-1 flex-col overflow-hidden md:rounded-tl-[16px] md:border-t md:border-l"
+            style={{ background: "var(--surface-1)", borderColor: "#27272a" }}
           >
             <ActionPlan messages={messages} />
             <Messages

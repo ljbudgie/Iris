@@ -309,13 +309,16 @@ function PureArtifact({
     <>
       {sidebarState !== "collapsed" && (
         <div
-          className="flex h-[calc(3.5rem+1px)] shrink-0 items-center justify-between border-b border-border/30 px-4"
-          style={{ background: "var(--surface-0)" }}
+          className="flex h-[calc(3.5rem+1px)] shrink-0 items-center justify-between border-b px-4"
+          style={{ background: "var(--surface-0)", borderColor: "#27272a" }}
         >
           <div className="flex items-center gap-3">
             <ArtifactCloseButton />
             <div className="flex flex-col gap-0.5">
-              <div className="text-sm font-semibold leading-tight tracking-tight">
+              <div
+                className="text-sm font-semibold leading-tight"
+                style={{ fontFamily: "var(--font-geist-mono), monospace" }}
+              >
                 {artifact.title}
               </div>
               <div className="flex items-center gap-2">
@@ -461,9 +464,9 @@ function PureArtifact({
 
   return (
     <div
-      className="flex h-dvh min-w-0 flex-1 flex-col overflow-hidden border-l border-border/30 backdrop-blur-xl transition-[flex] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]"
+      className="flex h-dvh min-w-0 flex-1 flex-col overflow-hidden border-l backdrop-blur-xl transition-[flex] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]"
       data-testid="artifact"
-      style={{ background: "var(--surface-0)" }}
+      style={{ background: "#0f0f14", borderColor: "#27272a" }}
     >
       {artifactPanel}
     </div>

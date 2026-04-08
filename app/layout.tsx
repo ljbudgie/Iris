@@ -22,8 +22,8 @@ export const viewport = {
 const geist = GeistSans;
 const geistMono = GeistMono;
 
-const LIGHT_THEME_COLOR = "hsl(265 30% 6%)";
-const DARK_THEME_COLOR = "hsl(265 30% 6%)";
+const LIGHT_THEME_COLOR = "#08080c";
+const DARK_THEME_COLOR = "#08080c";
 const THEME_COLOR_SCRIPT = `\
 (function() {
   var html = document.documentElement;

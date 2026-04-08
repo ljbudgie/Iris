@@ -7,7 +7,6 @@ import { ModelSelectorLogo } from "@/components/ai-elements/model-selector";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
 import { chatModels } from "@/lib/ai/models";
-import { SparklesIcon } from "./icons";
 import { VisibilitySelector, type VisibilityType } from "./visibility-selector";
 
 type GovernanceStatus = "SOVEREIGN" | "NULL" | "NO_PROVIDERS";
@@ -63,82 +62,57 @@ function PureChatHeader({
     return null;
   }
 
+  const statusLabel =
+    governanceStatus === "SOVEREIGN"
+      ? "ACTIVE"
+      : governanceStatus === "NULL"
+        ? "PENDING"
+        : "STANDBY";
+
+  const governanceLabel =
+    governanceStatus === "NO_PROVIDERS" ? "\u2014" : governanceStatus;
+
   return (
     <header
       className="sticky top-0 z-10 flex flex-col"
       style={{ background: "var(--surface-0)" }}
     >
-      {/* Federation status bar */}
+      {/* Telemetry status bar — single line, flush left, monospace */}
       <div
         aria-label={
           governanceStatus === "SOVEREIGN"
-            ? "Sovereign mode active — human-reviewed path"
+            ? "Sovereign mode active"
             : governanceStatus === "NULL"
               ? "Null mode — awaiting human review"
               : "No federation providers registered"
         }
         aria-live="polite"
-        className="flex h-8 items-center justify-between gap-2 border-b border-border/30 px-3 text-[11px] font-medium tracking-wide uppercase transition-colors duration-300"
+        className="flex h-7 items-center gap-0 border-b px-3 text-[10px] tracking-[0.12em] uppercase transition-colors duration-200"
         role="status"
         style={{
-          background:
-            governanceStatus === "SOVEREIGN"
-              ? "var(--sovereign-bg)"
-              : governanceStatus === "NULL"
-                ? "var(--null-review-bg)"
-                : "var(--surface-1)",
+          fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace",
+          borderColor: "#27272a",
+          background: "var(--surface-0)",
+          color: "#52525b",
+          opacity: 0.35,
         }}
       >
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5">
-            <div
-              className={`size-1.5 rounded-full ${
-                governanceStatus === "SOVEREIGN"
-                  ? "bg-sovereign shadow-[0_0_6px_var(--sovereign)]"
-                  : governanceStatus === "NULL"
-                    ? "bg-null-review shadow-[0_0_6px_var(--null-review)]"
-                    : "bg-muted-foreground/30"
-              }`}
-            />
-            <span
-              className={
-                governanceStatus === "SOVEREIGN"
-                  ? "text-sovereign"
-                  : governanceStatus === "NULL"
-                    ? "text-null-review"
-                    : "text-muted-foreground/50"
-              }
-            >
-              {governanceStatus === "SOVEREIGN"
-                ? "Federation Active"
-                : governanceStatus === "NULL"
-                  ? "Awaiting Review"
-                  : "Standby"}
-            </span>
-          </div>
-          <span className="text-muted-foreground/30">·</span>
-          <span className="text-muted-foreground/50">
-            {providerCount} {providerCount === 1 ? "provider" : "providers"}
-          </span>
-          <span className="text-muted-foreground/30">·</span>
-          <span
-            className={
-              governanceStatus === "SOVEREIGN"
-                ? "text-sovereign"
-                : governanceStatus === "NULL"
-                  ? "text-null-review"
-                  : "text-muted-foreground/40"
-            }
-          >
-            {governanceStatus === "NO_PROVIDERS" ? "—" : governanceStatus}
-          </span>
-        </div>
+        <span>{statusLabel}</span>
+        <span className="mx-2">&middot;</span>
+        <span>
+          {providerCount} PROVIDER{providerCount === 1 ? "" : "S"}
+        </span>
+        <span className="mx-2">&middot;</span>
+        <span>GOVERNANCE: {governanceLabel}</span>
       </div>
 
       {/* Main header bar */}
       <div
-        className="flex h-12 items-center gap-2 border-b border-border/20 px-3"
-        style={{ background: "var(--surface-0)" }}
+        className="flex h-11 items-center gap-2 border-b px-3"
+        style={{
+          background: "var(--surface-0)",
+          borderColor: "#27272a",
+        }}
       >
         <Button
           className="md:hidden"
@@ -153,10 +127,12 @@ function PureChatHeader({
           className="flex items-center gap-2 rounded-lg px-1.5 py-1 transition-opacity hover:opacity-80"
           href="/"
         >
-          <div className="flex size-6 items-center justify-center rounded-md bg-primary/15 text-primary">
-            <SparklesIcon size={13} />
-          </div>
-          <span className="text-sm font-bold tracking-tight text-foreground">
+          <span
+            className="text-sm font-semibold tracking-[0.2em] uppercase text-[#e4e4e7]"
+            style={{
+              fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace",
+            }}
+          >
             IRIS
           </span>
         </Link>
@@ -170,12 +146,21 @@ function PureChatHeader({
 
         <div className="ml-auto flex items-center gap-2">
           {currentModel && (
-            <div className="flex items-center gap-1.5 rounded-md border border-border/30 bg-[var(--surface-1)] px-2.5 py-1">
+            <div
+              className="flex items-center gap-1.5 rounded-md border px-2.5 py-1"
+              style={{
+                borderColor: "#27272a",
+                background: "var(--surface-2)",
+              }}
+            >
               <ModelSelectorLogo
                 className="size-3.5 dark:invert"
                 provider={currentModel.provider}
               />
-              <span className="hidden text-[11px] font-medium text-muted-foreground sm:inline">
+              <span
+                className="hidden text-[11px] font-medium text-[#a1a1aa] sm:inline"
+                style={{ fontFamily: "var(--font-geist-mono), monospace" }}
+              >
                 {currentModel.name}
               </span>
             </div>

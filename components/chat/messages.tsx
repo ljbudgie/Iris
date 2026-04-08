@@ -139,16 +139,16 @@ function PureMessages({
 
       <button
         aria-label="Scroll to bottom"
-        className={`absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center rounded-full border border-border/30 px-3.5 shadow-[var(--shadow-float)] backdrop-blur-md transition-all duration-200 h-7 text-[10px] ${
+        className={`absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center rounded-full border px-3.5 backdrop-blur-md transition-all duration-200 h-7 text-[10px] ${
           isAtBottom
             ? "pointer-events-none scale-90 opacity-0"
             : "pointer-events-auto scale-100 opacity-100"
         }`}
         onClick={() => scrollToBottom("smooth")}
-        style={{ background: "var(--surface-2)" }}
+        style={{ background: "#16161e", borderColor: "#27272a" }}
         type="button"
       >
-        <ArrowDownIcon className="size-3 text-muted-foreground" />
+        <ArrowDownIcon className="size-3 text-[#a1a1aa]" />
       </button>
     </div>
   );

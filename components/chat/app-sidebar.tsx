@@ -117,7 +117,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                   tooltip="Iris"
                 >
                   <Link href="/" onClick={() => setOpenMobile(false)}>
-                    <div className="flex size-6 items-center justify-center rounded-md bg-primary/15 text-primary">
+                    <div className="flex size-6 items-center justify-center rounded-md text-[#7c3aed]">
                       <SparklesIcon size={14} />
                     </div>
                   </Link>
@@ -136,7 +136,13 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                   </TooltipContent>
                 </Tooltip>
               </div>
-              <span className="text-[13px] font-bold tracking-tight text-foreground/80 group-data-[collapsible=icon]:hidden">
+              <span
+                className="text-[13px] font-semibold tracking-[0.2em] uppercase text-[#e4e4e7] group-data-[collapsible=icon]:hidden"
+                style={{
+                  fontFamily:
+                    "var(--font-geist-mono), 'JetBrains Mono', monospace",
+                }}
+              >
                 IRIS
               </span>
               <div className="group-data-[collapsible=icon]:hidden">
@@ -151,7 +157,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton
-                    className="h-8 rounded-lg border border-primary/20 bg-primary/[0.05] text-[13px] text-sidebar-foreground/80 transition-colors duration-150 hover:bg-primary/10 hover:text-sidebar-foreground"
+                    className="h-8 rounded-lg border border-[rgba(124,58,237,0.2)] bg-[rgba(124,58,237,0.05)] text-[13px] text-[#a1a1aa] transition-colors duration-150 hover:bg-[rgba(124,58,237,0.1)] hover:text-[#e4e4e7]"
                     onClick={() => {
                       setOpenMobile(false);
                       router.push("/");
@@ -241,12 +247,15 @@ export function AppSidebar({ user }: { user: User | undefined }) {
           </SidebarGroup>
           <SidebarHistory user={user} />
         </SidebarContent>
-        <SidebarFooter className="border-t border-sidebar-border/50 pt-2 pb-3">
+        <SidebarFooter
+          className="border-t pt-2 pb-3"
+          style={{ borderColor: "#27272a" }}
+        >
           <div
             aria-live="polite"
-            className="flex h-8 items-center gap-2 rounded-lg border border-border/20 px-2 text-[11px] group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:border-0"
+            className="flex h-8 items-center gap-2 rounded-lg border px-2 text-[11px] group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:border-0"
             role="status"
-            style={{ background: "var(--surface-1)" }}
+            style={{ background: "var(--surface-1)", borderColor: "#27272a" }}
           >
             <div className="flex size-4 shrink-0 items-center justify-center">
               <div
