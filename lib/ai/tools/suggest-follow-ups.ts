@@ -3,14 +3,14 @@ import { z } from "zod";
 
 export const suggestFollowUps = tool({
   description:
-    "Suggest 2-3 concise follow-up questions the user might want to ask next, based on the current conversation. Call this after every conversational response. Do NOT call after creating, editing, or updating artifacts. IMPORTANT: Each suggestion must be unique — never repeat a follow-up you have already suggested in this conversation. Vary the angle and topic of each suggestion (e.g. don't suggest two variations of the same question). Keep suggestions natural and conversational, not generic or robotic.",
+    "Suggest 2-3 follow-up questions after every conversational response. Skip after artifact create/edit/update. Each suggestion must cover a distinct angle — never repeat or rephrase an earlier suggestion.",
   inputSchema: z.object({
     suggestions: z
       .array(z.string())
       .min(2)
       .max(3)
       .describe(
-        "2-3 concise, relevant, non-duplicate follow-up questions. Each should explore a different angle or next step. Never repeat suggestions from earlier in the conversation."
+        "2-3 concise, natural follow-up questions. Each must explore a different topic or next step — no duplicates from this conversation."
       ),
   }),
   // Pass-through: the model generates suggestions via tool call and the UI
