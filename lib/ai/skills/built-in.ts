@@ -16,6 +16,11 @@ import { getWeather } from "@/lib/ai/tools/get-weather";
 import { requestSuggestions } from "@/lib/ai/tools/request-suggestions";
 import { suggestFollowUps } from "@/lib/ai/tools/suggest-follow-ups";
 import { updateDocument } from "@/lib/ai/tools/update-document";
+import {
+  mempalaceSearchSkill,
+  mempalaceStatusSkill,
+  mempalaceStoreSkill,
+} from "@/lib/mempalace/tools";
 import { skillRegistry } from "./registry";
 import type { SkillDefinition } from "./types";
 
@@ -136,4 +141,20 @@ const builtInSkills: SkillDefinition[] = [
 
 for (const skill of builtInSkills) {
   skillRegistry.register(skill);
+}
+
+// ---------------------------------------------------------------------------
+// MemPalace tools (conditional — only when MEMPALACE_MCP_COMMAND is set)
+// ---------------------------------------------------------------------------
+
+if (process.env.MEMPALACE_MCP_COMMAND) {
+  const mempalaceSkills: SkillDefinition[] = [
+    mempalaceSearchSkill,
+    mempalaceStoreSkill,
+    mempalaceStatusSkill,
+  ];
+
+  for (const skill of mempalaceSkills) {
+    skillRegistry.register(skill);
+  }
 }
