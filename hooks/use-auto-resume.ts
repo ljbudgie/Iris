@@ -1,3 +1,13 @@
+/**
+ * Automatic stream resumption for Iris conversations.
+ *
+ * If the user reloads the page while Iris is still generating a response
+ * (i.e. the last persisted message has role "user"), this hook
+ * transparently resumes the interrupted stream so the reply is not lost.
+ * This supports the Burgess Principle's emphasis on reliability — users
+ * should never have to re-ask a question because of a transient failure.
+ */
+
 "use client";
 
 import type { UseChatHelpers } from "@ai-sdk/react";

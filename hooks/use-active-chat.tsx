@@ -1,3 +1,18 @@
+/**
+ * Active chat context provider for Iris.
+ *
+ * Centralises all state for the currently active conversation — messages,
+ * model selection, visibility, votes, and stream lifecycle — into a single
+ * React context so that every component in the chat tree can share it
+ * without prop-drilling.
+ *
+ * Iris-specific additions over the upstream template:
+ *   • Model-choice gate — new chats prompt the user to confirm a model
+ *     before the first message is sent, supporting informed consent.
+ *   • IrisError integration — structured error handling surfaces
+ *     human-readable descriptions consistent with the Burgess Principle.
+ */
+
 "use client";
 
 import type { UseChatHelpers } from "@ai-sdk/react";
@@ -180,7 +195,9 @@ export function ActiveChatProvider({ children }: { children: ReactNode }) {
       } else {
         toast({
           type: "error",
-          description: error.message || "Oops, an error occurred!",
+          description:
+            error.message ||
+            "Something unexpected happened — please try again.",
         });
       }
     },

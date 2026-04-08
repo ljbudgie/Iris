@@ -1,3 +1,12 @@
+/**
+ * Message display state for Iris.
+ *
+ * Combines scroll-to-bottom behaviour with a "message sent" flag so the
+ * chat view can distinguish between incoming history (page load) and a
+ * fresh user submission, ensuring smooth auto-scroll during streaming
+ * while still allowing manual scroll-back through earlier messages.
+ */
+
 import type { UseChatHelpers } from "@ai-sdk/react";
 import { useEffect, useState } from "react";
 import type { ChatMessage } from "@/lib/types";

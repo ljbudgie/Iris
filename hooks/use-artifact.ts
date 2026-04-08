@@ -1,3 +1,13 @@
+/**
+ * Client-side artifact state management for Iris.
+ *
+ * Artifacts are the documents, code snippets, and spreadsheets that Iris
+ * can create alongside a conversation.  This hook uses SWR as a
+ * lightweight client-side store so that the artifact panel, console, and
+ * document preview all share the same reactive state without a full
+ * state-management library.
+ */
+
 "use client";
 
 import { useCallback, useMemo } from "react";

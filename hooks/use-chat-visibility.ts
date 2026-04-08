@@ -1,3 +1,13 @@
+/**
+ * Chat visibility management for Iris.
+ *
+ * Each conversation can be private (default) or public.  This hook keeps
+ * the local UI in sync with the server-side visibility setting and
+ * optimistically updates the sidebar cache when the user toggles it.
+ * Privacy-by-default aligns with the Burgess Principle's stance that
+ * personal data should remain under the user's control.
+ */
+
 "use client";
 
 import { useMemo } from "react";

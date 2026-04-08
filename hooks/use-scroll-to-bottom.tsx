@@ -1,3 +1,14 @@
+/**
+ * Auto-scroll management for Iris's chat stream.
+ *
+ * Keeps the viewport pinned to the latest content while Iris is
+ * streaming a response, but respects the user's intent when they scroll
+ * up to review earlier messages.  Uses MutationObserver and
+ * ResizeObserver to react to DOM changes without polling, and debounces
+ * scroll events to distinguish programmatic scrolling from user
+ * interaction.
+ */
+
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useScrollToBottom() {
