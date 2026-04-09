@@ -184,8 +184,8 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
 
       // Remove after announcement — scale delay to message length for screen readers
       const announcementDelay = Math.max(
-        1000,
-        Math.min(message.length * 50, 10_000)
+        2000,
+        Math.min(message.length * 80, 10_000)
       );
       setTimeout(() => {
         if (el.parentNode) {
