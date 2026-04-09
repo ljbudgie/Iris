@@ -9,7 +9,6 @@
  * database, but the interface remains the same.
  */
 
-import { generateUUID } from "@/lib/utils";
 import type {
   Challenge,
   ChallengeStatus,
@@ -62,7 +61,7 @@ export function storeRecord({
   const now = new Date().toISOString();
 
   const record: VaultRecord = {
-    id: generateUUID(),
+    id: crypto.randomUUID(),
     userId,
     category,
     facts,
@@ -191,10 +190,15 @@ export function getVaultState(userId: string): VaultState {
     challenges,
     summary: {
       totalRecords: records.length,
-      sovereignCount: records.filter((r) => r.governanceStatus === "SOVEREIGN")
-        .length,
-      nullCount: records.filter((r) => r.governanceStatus === "NULL").length,
-      openChallenges: challenges.filter((c) => c.status === "open").length,
+      sovereignCount: records.filter(
+        (r) => r.governanceStatus === "SOVEREIGN"
+      ).length,
+      nullCount: records.filter(
+        (r) => r.governanceStatus === "NULL"
+      ).length,
+      openChallenges: challenges.filter(
+        (c) => c.status === "open"
+      ).length,
     },
   };
 }

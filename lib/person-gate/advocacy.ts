@@ -115,7 +115,7 @@ export function generateTribunalExport({
       sections.push("");
       sections.push("**Facts:**");
       sections.push("");
-      sections.push(`> ${record.facts.replaceAll("\n", "\n> ")}`);
+      sections.push(`> ${record.facts.replace(/\n/g, "\n> ")}`);
       sections.push("");
     }
   }

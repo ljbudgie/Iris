@@ -7,7 +7,6 @@
  */
 
 import { CERTIFICATION_MARK } from "@/lib/federation/governance";
-import { generateUUID } from "@/lib/utils";
 import type { Commitment, Receipt } from "./types";
 
 /**

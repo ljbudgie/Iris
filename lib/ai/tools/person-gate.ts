@@ -15,6 +15,8 @@ import {
 } from "@/lib/person-gate";
 import type { SkillDefinition } from "../skills/types";
 
+const MAX_FACTS_SUMMARY_LENGTH = 100;
+
 // ---------------------------------------------------------------------------
 // Tool: personGateCommit — commit personal facts to the sovereign vault
 // ---------------------------------------------------------------------------
@@ -86,7 +88,7 @@ const personGateStatusTool = tool({
         governanceStatus: r.governanceStatus,
         createdAt: r.createdAt,
         // Facts are summarised, not exposed in full
-        factsSummary: r.facts.length > 100 ? `${r.facts.slice(0, 100)}…` : r.facts,
+        factsSummary: r.facts.length > MAX_FACTS_SUMMARY_LENGTH ? `${r.facts.slice(0, MAX_FACTS_SUMMARY_LENGTH)}…` : r.facts,
       })),
       challenges: state.challenges.map((c) => ({
         id: c.id,

@@ -14,7 +14,6 @@
  * User is sovereign.  See the human first.  Never act on blanket automation.
  */
 
-import { generateUUID } from "@/lib/utils";
 import { generateAdvocacyText } from "./advocacy";
 import { createCommitment, validateReceipt } from "./crypto";
 import type {
@@ -70,7 +69,7 @@ export class PersonGate {
     category: VaultCategory;
   }): Promise<CommitResult> {
     // Generate the cryptographic commitment first
-    const tempId = generateUUID();
+    const tempId = crypto.randomUUID();
     const commitment = await createCommitment({
       facts,
       vaultRecordId: tempId,
@@ -144,7 +143,7 @@ export class PersonGate {
       });
 
       const challenge: Challenge = {
-        id: generateUUID(),
+        id: crypto.randomUUID(),
         vaultRecordId: commitment.vaultRecordId,
         userId: this.userId,
         commitment,

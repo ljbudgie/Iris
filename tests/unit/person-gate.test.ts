@@ -304,7 +304,13 @@ describe("PersonGate: Vault State Summary", () => {
   it("counts only open challenges", () => {
     const now = new Date().toISOString();
     const challenges: Challenge[] = [
-      { id: "c1", vaultRecordId: "1", userId: "u1", status: "open", createdAt: now },
+      {
+        id: "c1",
+        vaultRecordId: "1",
+        userId: "u1",
+        status: "open",
+        createdAt: now,
+      },
       {
         id: "c2",
         vaultRecordId: "2",
