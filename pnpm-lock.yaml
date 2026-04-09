@@ -26,6 +26,9 @@ importers:
       '@codemirror/view':
         specifier: ^6.35.3
         version: 6.36.4
+      '@iris-gate/person':
+        specifier: github:ljbudgie/iris-gate-person
+        version: https://codeload.github.com/ljbudgie/iris-gate-person/tar.gz/df65b3fdb469007126bae0e7040c036e72db6a7b
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
@@ -1039,6 +1042,10 @@ packages:
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [x64]
     os: [win32]
+
+  '@iris-gate/person@https://codeload.github.com/ljbudgie/iris-gate-person/tar.gz/df65b3fdb469007126bae0e7040c036e72db6a7b':
+    resolution: {tarball: https://codeload.github.com/ljbudgie/iris-gate-person/tar.gz/df65b3fdb469007126bae0e7040c036e72db6a7b}
+    version: 1.0.0
 
   '@isaacs/balanced-match@4.0.1':
     resolution: {integrity: sha512-yzMTt9lEb8Gv7zRioUilSglI0c0smZ9k5D65677DLWLtWJaXIS3CqcGyUFByYKlnUj6TkjLVs54fBl6+TiGQDQ==}
@@ -4612,6 +4619,8 @@ snapshots:
 
   '@img/sharp-win32-x64@0.34.5':
     optional: true
+
+  '@iris-gate/person@https://codeload.github.com/ljbudgie/iris-gate-person/tar.gz/df65b3fdb469007126bae0e7040c036e72db6a7b': {}
 
   '@isaacs/balanced-match@4.0.1': {}
 
