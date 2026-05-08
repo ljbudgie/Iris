@@ -90,7 +90,7 @@ export function ChatShell() {
         </div>
         <div
           className={cn(
-            "relative z-1 flex min-w-0 flex-1 flex-col transition-[flex] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]",
+            "relative z-10 flex min-w-0 flex-1 flex-col transition-[flex] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]",
             isArtifactVisible ? "md:max-w-[50%] lg:max-w-[45%]" : "w-full"
           )}
         >
@@ -128,7 +128,7 @@ export function ChatShell() {
               votes={votes}
             />
 
-            <div className="sticky bottom-0 z-1 mx-auto flex w-full max-w-4xl gap-2 border-t-0 px-2 pb-3 md:px-4 md:pb-4">
+            <div className="sticky bottom-0 z-10 mx-auto flex w-full max-w-4xl gap-2 border-t-0 px-2 pb-3 md:px-4 md:pb-4">
               {!isReadonly && (
                 <MultimodalInput
                   attachments={attachments}
