@@ -232,17 +232,17 @@ export async function POST(request: Request) {
       country,
     };
 
-    const latestUserTextForTurn = message?.parts
+    const currentTurnText = message?.parts
       ? extractTextFromParts(
           message.parts as Array<{ type: string; text?: string }>
         )
       : "";
 
     let personGateAssessment: PersonGateAssessment | undefined;
-    if (latestUserTextForTurn) {
+    if (currentTurnText) {
       personGateAssessment = await commitPersonalContext({
         label: `chat:${id}:${message?.id ?? "turn"}`,
-        facts: latestUserTextForTurn,
+        facts: currentTurnText,
         tags: ["chat-turn"],
       });
     }
@@ -308,7 +308,7 @@ export async function POST(request: Request) {
         // ---------------------------------------------------------------
         // Intelligence layer: memory, templates, and routing label
         // ---------------------------------------------------------------
-        const latestUserText = latestUserTextForTurn;
+        const latestUserText = currentTurnText;
 
         // Query MemPalace for relevant user context (non-blocking fallback)
         let memoryContext: string | undefined;

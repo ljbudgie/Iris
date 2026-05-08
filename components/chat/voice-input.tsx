@@ -22,6 +22,10 @@ type VoiceInputProps = {
   iconClassName?: string;
 };
 
+/**
+ * Browser speech-recognition control used inline on desktop and as the
+ * sovereign floating voice button on mobile.
+ */
 function PureVoiceInput({
   onTranscript,
   setInput,

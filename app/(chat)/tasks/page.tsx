@@ -21,8 +21,12 @@ export default function AssistantTasksPage() {
         throw new Error("Failed to load tasks");
       }
       setTasks(await res.json());
-    } catch {
-      toast.error("Failed to load assistant tasks.");
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? `Failed to load assistant tasks: ${error.message}`
+          : "Failed to load assistant tasks."
+      );
     } finally {
       setIsLoading(false);
     }

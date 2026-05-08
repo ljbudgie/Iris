@@ -71,15 +71,19 @@ export default function MemoryPalacePage() {
   };
 
   const exportMemory = () => {
-    const blob = new Blob([JSON.stringify(memory ?? {}, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `iris-memory-${new Date().toISOString()}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
+    try {
+      const blob = new Blob([JSON.stringify(memory ?? {}, null, 2)], {
+        type: "application/json",
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `iris-memory-${new Date().toISOString()}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      toast.error("Could not export the current memory view.");
+    }
   };
 
   return (
