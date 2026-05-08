@@ -5,6 +5,7 @@ import {
   DownloadIcon,
   SearchIcon,
   ShieldCheckIcon,
+  Trash2Icon,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -86,6 +87,28 @@ export default function MemoryPalacePage() {
     }
   };
 
+  const forget = async (memoryId: string) => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/api/memory/${encodeURIComponent(
+          memoryId
+        )}`,
+        { method: "DELETE" }
+      );
+      if (!res.ok) {
+        throw new Error("forget failed");
+      }
+      toast.success("Forgotten. Iris will exclude this from future answers.");
+      loadMemory(query);
+    } catch {
+      toast.error("Could not forget that memory.");
+    }
+  };
+
+  const sourceOfTruthLabel = memory?.configured
+    ? "MemPalace (local) — authoritative"
+    : "Session only — set MEMPALACE_MCP_COMMAND for persistence";
+
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-6 px-4 py-8">
       <div className="rounded-3xl border border-[rgba(15,118,110,0.25)] bg-[linear-gradient(135deg,rgba(15,118,110,0.16),rgba(214,188,143,0.08))] p-5 shadow-[var(--shadow-float)]">
@@ -98,6 +121,10 @@ export default function MemoryPalacePage() {
             <p className="text-muted-foreground text-sm">
               User-approved memory controls for Iris. Nothing is stored here
               unless you choose to remember it.
+            </p>
+            <p className="mt-1 inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[0.12em] text-[#5eead4]">
+              <ShieldCheckIcon className="size-3" />
+              {sourceOfTruthLabel}
             </p>
           </div>
         </div>
@@ -164,15 +191,57 @@ export default function MemoryPalacePage() {
 
       <section className="rounded-2xl border bg-card/40 p-4">
         <h2 className="mb-3 font-medium">Current palace view</h2>
-        <pre className="max-h-[480px] overflow-auto rounded-xl bg-background p-3 text-[11px] text-muted-foreground">
-          {isLoading
-            ? "Loading…"
-            : JSON.stringify(
-                memory?.results ?? memory?.status ?? memory,
-                null,
-                2
-              )}
-        </pre>
+        {(() => {
+          const results =
+            (memory?.results as
+              | {
+                  id?: string;
+                  content?: string;
+                  wing?: string;
+                  room?: string;
+                }[]
+              | undefined) ?? [];
+          if (isLoading) {
+            return <p className="text-muted-foreground text-sm">Loading…</p>;
+          }
+          if (Array.isArray(results) && results.length > 0) {
+            return (
+              <ul className="flex flex-col gap-2">
+                {results.map((row, i) => {
+                  const id = row.id ?? `row-${i}`;
+                  return (
+                    <li
+                      className="flex items-start gap-2 rounded-xl border border-border/60 bg-background p-3 text-[12px]"
+                      key={id}
+                    >
+                      <div className="min-w-0 flex-1">
+                        <div className="text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+                          {[row.wing, row.room].filter(Boolean).join(" / ")}
+                        </div>
+                        <div className="mt-0.5 break-words text-foreground">
+                          {row.content ?? JSON.stringify(row)}
+                        </div>
+                      </div>
+                      <button
+                        aria-label="Forget this memory"
+                        className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-[rgba(239,68,68,0.3)] px-2 py-1 text-[10px] uppercase tracking-[0.1em] text-[#fca5a5] transition-colors hover:bg-[rgba(239,68,68,0.1)]"
+                        onClick={() => forget(id)}
+                        type="button"
+                      >
+                        <Trash2Icon className="size-3" /> Forget
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            );
+          }
+          return (
+            <pre className="max-h-[480px] overflow-auto rounded-xl bg-background p-3 text-[11px] text-muted-foreground">
+              {JSON.stringify(memory?.status ?? memory, null, 2)}
+            </pre>
+          );
+        })()}
       </section>
     </div>
   );

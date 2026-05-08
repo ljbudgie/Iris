@@ -1,0 +1,45 @@
+# Local dev stack for Iris.
+#
+# Brings up a Postgres database (and optionally Redis) so that a
+# non-technical user can run `pnpm setup` and have a working local
+# Iris without installing Postgres / Redis on their host.
+#
+# Started automatically by scripts/setup.sh and scripts/setup.ps1.
+# To run manually:
+#
+#   docker compose up -d         # start
+#   docker compose down          # stop
+#   docker compose down -v       # stop and wipe data
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: iris_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: iris_local
+      POSTGRES_USER: iris
+      POSTGRES_PASSWORD: iris_local_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - iris_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U iris -d iris_local"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Optional: uncomment to enable resumable streams.
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: iris_redis
+  #   restart: unless-stopped
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - iris_redis_data:/data
+
+volumes:
+  iris_postgres_data:
+  # iris_redis_data:

@@ -21,7 +21,13 @@ Full KaTeX, Mermaid, interactive tables. Floating multimodal input pill with dra
 Elegant governance ribbon. Collaborative artifacts panel with diffs and one-click letter exports. Visual Memory Palace gallery. Expandable “Show my thinking” transparency layer.
 
 ## 5. Onboarding
-3-card guided flow with beautiful situation cards and 15-second Burgess Principle overlay.
+3-card guided flow with beautiful situation cards and 15-second Burgess Principle overlay. Implemented at `/onboarding` (`app/(chat)/onboarding/page.tsx`): step 1 picks Local / Cloud / Hybrid mode, step 2 picks an AI provider (preselects Ollama if reachable on `http://localhost:11434`, otherwise offers the AI Gateway), step 3 is the Burgess Principle overlay with a one-line attribution to Lewis Burgess and the trademark number.
+
+## 5a. Sovereign Defaults & Hub Mode
+Iris is local-first by default: `IRIS_LOCAL_ONLY=1` is the default in `.env.example` and the smart router is forbidden from selecting any cloud-only model in this mode. A startup preflight banner makes the promise auditable. **Sovereign Hub Mode** (`IRIS_HUB_MODE=1`, `app/(chat)/api/hub/route.ts`, `docs/sovereign-hub.md`) lets one machine in a household or advocacy office act as a memory/skill peer for other Iris instances on the same network, so phones and tablets connect to it instead of the cloud. **Memory Palace is the single source of truth** when configured — the `/memory` page surfaces this with a live indicator and a per-row "Forget" affordance backed by `DELETE /api/memory/:id`.
+
+## 5b. Calm Mode & Reduced Motion
+Iris honours `prefers-reduced-motion` (CSS in `app/globals.css`), auto-detects low-battery / save-data / low-memory devices via `hooks/use-perf-mode.ts`, and ships a manual **Calm mode** toggle in the ⌘K command palette. In lite mode the chat shell drops the animated particle layer and large blurs in favour of a single static gradient.
 
 ## 6. Tech & Polish
 shadcn/ui + Tailwind + Radix + Framer Motion + Sonner. WCAG 2.2 AA+. Optimistic UI. Every change must feel warmer and more respectful than Grok or Claude.

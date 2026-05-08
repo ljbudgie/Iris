@@ -324,6 +324,53 @@
   }
 }
 
+/*
+ * Performance / accessibility — honour `prefers-reduced-motion` and reduce
+ * decorative GPU cost on small screens. The `.perf-lite` class is added to
+ * `<body>` by the chat shell when `usePerfMode()` returns "lite" (low
+ * battery, save-data, low-memory, or Calm mode).
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .memory-particles {
+    animation: none !important;
+    opacity: 0;
+  }
+
+  .sovereign-glow,
+  .sovereign-glow-top,
+  .sovereign-glow-bottom {
+    filter: none !important;
+    opacity: 0.35;
+  }
+}
+
+@media (max-width: 768px) {
+  .sovereign-glow {
+    /* Blur is the dominant GPU cost on mobile — cap it. */
+    filter: blur(32px);
+  }
+}
+
+.perf-lite .memory-particles,
+.perf-lite .sovereign-glow-top,
+.perf-lite .sovereign-glow-bottom {
+  display: none;
+}
+
+.perf-lite .sovereign-glow {
+  filter: none;
+  opacity: 0.4;
+}
+
 @utility text-balance {
   text-wrap: balance;
 }

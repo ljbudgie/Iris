@@ -1,6 +1,11 @@
 import { customProvider, gateway } from "ai";
 import { isTestEnvironment } from "../constants";
 import { titleModel } from "./models";
+import {
+  isLocalOnly,
+  isOllamaConfigured,
+  ollamaLanguageModel,
+} from "./providers/ollama";
 
 export const myProvider = isTestEnvironment
   ? (() => {
@@ -14,28 +19,37 @@ export const myProvider = isTestEnvironment
     })()
   : null;
 
-export function getLanguageModel(modelId: string) {
+/**
+ * Resolve a language model for the given id.
+ *
+ * Order of preference:
+ *   1. Test environment uses the in-process mock provider.
+ *   2. When `IRIS_LOCAL_ONLY=1` we route through Ollama (failing loudly
+ *      with a friendly message that points at the onboarding wizard if
+ *      nothing local is configured).
+ *   3. Otherwise we fall back to the Vercel AI Gateway.
+ */
+function resolveProvider(modelId: string) {
   if (isTestEnvironment && myProvider) {
     return myProvider.languageModel(modelId);
   }
 
-  if (process.env.IRIS_LOCAL_ONLY === "1") {
-    throw new Error(
-      `Local-only mode is enabled, so cloud model "${modelId}" cannot be used. Configure a local provider before chatting.`
-    );
+  if (isLocalOnly()) {
+    if (!isOllamaConfigured()) {
+      throw new Error(
+        "Local-only mode is enabled, but no local provider is configured. Visit /onboarding to pick a provider, or set OLLAMA_BASE_URL."
+      );
+    }
+    return ollamaLanguageModel(modelId);
   }
 
   return gateway.languageModel(modelId);
 }
 
+export function getLanguageModel(modelId: string) {
+  return resolveProvider(modelId);
+}
+
 export function getTitleModel() {
-  if (isTestEnvironment && myProvider) {
-    return myProvider.languageModel("title-model");
-  }
-  if (process.env.IRIS_LOCAL_ONLY === "1") {
-    throw new Error(
-      "Local-only mode is enabled, so cloud title generation cannot be used."
-    );
-  }
-  return gateway.languageModel(titleModel.id);
+  return resolveProvider(titleModel.id);
 }

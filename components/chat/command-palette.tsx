@@ -2,6 +2,7 @@
 
 import {
   FileTextIcon,
+  HeartIcon,
   MoonIcon,
   PenSquareIcon,
   SearchIcon,
@@ -20,11 +21,17 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
+import { readPreferences, writePreferences } from "@/lib/setup/preferences";
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
+  const [calmMode, setCalmMode] = useState(false);
   const router = useRouter();
   const { setTheme, resolvedTheme } = useTheme();
+
+  useEffect(() => {
+    setCalmMode(readPreferences().calmMode);
+  }, []);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if ((e.metaKey || e.ctrlKey) && e.key === "k") {
@@ -42,6 +49,17 @@ export function CommandPalette() {
     setOpen(false);
     command();
   }, []);
+
+  const toggleCalmMode = () => {
+    const next = !calmMode;
+    setCalmMode(next);
+    writePreferences({ calmMode: next });
+    // Notify usePerfMode subscribers without a full page reload — they
+    // listen for this event and re-evaluate their decision logic.
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event("iris:preferences-changed"));
+    }
+  };
 
   return (
     <CommandDialog
@@ -87,6 +105,10 @@ export function CommandPalette() {
             <ShieldCheckIcon className="size-4" />
             <span>Federation providers</span>
           </CommandItem>
+          <CommandItem onSelect={() => runCommand(() => router.push("/hub"))}>
+            <ShieldCheckIcon className="size-4" />
+            <span>Sovereign Hub</span>
+          </CommandItem>
         </CommandGroup>
 
         <CommandSeparator />
@@ -106,6 +128,12 @@ export function CommandPalette() {
             )}
             <span>
               Switch to {resolvedTheme === "dark" ? "light" : "dark"} mode
+            </span>
+          </CommandItem>
+          <CommandItem onSelect={() => runCommand(toggleCalmMode)}>
+            <HeartIcon className="size-4" />
+            <span>
+              {calmMode ? "Disable" : "Enable"} Calm mode (low motion)
             </span>
           </CommandItem>
         </CommandGroup>

@@ -1,0 +1,19 @@
+{
+  "name": "Iris — sovereign AI companion",
+  "short_name": "Iris",
+  "description": "Open-source AI companion governed by the Burgess Principle.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#08080c",
+  "theme_color": "#08080c",
+  "icons": [
+    {
+      "src": "/preview.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

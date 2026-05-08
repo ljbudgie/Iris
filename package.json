@@ -4,6 +4,7 @@
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
   "scripts": {
+    "setup": "node -e \"const p=process.platform==='win32'?'powershell -ExecutionPolicy Bypass -File scripts/setup.ps1':'bash scripts/setup.sh';require('child_process').spawnSync(p,{stdio:'inherit',shell:true})\"",
     "dev": "next dev --turbo",
     "build": "tsx lib/db/migrate && next build",
     "start": "next start",

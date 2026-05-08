@@ -1,5 +1,8 @@
 # Iris — your sovereign AI companion
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fljbudgie%2FIris&project-name=iris&repository-name=iris&env=AUTH_SECRET&envDescription=Click%20%22Generate%22%20to%20create%20a%20random%20auth%20secret&envLink=https%3A%2F%2Fgenerate-secret.vercel.app%2F32&products=%5B%7B%22type%22%3A%22integration%22%2C%22protocol%22%3A%22storage%22%2C%22productSlug%22%3A%22neon%22%2C%22integrationSlug%22%3A%22neon%22%7D%2C%7B%22type%22%3A%22integration%22%2C%22protocol%22%3A%22storage%22%2C%22productSlug%22%3A%22upstash-kv%22%2C%22integrationSlug%22%3A%22upstash%22%7D%2C%7B%22type%22%3A%22blob%22%7D%5D)
+&nbsp; · &nbsp; [One-command local setup](#quick-start) &nbsp; · &nbsp; [30-second guide](./docs/deploy.md)
+
 Open-source, mobile-first AI companion governed by the [Burgess Principle](https://github.com/ljbudgie/burgess-principle) (UK00004343685). Iris helps ordinary people ask institutions to treat them as real individuals — calmly, clearly, and on their own terms.
 
 ![License](https://img.shields.io/badge/license-SEE%20LICENSE-blue) ![Next.js](https://img.shields.io/badge/Next.js-16-black) ![React](https://img.shields.io/badge/React-19-61dafb) ![pnpm](https://img.shields.io/badge/pnpm-10-f69220) ![Playwright](https://img.shields.io/badge/tested%20with-Playwright-2EAD33)
@@ -8,9 +11,11 @@ Open-source, mobile-first AI companion governed by the [Burgess Principle](https
 
 ## What is Iris?
 
-Iris is an open-source AI companion designed around a single belief: **the user is sovereign**. Privacy and dignity come first, and automation must prove that a human judicial mind was applied — or be challenged.
+I'm Lewis Burgess. I built Iris because I'm disabled, and I got tired of asking institutions to treat me as a real human being. The [Burgess Principle](https://github.com/ljbudgie/burgess-principle) (UK Certification Mark UK00004343685) was registered for one reason: every decision made about a person should have had a human judicial mind applied to the specific facts of that specific case. Iris is the consumer-facing tool that makes that principle pocket-sized — it sits in your pocket and helps you ask the question, calmly, in language that's hard to dismiss.
 
 Iris is built for people navigating decisions made by councils, the DWP, HMRC, courts, tribunals, landlords, schools, the NHS and other institutions. It offers calm, factual letter templates, a Memory Palace for personal context, governance-aware routing, and tribunal-ready exports — all without sending raw personal facts to anyone you didn't intend.
+
+> **Why I built this →** see [`docs/founder.md`](./docs/founder.md).
 
 Iris is **not legal advice** and AI can make mistakes — please read the [Disclaimer](./DISCLAIMER.md) before relying on any output. The single source of truth for product direction is [`iris-master-vision.md`](./iris-master-vision.md); every change to the repo should advance that vision.
 
@@ -20,6 +25,13 @@ Iris is **not legal advice** and AI can make mistakes — please read the [Discl
 
 Recent upgrades that the rest of this README expands on:
 
+- **One-command local setup** — `pnpm setup` brings up Postgres in Docker, writes a sovereign `.env.local`, runs migrations and starts the dev server (`scripts/setup.sh`, `scripts/setup.ps1`, `docker-compose.yml`).
+- **First-run wizard & PWA** — three-step onboarding at `/onboarding` (Local / Cloud / Hybrid + provider + Burgess Principle overlay) and a one-tap "Add to home screen" prompt on mobile (`app/(chat)/onboarding/page.tsx`, `components/install-prompt.tsx`, `public/manifest.webmanifest`).
+- **Local-first by default** — `IRIS_LOCAL_ONLY=1` is the new default, with an Ollama-backed local provider, a startup preflight banner, and a smart-router defence-in-depth guard (`lib/ai/providers.ts`, `lib/ai/providers/ollama.ts`, `lib/ai/preflight.ts`, `lib/ai/smart-router.ts`).
+- **PersonGate enforced, visibly** — every chat turn runs a sovereign-handling assessment, with a "PersonGate active — commitment xxxx" chip surfaced on the greeting (`app/(chat)/api/chat/route.ts`, `components/chat/greeting.tsx`, `lib/person-gate/`).
+- **Memory Palace as source of truth** — the `/memory` page now shows whether MemPalace is authoritative or session-only, and lets you "Forget" any row (`app/(chat)/memory/page.tsx`, `app/(chat)/api/memory/`).
+- **Sovereign Hub Mode** — opt-in `IRIS_HUB_MODE=1` exposes a federation endpoint so phones / tablets in a household or advocacy office can connect to one Iris hub instead of the cloud (`app/(chat)/api/hub/route.ts`, `app/(chat)/hub/page.tsx`, [`docs/sovereign-hub.md`](./docs/sovereign-hub.md)).
+- **Calm mode & reduced-motion** — the chat shell honours `prefers-reduced-motion`, auto-detects low-battery / save-data / low-memory devices, and offers a manual "Calm mode" in ⌘K (`hooks/use-reduced-motion.ts`, `hooks/use-perf-mode.ts`, `app/globals.css`, `components/chat/command-palette.tsx`).
 - **Sovereign Command Centre UI** — mobile-first immersive canvas, warm teal/sandstone palette, living Iris orb, governance ribbon and ⌘K command palette (`components/chat/`, `components/ui/`, `app/globals.css`).
 - **Intelligence layer** — smart router with Auto model selection, prompt templates, conversation memory, consensus mode and a quality loop (`lib/ai/smart-router.ts`, `lib/ai/templates.ts`, `lib/ai/memory.ts`, `lib/ai/consensus.ts`, `lib/ai/quality-loop.ts`, `lib/ai/system-prompt.ts`).
 - **PersonGate sovereign data handling** — optional `@iris-gate/person` integration loaded dynamically so Iris keeps working when the package isn't installed (`lib/person-gate/index.ts`).
@@ -53,16 +65,26 @@ Versions below are taken from [`package.json`](./package.json):
 
 ## Quick start
 
+The fastest path — one command from a fresh clone:
+
 ```bash
 git clone https://github.com/ljbudgie/Iris.git
 cd Iris
+pnpm setup
+```
+
+`pnpm setup` brings up Postgres in Docker, writes `.env.local` (with a fresh `AUTH_SECRET` and `IRIS_LOCAL_ONLY=1`), installs deps, runs migrations and starts the dev server. See [`docs/deploy.md`](./docs/deploy.md) for the click-only Vercel path and [`docs/self-hosting.md`](./docs/self-hosting.md) for a manual walkthrough.
+
+If you'd rather do it by hand:
+
+```bash
 pnpm install
 cp .env.example .env.local   # then fill in the values you need
 pnpm db:migrate
 pnpm dev
 ```
 
-Iris runs at <http://localhost:3000>. For one-click cloud deployment, see [`vercel-template.json`](./vercel-template.json).
+Iris runs at <http://localhost:3000>. For one-click cloud deployment, see [`vercel-template.json`](./vercel-template.json) and the **Deploy with Vercel** button at the top of this README.
 
 ---
 
@@ -80,6 +102,7 @@ From [`package.json`](./package.json):
 
 | Script | What it does |
 |---|---|
+| `pnpm setup` | One-command local setup: Postgres in Docker, `.env.local`, migrations, dev server |
 | `pnpm dev` | Run the Next.js dev server with Turbopack |
 | `pnpm build` | Run database migrations, then build for production |
 | `pnpm start` | Start the production server |

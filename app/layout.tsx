@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   ),
   title: "Iris",
   description: "An open-source AI assistant built on The Burgess Principle.",
+  manifest: "/manifest.webmanifest",
 };
 
 export const viewport = {

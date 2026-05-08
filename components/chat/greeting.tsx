@@ -114,7 +114,8 @@ export const Greeting = ({
             fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace",
           }}
         >
-          What can I help you with?
+          {/* FOUNDER-VOICE: confirm wording with Lewis before merge. */}
+          Tell me what they did. We'll work out what to ask, together.
         </p>
       </motion.div>
 
@@ -127,18 +128,19 @@ export const Greeting = ({
       >
         {[
           {
-            label: "I need help with something specific",
-            message: "I need help with something specific",
+            label: "Help me draft a letter to an institution",
+            message:
+              "Help me draft a calm, factual letter to an institution about a decision they made.",
           },
           {
-            label: "I want to explore what you can do",
+            label: "A reasonable adjustment was refused",
+            message:
+              "A reasonable adjustment I asked for was refused. Help me push back, calmly and with the right framing.",
+          },
+          {
+            label: "Show me what you can do",
             message:
               "What can you do? Show me your capabilities across different models and tools.",
-          },
-          {
-            label: "Tell me how you're different",
-            message:
-              "How are you different from other AI assistants like ChatGPT or Claude?",
           },
         ].map((action) => (
           <button

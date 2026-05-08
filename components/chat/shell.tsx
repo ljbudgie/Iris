@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { InstallPrompt } from "@/components/install-prompt";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,6 +25,7 @@ import {
   useArtifact,
   useArtifactSelector,
 } from "@/hooks/use-artifact";
+import { usePerfMode } from "@/hooks/use-perf-mode";
 import type { Attachment, ChatMessage } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { ActionPlan } from "./action-plan";
@@ -33,6 +35,7 @@ import { DataStreamHandler } from "./data-stream-handler";
 import { submitEditedMessage } from "./message-editor";
 import { Messages } from "./messages";
 import { MultimodalInput } from "./multimodal-input";
+import { PersonGateChip } from "./person-gate-chip";
 
 export function ChatShell() {
   const {
@@ -66,6 +69,18 @@ export function ChatShell() {
   const stopRef = useRef(stop);
   stopRef.current = stop;
 
+  // Honour Calm mode / reduced-motion / save-data / low battery.
+  const perfMode = usePerfMode();
+  useEffect(() => {
+    if (typeof document === "undefined") {
+      return;
+    }
+    document.body.classList.toggle("perf-lite", perfMode === "lite");
+    return () => {
+      document.body.classList.remove("perf-lite");
+    };
+  }, [perfMode]);
+
   const prevChatIdRef = useRef(chatId);
   useEffect(() => {
     if (prevChatIdRef.current !== chatId) {
@@ -84,9 +99,22 @@ export function ChatShell() {
         style={{ background: "var(--surface-0)" }}
       >
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="sovereign-glow sovereign-glow-top" />
-          <div className="sovereign-glow sovereign-glow-bottom" />
-          <div className="memory-particles absolute inset-0 opacity-50" />
+          {perfMode === "full" ? (
+            <>
+              <div className="sovereign-glow sovereign-glow-top" />
+              <div className="sovereign-glow sovereign-glow-bottom" />
+              <div className="memory-particles absolute inset-0 opacity-50" />
+            </>
+          ) : (
+            <div
+              aria-hidden="true"
+              className="absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(ellipse at 50% 0%, rgba(15,118,110,0.10), transparent 60%)",
+              }}
+            />
+          )}
         </div>
         <div
           className={cn(
@@ -128,44 +156,47 @@ export function ChatShell() {
               votes={votes}
             />
 
-            <div className="sticky bottom-0 z-10 mx-auto flex w-full max-w-4xl gap-2 border-t-0 px-2 pb-3 md:px-4 md:pb-4">
-              {!isReadonly && (
-                <MultimodalInput
-                  attachments={attachments}
-                  chatId={chatId}
-                  editingMessage={editingMessage}
-                  input={input}
-                  isLoading={isLoading}
-                  messages={messages}
-                  onCancelEdit={() => {
-                    setEditingMessage(null);
-                    setInput("");
-                  }}
-                  onModelChange={setCurrentModelId}
-                  selectedModelId={currentModelId}
-                  selectedVisibilityType={visibilityType}
-                  sendMessage={
-                    editingMessage
-                      ? async () => {
-                          const msg = editingMessage;
-                          setEditingMessage(null);
-                          await submitEditedMessage({
-                            message: msg,
-                            text: input,
-                            setMessages,
-                            regenerate,
-                          });
-                          setInput("");
-                        }
-                      : sendMessage
-                  }
-                  setAttachments={setAttachments}
-                  setInput={setInput}
-                  setMessages={setMessages}
-                  status={status}
-                  stop={stop}
-                />
-              )}
+            <div className="sticky bottom-0 z-10 mx-auto flex w-full max-w-4xl flex-col gap-1 border-t-0 px-2 pb-3 md:px-4 md:pb-4">
+              {!isReadonly && <PersonGateChip text={input} />}
+              <div className="flex w-full gap-2">
+                {!isReadonly && (
+                  <MultimodalInput
+                    attachments={attachments}
+                    chatId={chatId}
+                    editingMessage={editingMessage}
+                    input={input}
+                    isLoading={isLoading}
+                    messages={messages}
+                    onCancelEdit={() => {
+                      setEditingMessage(null);
+                      setInput("");
+                    }}
+                    onModelChange={setCurrentModelId}
+                    selectedModelId={currentModelId}
+                    selectedVisibilityType={visibilityType}
+                    sendMessage={
+                      editingMessage
+                        ? async () => {
+                            const msg = editingMessage;
+                            setEditingMessage(null);
+                            await submitEditedMessage({
+                              message: msg,
+                              text: input,
+                              setMessages,
+                              regenerate,
+                            });
+                            setInput("");
+                          }
+                        : sendMessage
+                    }
+                    setAttachments={setAttachments}
+                    setInput={setInput}
+                    setMessages={setMessages}
+                    status={status}
+                    stop={stop}
+                  />
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -209,6 +240,7 @@ export function ChatShell() {
       </div>
 
       <DataStreamHandler />
+      <InstallPrompt />
 
       <AlertDialog
         onOpenChange={setShowCreditCardAlert}

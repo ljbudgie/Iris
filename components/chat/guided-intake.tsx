@@ -3,6 +3,7 @@
 import type { UseChatHelpers } from "@ai-sdk/react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
+  AccessibilityIcon,
   AlertTriangleIcon,
   FileTextIcon,
   GavelIcon,
@@ -62,6 +63,16 @@ const intakeCategories: IntakeCategory[] = [
     description: "Subject Access Request or Freedom of Information",
     prompt:
       "I'd like to find out what data an organisation holds about me. Can you guide me through a Subject Access Request or FOI?",
+  },
+  {
+    // FOUNDER-VOICE: this category is first-class on purpose — disability
+    // rights is the use case Iris was built for, not a footnote.
+    id: "adjustment",
+    icon: <AccessibilityIcon className="size-4" />,
+    label: "Reasonable adjustment refused",
+    description: "An access need or accommodation has been denied",
+    prompt:
+      "A reasonable adjustment I asked for has been refused. Help me push back, calmly, with the correct legal framing and the specific facts of my case.",
   },
   {
     id: "other",

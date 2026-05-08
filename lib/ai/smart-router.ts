@@ -17,6 +17,31 @@
 
 import { chatModels } from "./models";
 
+// Cloud-only model providers — in local-only mode, the smart router
+// must refuse to select these regardless of UI selection. This is
+// defence-in-depth on top of `lib/ai/providers.ts::resolveProvider`.
+const CLOUD_ONLY_PROVIDERS = new Set([
+  "openai",
+  "moonshotai",
+  "deepseek",
+  "mistral",
+  "xai",
+  "anthropic",
+]);
+
+/**
+ * Returns true if the smart router is forbidden from selecting `modelId`
+ * (e.g. when running in `IRIS_LOCAL_ONLY=1` mode and the model is a
+ * cloud-only one).
+ */
+export function isCloudModelBlocked(modelId: string): boolean {
+  if (process.env.IRIS_LOCAL_ONLY !== "1") {
+    return false;
+  }
+  const provider = modelId.split("/")[0]?.toLowerCase();
+  return Boolean(provider && CLOUD_ONLY_PROVIDERS.has(provider));
+}
+
 // ---- Model IDs (must match models.ts) ----
 
 const MODEL_IDS = {
@@ -143,6 +168,19 @@ export function routeMessage(
   message: string,
   hasAttachments = false
 ): RoutingResult {
+  // Defence-in-depth: when local-only is on, refuse to route to any
+  // cloud-only provider. The provider layer also blocks this, but we
+  // short-circuit here so the routing label and audit trail are honest.
+  if (process.env.IRIS_LOCAL_ONLY === "1") {
+    return {
+      modelId: "ollama/local",
+      modelName: "Ollama (local)",
+      intent: "general",
+      reason: "local-only mode — using local provider",
+      confidence: 1,
+    };
+  }
+
   const text = message.trim();
 
   // Score each intent category
