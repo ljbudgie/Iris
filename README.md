@@ -1,7 +1,6 @@
 # Iris — your sovereign AI companion
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fljbudgie%2FIris&project-name=iris&repository-name=iris&env=AUTH_SECRET&envDescription=Click%20%22Generate%22%20to%20create%20a%20random%20auth%20secret&envLink=https%3A%2F%2Fgenerate-secret.vercel.app%2F32&products=%5B%7B%22type%22%3A%22integration%22%2C%22protocol%22%3A%22storage%22%2C%22productSlug%22%3A%22neon%22%2C%22integrationSlug%22%3A%22neon%22%7D%2C%7B%22type%22%3A%22integration%22%2C%22protocol%22%3A%22storage%22%2C%22productSlug%22%3A%22upstash-kv%22%2C%22integrationSlug%22%3A%22upstash%22%7D%2C%7B%22type%22%3A%22blob%22%7D%5D)
-&nbsp; · &nbsp; [One-command local setup](#quick-start) &nbsp; · &nbsp; [30-second guide](./docs/deploy.md)
+**[Run Iris offline →](./docs/self-hosting.md)** &nbsp; · &nbsp; [One-command local setup](#quick-start) &nbsp; · &nbsp; [30-second offline guide](./docs/deploy.md)
 
 Open-source, mobile-first AI companion governed by the [Burgess Principle](https://github.com/ljbudgie/burgess-principle) (UK00004343685). Iris helps ordinary people ask institutions to treat them as real individuals — calmly, clearly, and on their own terms.
 
@@ -73,7 +72,7 @@ cd Iris
 pnpm setup
 ```
 
-`pnpm setup` brings up Postgres in Docker, writes `.env.local` (with a fresh `AUTH_SECRET` and `IRIS_LOCAL_ONLY=1`), installs deps, runs migrations and starts the dev server. See [`docs/deploy.md`](./docs/deploy.md) for the click-only Vercel path and [`docs/self-hosting.md`](./docs/self-hosting.md) for a manual walkthrough.
+`pnpm setup` brings up Postgres in Docker, writes `.env.local` (with a fresh `AUTH_SECRET` and `IRIS_LOCAL_ONLY=1`), installs deps, runs migrations and starts the dev server. See [`docs/deploy.md`](./docs/deploy.md) for the fastest offline path and [`docs/self-hosting.md`](./docs/self-hosting.md) for a manual walkthrough.
 
 If you'd rather do it by hand:
 
@@ -84,7 +83,7 @@ pnpm db:migrate
 pnpm dev
 ```
 
-Iris runs at <http://localhost:3000>. For one-click cloud deployment, see [`vercel-template.json`](./vercel-template.json) and the **Deploy with Vercel** button at the top of this README.
+Iris runs offline at <http://localhost:3000>. For a fully local walkthrough with no cloud services, see [`docs/self-hosting.md`](./docs/self-hosting.md).
 
 ---
 
