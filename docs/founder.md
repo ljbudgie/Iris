@@ -11,7 +11,7 @@ a system, and the system would produce a decision about me. If I disagreed,
 I had to ask the same system to look at me again. The harder the day, the
 worse the appeal I could write.
 
-I registered the **Burgess Principle** ([UK Certification Mark
+I registered the **Burgess Principle** ([UK certification mark
 UK00004343685](https://github.com/ljbudgie/burgess-principle)) as a
 mark that says, plainly: *every decision made about a person should have
 had a human judicial mind applied to the specific facts of that specific

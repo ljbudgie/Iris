@@ -80,7 +80,7 @@ export function InstallPrompt() {
       <div className="flex-1 text-[12px] text-[#e4e4e7]">
         <div className="font-medium">Add Iris to your home screen</div>
         <div className="mt-0.5 text-[11px] text-[#a1a1aa]">
-          One tap, no app store. Runs offline-friendly.
+          One tap, no app store. Works offline.
         </div>
       </div>
       <button
