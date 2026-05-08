@@ -80,7 +80,7 @@ export default function MemoryPalacePage() {
       link.href = url;
       link.download = `iris-memory-${new Date().toISOString()}.json`;
       link.click();
-      URL.revokeObjectURL(url);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch {
       toast.error("Could not export the current memory view.");
     }

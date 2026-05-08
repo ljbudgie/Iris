@@ -34,13 +34,6 @@ import { submitEditedMessage } from "./message-editor";
 import { Messages } from "./messages";
 import { MultimodalInput } from "./multimodal-input";
 
-const sovereignGlow = {
-  topOrb:
-    "absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-[rgba(15,118,110,0.18)] blur-3xl",
-  bottomOrb:
-    "absolute right-[-20%] bottom-[-10%] h-80 w-80 rounded-full bg-[rgba(214,188,143,0.12)] blur-3xl",
-};
-
 export function ChatShell() {
   const {
     chatId,
@@ -91,8 +84,8 @@ export function ChatShell() {
         style={{ background: "var(--surface-0)" }}
       >
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className={sovereignGlow.topOrb} />
-          <div className={sovereignGlow.bottomOrb} />
+          <div className="sovereign-glow sovereign-glow-top" />
+          <div className="sovereign-glow sovereign-glow-bottom" />
           <div className="memory-particles absolute inset-0 opacity-50" />
         </div>
         <div

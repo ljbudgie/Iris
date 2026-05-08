@@ -274,6 +274,47 @@
   animation: memory-particles-drift 24s linear infinite;
 }
 
+.sovereign-glow {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(64px);
+}
+
+.sovereign-glow-top {
+  top: -6rem;
+  left: 50%;
+  width: 18rem;
+  height: 18rem;
+  transform: translateX(-50%);
+  background: rgba(15, 118, 110, 0.18);
+}
+
+.sovereign-glow-bottom {
+  right: -20%;
+  bottom: -10%;
+  width: 20rem;
+  height: 20rem;
+  background: rgba(214, 188, 143, 0.12);
+}
+
+.sovereign-floating-voice {
+  position: absolute;
+  top: -4rem;
+  right: 0.75rem;
+  z-index: 10;
+  width: 3rem;
+  height: 3rem;
+  border-color: rgba(94, 234, 212, 0.35);
+  background: radial-gradient(
+    circle at 35% 30%,
+    rgba(94, 234, 212, 0.45),
+    rgba(15, 118, 110, 0.24) 42%,
+    rgba(8, 8, 12, 0.92)
+  );
+  color: #ccfbf1;
+  box-shadow: 0 0 32px rgba(15, 118, 110, 0.35);
+}
+
 @keyframes memory-particles-drift {
   from {
     transform: translate3d(0, 0, 0);

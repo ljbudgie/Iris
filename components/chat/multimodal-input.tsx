@@ -416,7 +416,7 @@ function PureMultimodalInput({
       </div>
 
       <VoiceInput
-        className="-top-16 right-3 absolute z-10 size-12 rounded-full border-[rgba(94,234,212,0.35)] bg-[radial-gradient(circle_at_35%_30%,rgba(94,234,212,0.45),rgba(15,118,110,0.24)_42%,rgba(8,8,12,0.92))] p-0 text-[#ccfbf1] shadow-[0_0_32px_rgba(15,118,110,0.35)] md:hidden"
+        className="sovereign-floating-voice md:hidden"
         disabled={status !== "ready"}
         iconClassName="size-5"
         onTranscript={(text) => setInput(text)}
