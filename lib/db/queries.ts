@@ -19,6 +19,7 @@ import type { VisibilityType } from "@/components/chat/visibility-selector";
 import { IrisError } from "../errors";
 import { generateUUID } from "../utils";
 import {
+  assistantTask,
   type Chat,
   chat,
   chatAuditLog,
@@ -97,6 +98,7 @@ export async function saveChat({
 export async function deleteChatById({ id }: { id: string }) {
   try {
     await db.delete(chatAuditLog).where(eq(chatAuditLog.chatId, id));
+    await db.delete(assistantTask).where(eq(assistantTask.chatId, id));
     await db
       .delete(humanReviewRequest)
       .where(eq(humanReviewRequest.chatId, id));
@@ -128,6 +130,9 @@ export async function deleteAllChatsByUserId({ userId }: { userId: string }) {
     const chatIds = userChats.map((c) => c.id);
 
     await db.delete(chatAuditLog).where(inArray(chatAuditLog.chatId, chatIds));
+    await db
+      .delete(assistantTask)
+      .where(inArray(assistantTask.chatId, chatIds));
     await db
       .delete(humanReviewRequest)
       .where(inArray(humanReviewRequest.chatId, chatIds));
@@ -752,6 +757,8 @@ export async function saveChatAuditEntry({
   totalTokens,
   toolsInvoked,
   governanceStatus,
+  personGateCommitment,
+  decisionReason,
 }: {
   chatId: string;
   messageId?: string;
@@ -762,6 +769,8 @@ export async function saveChatAuditEntry({
   totalTokens?: number;
   toolsInvoked?: string[];
   governanceStatus?: "SOVEREIGN" | "NULL";
+  personGateCommitment?: string;
+  decisionReason?: string;
 }) {
   try {
     const [entry] = await db
@@ -776,6 +785,8 @@ export async function saveChatAuditEntry({
         totalTokens: totalTokens ?? 0,
         toolsInvoked: toolsInvoked ?? [],
         governanceStatus: governanceStatus ?? null,
+        personGateCommitment: personGateCommitment ?? null,
+        decisionReason: decisionReason ?? null,
         createdAt: new Date(),
       })
       .returning();
@@ -785,6 +796,106 @@ export async function saveChatAuditEntry({
     throw new IrisError(
       "bad_request:database",
       "Failed to save chat audit entry"
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Personal Assistant Tasks
+// ---------------------------------------------------------------------------
+
+export async function createAssistantTask({
+  userId,
+  chatId,
+  title,
+  notes,
+  category,
+  dueAt,
+  metadata,
+}: {
+  userId: string;
+  chatId?: string;
+  title: string;
+  notes?: string;
+  category?: "task" | "reminder" | "case" | "goal" | "contact";
+  dueAt?: Date;
+  metadata?: Record<string, unknown>;
+}) {
+  try {
+    const [task] = await db
+      .insert(assistantTask)
+      .values({
+        userId,
+        chatId: chatId ?? null,
+        title,
+        notes: notes ?? null,
+        category: category ?? "task",
+        dueAt: dueAt ?? null,
+        metadata: metadata ?? {},
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .returning();
+
+    return task;
+  } catch (_error) {
+    throw new IrisError(
+      "bad_request:database",
+      "Failed to create assistant task"
+    );
+  }
+}
+
+export async function getAssistantTasksByUserId({
+  userId,
+  status = "open",
+}: {
+  userId: string;
+  status?: "open" | "done" | "archived" | "all";
+}) {
+  try {
+    const conditions =
+      status === "all"
+        ? eq(assistantTask.userId, userId)
+        : and(
+            eq(assistantTask.userId, userId),
+            eq(assistantTask.status, status)
+          );
+
+    return await db
+      .select()
+      .from(assistantTask)
+      .where(conditions)
+      .orderBy(asc(assistantTask.dueAt), desc(assistantTask.createdAt));
+  } catch (_error) {
+    throw new IrisError(
+      "bad_request:database",
+      "Failed to get assistant tasks"
+    );
+  }
+}
+
+export async function updateAssistantTaskStatus({
+  id,
+  userId,
+  status,
+}: {
+  id: string;
+  userId: string;
+  status: "open" | "done" | "archived";
+}) {
+  try {
+    const [task] = await db
+      .update(assistantTask)
+      .set({ status, updatedAt: new Date() })
+      .where(and(eq(assistantTask.id, id), eq(assistantTask.userId, userId)))
+      .returning();
+
+    return task ?? null;
+  } catch (_error) {
+    throw new IrisError(
+      "bad_request:database",
+      "Failed to update assistant task"
     );
   }
 }
@@ -853,6 +964,7 @@ export async function exportUserData({ userId }: { userId: string }) {
       userDocuments,
       userSuggestions,
       userAuditEntries,
+      userAssistantTasks,
     ] = await Promise.all([
       db.select().from(user).where(eq(user.id, userId)).limit(1),
       db
@@ -875,6 +987,11 @@ export async function exportUserData({ userId }: { userId: string }) {
         .from(chatAuditLog)
         .where(eq(chatAuditLog.userId, userId))
         .orderBy(desc(chatAuditLog.createdAt)),
+      db
+        .select()
+        .from(assistantTask)
+        .where(eq(assistantTask.userId, userId))
+        .orderBy(desc(assistantTask.createdAt)),
     ]);
 
     // For each chat, gather messages and votes
@@ -910,6 +1027,7 @@ export async function exportUserData({ userId }: { userId: string }) {
       documents: userDocuments,
       suggestions: userSuggestions,
       auditLog: userAuditEntries,
+      assistantTasks: userAssistantTasks,
     };
   } catch (_error) {
     throw new IrisError("bad_request:database", "Failed to export user data");

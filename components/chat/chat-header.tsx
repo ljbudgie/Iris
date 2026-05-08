@@ -111,7 +111,7 @@ function PureChatHeader({
 
       {/* Main header bar */}
       <div
-        className="flex h-11 items-center gap-2 border-b px-3"
+        className="flex h-12 items-center gap-2 border-b px-3"
         style={{
           background: "var(--surface-0)",
           borderColor: "#27272a",
@@ -130,13 +130,20 @@ function PureChatHeader({
           className="flex items-center gap-2 rounded-lg px-1.5 py-1 transition-opacity hover:opacity-80"
           href="/"
         >
+          <span className="relative flex size-7 items-center justify-center rounded-full bg-[radial-gradient(circle_at_35%_30%,#ccfbf1,rgba(15,118,110,0.78)_42%,rgba(15,118,110,0.18))] shadow-[0_0_24px_rgba(15,118,110,0.45)]">
+            <span className="absolute inset-0 animate-ping rounded-full bg-[rgba(94,234,212,0.18)]" />
+            <span className="relative size-2 rounded-full bg-[#ecfeff]" />
+          </span>
           <span
-            className="text-sm font-semibold tracking-[0.2em] uppercase text-[#e4e4e7]"
+            className="text-sm font-semibold tracking-[0.18em] uppercase text-[#e4e4e7]"
             style={{
               fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace",
             }}
           >
-            IRIS
+            Iris
+          </span>
+          <span className="hidden rounded-full border border-[rgba(34,197,94,0.24)] bg-[rgba(34,197,94,0.08)] px-2 py-0.5 text-[10px] font-semibold tracking-[0.14em] text-[#86efac] uppercase sm:inline">
+            Sovereign
           </span>
         </Link>
 

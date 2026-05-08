@@ -63,6 +63,9 @@ POSTGRES_URL=postgresql://localhost:5432/iris_local
 
 # Optional: MemPalace for long-term memory
 # MEMPALACE_MCP_COMMAND="python -m mempalace.mcp_server"
+
+# Optional: block cloud model calls while you wire a local provider
+# IRIS_LOCAL_ONLY=1
 ```
 
 ### 5. Run Database Migrations
@@ -106,6 +109,10 @@ MEMPALACE_MCP_COMMAND="python -m mempalace.mcp_server"
 ```
 
 All memories are stored locally — nothing leaves your machine.
+
+The in-app Memory Palace page at `/memory` lets users inspect current palace
+status, search memories, explicitly save user-approved memories, and export the
+current memory view as JSON.
 
 ---
 

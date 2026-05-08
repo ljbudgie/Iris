@@ -145,6 +145,17 @@ function AuditEntryCard({ entry }: { entry: ChatAuditLog }) {
           ))}
         </div>
       )}
+
+      {(entry.personGateCommitment || entry.decisionReason) && (
+        <div className="rounded-md bg-muted/40 px-3 py-2 text-muted-foreground text-xs">
+          {entry.decisionReason && <div>Decision: {entry.decisionReason}</div>}
+          {entry.personGateCommitment && (
+            <div className="mt-1 break-all">
+              PersonGate commitment: {entry.personGateCommitment}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

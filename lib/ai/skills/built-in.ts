@@ -13,6 +13,11 @@ import { createDocument } from "@/lib/ai/tools/create-document";
 import { editDocument } from "@/lib/ai/tools/edit-document";
 import { generateBurgessLetter } from "@/lib/ai/tools/generate-burgess-letter";
 import { getWeather } from "@/lib/ai/tools/get-weather";
+import {
+  createAssistantTaskTool,
+  listAssistantTasksTool,
+  updateAssistantTaskTool,
+} from "@/lib/ai/tools/personal-assistant";
 import { requestSuggestions } from "@/lib/ai/tools/request-suggestions";
 import { suggestFollowUps } from "@/lib/ai/tools/suggest-follow-ups";
 import {
@@ -130,6 +135,53 @@ const burgessLetterSkill: SkillDefinition = {
     generateBurgessLetter(ctx as Parameters<typeof generateBurgessLetter>[0]),
 };
 
+const createAssistantTaskSkill: SkillDefinition = {
+  metadata: {
+    name: "createAssistantTask",
+    description:
+      "Create a personal task, reminder, case tracker, goal, or contact record.",
+    version: "1.0.0",
+    sensitivity: "sensitive",
+    tags: ["personal-assistant", "tasks", "memory"],
+    requiresApproval: true,
+    requiresContext: true,
+  },
+  factory: (ctx) =>
+    createAssistantTaskTool(
+      ctx as Parameters<typeof createAssistantTaskTool>[0]
+    ),
+};
+
+const listAssistantTasksSkill: SkillDefinition = {
+  metadata: {
+    name: "listAssistantTasks",
+    description: "List personal assistant tasks and reminders.",
+    version: "1.0.0",
+    sensitivity: "sensitive",
+    tags: ["personal-assistant", "tasks"],
+    requiresApproval: false,
+    requiresContext: true,
+  },
+  factory: (ctx) =>
+    listAssistantTasksTool(ctx as Parameters<typeof listAssistantTasksTool>[0]),
+};
+
+const updateAssistantTaskSkill: SkillDefinition = {
+  metadata: {
+    name: "updateAssistantTask",
+    description: "Update a personal assistant task status.",
+    version: "1.0.0",
+    sensitivity: "sensitive",
+    tags: ["personal-assistant", "tasks"],
+    requiresApproval: true,
+    requiresContext: true,
+  },
+  factory: (ctx) =>
+    updateAssistantTaskTool(
+      ctx as Parameters<typeof updateAssistantTaskTool>[0]
+    ),
+};
+
 // ---------------------------------------------------------------------------
 // Registration
 // ---------------------------------------------------------------------------
@@ -142,6 +194,9 @@ const builtInSkills: SkillDefinition[] = [
   requestSuggestionsSkill,
   followUpSkill,
   burgessLetterSkill,
+  createAssistantTaskSkill,
+  listAssistantTasksSkill,
+  updateAssistantTaskSkill,
   // Tool execution skills
   {
     metadata: {

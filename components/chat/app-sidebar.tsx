@@ -1,9 +1,11 @@
 "use client";
 
 import {
+  BrainIcon,
   ClipboardListIcon,
   EyeIcon,
   FileTextIcon,
+  ListTodoIcon,
   PanelLeftIcon,
   PenSquareIcon,
   ShieldCheckIcon,
@@ -168,6 +170,34 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                     <span className="font-medium">New chat</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
+                {user && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      asChild
+                      className="rounded-lg text-sidebar-foreground/60 transition-colors duration-150 hover:text-sidebar-foreground"
+                      tooltip="Personal Assistant"
+                    >
+                      <Link href="/tasks" onClick={() => setOpenMobile(false)}>
+                        <ListTodoIcon className="size-4" />
+                        <span className="text-[13px]">Assistant tasks</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
+                {user && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      asChild
+                      className="rounded-lg text-sidebar-foreground/60 transition-colors duration-150 hover:text-sidebar-foreground"
+                      tooltip="Memory Palace"
+                    >
+                      <Link href="/memory" onClick={() => setOpenMobile(false)}>
+                        <BrainIcon className="size-4" />
+                        <span className="text-[13px]">Memory Palace</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
                 {user && (
                   <SidebarMenuItem>
                     <SidebarMenuButton

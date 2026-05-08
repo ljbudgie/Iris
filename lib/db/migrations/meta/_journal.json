@@ -15,6 +15,13 @@
       "when": 1775642972962,
       "tag": "0001_condemned_gateway",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1778267821043,
+      "tag": "0002_personal_assistant",
+      "breakpoints": true
     }
   ]
 }

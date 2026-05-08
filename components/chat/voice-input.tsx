@@ -18,9 +18,17 @@ type VoiceInputProps = {
   onTranscript: (text: string) => void;
   setInput: Dispatch<SetStateAction<string>>;
   disabled?: boolean;
+  className?: string;
+  iconClassName?: string;
 };
 
-function PureVoiceInput({ onTranscript, setInput, disabled }: VoiceInputProps) {
+function PureVoiceInput({
+  onTranscript,
+  setInput,
+  disabled,
+  className,
+  iconClassName,
+}: VoiceInputProps) {
   const [isListening, setIsListening] = useState(false);
   const [isSupported, setIsSupported] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
@@ -109,8 +117,9 @@ function PureVoiceInput({ onTranscript, setInput, disabled }: VoiceInputProps) {
       className={cn(
         "h-7 w-7 rounded-lg border p-1 transition-all duration-200",
         isListening
-          ? "border-[rgba(124,58,237,0.4)] bg-[rgba(124,58,237,0.1)] text-[#7c3aed] animate-pulse"
-          : "border-[#27272a] text-[#52525b] hover:text-[#a1a1aa]"
+          ? "border-[rgba(15,118,110,0.5)] bg-[rgba(15,118,110,0.16)] text-[#5eead4] animate-pulse"
+          : "border-[#27272a] text-[#52525b] hover:text-[#a1a1aa]",
+        className
       )}
       disabled={disabled}
       onClick={(e) => {
@@ -122,9 +131,9 @@ function PureVoiceInput({ onTranscript, setInput, disabled }: VoiceInputProps) {
       variant="ghost"
     >
       {isListening ? (
-        <MicOffIcon className="size-4" />
+        <MicOffIcon className={cn("size-4", iconClassName)} />
       ) : (
-        <MicIcon className="size-4" />
+        <MicIcon className={cn("size-4", iconClassName)} />
       )}
     </Button>
   );

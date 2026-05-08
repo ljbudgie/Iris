@@ -395,6 +395,7 @@ function PureMultimodalInput({
         )}
 
       <input
+        accept="image/jpeg,image/png,application/pdf,text/plain,text/markdown,text/csv,application/json,application/vnd.openxmlformats-officedocument.wordprocessingml.document,audio/mpeg,audio/wav,audio/webm"
         className="pointer-events-none fixed -top-4 -left-4 size-0.5 opacity-0"
         multiple
         onChange={handleFileChange}
@@ -414,8 +415,16 @@ function PureMultimodalInput({
         )}
       </div>
 
+      <VoiceInput
+        className="-top-16 right-3 absolute z-10 size-12 rounded-full border-[rgba(94,234,212,0.35)] bg-[radial-gradient(circle_at_35%_30%,rgba(94,234,212,0.45),rgba(15,118,110,0.24)_42%,rgba(8,8,12,0.92))] p-0 text-[#ccfbf1] shadow-[0_0_32px_rgba(15,118,110,0.35)] md:hidden"
+        disabled={status !== "ready"}
+        iconClassName="size-5"
+        onTranscript={(text) => setInput(text)}
+        setInput={setInput}
+      />
+
       <PromptInput
-        className="[&>div]:rounded-xl [&>div]:border [&>div]:border-[var(--color-iris-border)] [&>div]:bg-[var(--color-iris-surface)] [&>div]:transition-all [&>div]:duration-300 [&>div]:focus-within:border-[rgba(124,58,237,0.4)] [&>div]:focus-within:shadow-[0_0_0_3px_rgba(124,58,237,0.08)]"
+        className="[&>div]:rounded-2xl [&>div]:border [&>div]:border-[rgba(15,118,110,0.24)] [&>div]:bg-[linear-gradient(180deg,rgba(15,118,110,0.08),rgba(15,15,20,0.94))] [&>div]:shadow-[0_14px_40px_rgba(0,0,0,0.24)] [&>div]:backdrop-blur-xl [&>div]:transition-all [&>div]:duration-300 [&>div]:focus-within:border-[rgba(94,234,212,0.45)] [&>div]:focus-within:shadow-[0_0_0_3px_rgba(15,118,110,0.12)]"
         onSubmit={() => {
           if (input.startsWith("/")) {
             const query = input.slice(1).trim();
@@ -519,6 +528,7 @@ function PureMultimodalInput({
               status={status}
             />
             <VoiceInput
+              className="hidden md:inline-flex"
               disabled={status !== "ready"}
               onTranscript={(text) => setInput(text)}
               setInput={setInput}
@@ -608,16 +618,20 @@ function PureAttachmentsButton({
     <Button
       className={cn(
         "h-7 w-7 rounded-lg border border-[#27272a] p-1 transition-colors",
-        hasVision
-          ? "text-[#52525b] hover:text-[#a1a1aa]"
-          : "text-[#52525b]/30 cursor-not-allowed"
+        "text-[#52525b] hover:text-[#a1a1aa]",
+        !hasVision && "border-dashed"
       )}
       data-testid="attachments-button"
-      disabled={status !== "ready" || !hasVision}
+      disabled={status !== "ready"}
       onClick={(event) => {
         event.preventDefault();
         fileInputRef.current?.click();
       }}
+      title={
+        hasVision
+          ? "Attach images or documents"
+          : "Attach documents; use Auto or a vision model for images"
+      }
       variant="ghost"
     >
       <PaperclipIcon size={18} style={{ width: 18, height: 18 }} />

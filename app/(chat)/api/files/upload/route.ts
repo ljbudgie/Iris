@@ -5,15 +5,36 @@ import { z } from "zod";
 import { auth } from "@/app/(auth)/auth";
 import { MAX_FILE_UPLOAD_SIZE_BYTES } from "@/lib/constants";
 
+const ALLOWED_FILE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "application/pdf",
+  "text/plain",
+  "text/markdown",
+  "text/csv",
+  "application/json",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "audio/mpeg",
+  "audio/wav",
+  "audio/webm",
+] as const;
+
 const FileSchema = z.object({
   file: z
     .instanceof(Blob)
     .refine((file) => file.size <= MAX_FILE_UPLOAD_SIZE_BYTES, {
       message: `File size should be less than ${MAX_FILE_UPLOAD_SIZE_BYTES / (1024 * 1024)}MB`,
     })
-    .refine((file) => ["image/jpeg", "image/png"].includes(file.type), {
-      message: "File type should be JPEG or PNG",
-    }),
+    .refine(
+      (file) =>
+        ALLOWED_FILE_TYPES.includes(
+          file.type as (typeof ALLOWED_FILE_TYPES)[number]
+        ),
+      {
+        message:
+          "File type should be JPEG, PNG, PDF, TXT, Markdown, CSV, JSON, DOCX, MP3, WAV, or WEBM",
+      }
+    ),
 });
 
 export async function POST(request: Request) {
@@ -50,8 +71,9 @@ export async function POST(request: Request) {
     const fileBuffer = await file.arrayBuffer();
 
     try {
-      const data = await put(`${safeName}`, fileBuffer, {
+      const data = await put(`${Date.now()}-${safeName}`, fileBuffer, {
         access: "public",
+        contentType: file.type,
       });
 
       return NextResponse.json(data);

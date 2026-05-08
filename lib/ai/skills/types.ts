@@ -30,6 +30,9 @@ export type SkillMetadata = {
   /** Free-form tags for categorisation and discovery. */
   tags: string[];
 
+  /** Whether the user should explicitly approve execution before side effects. */
+  requiresApproval?: boolean;
+
   /**
    * Whether this skill needs runtime context (session, dataStream, modelId)
    * to be initialised.  Skills that require context use a factory function;

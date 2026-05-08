@@ -181,7 +181,37 @@ export const chatAuditLog = pgTable("ChatAuditLog", {
   governanceStatus: varchar("governanceStatus", {
     enum: ["SOVEREIGN", "NULL"],
   }),
+  /** PersonGate SHA-256 commitment when personal facts were handled. */
+  personGateCommitment: text("personGateCommitment"),
+  /** Plain-English routing or quality note for the turn. */
+  decisionReason: text("decisionReason"),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
 });
 
 export type ChatAuditLog = InferSelectModel<typeof chatAuditLog>;
+
+export const assistantTask = pgTable("AssistantTask", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  userId: uuid("userId")
+    .notNull()
+    .references(() => user.id),
+  chatId: uuid("chatId").references(() => chat.id),
+  title: text("title").notNull(),
+  notes: text("notes"),
+  category: varchar("category", {
+    enum: ["task", "reminder", "case", "goal", "contact"],
+  })
+    .notNull()
+    .default("task"),
+  status: varchar("status", {
+    enum: ["open", "done", "archived"],
+  })
+    .notNull()
+    .default("open"),
+  dueAt: timestamp("dueAt"),
+  metadata: json("metadata").$type<Record<string, unknown>>().default({}),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+});
+
+export type AssistantTask = InferSelectModel<typeof assistantTask>;

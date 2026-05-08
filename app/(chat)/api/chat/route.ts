@@ -56,6 +56,11 @@ import type { DBMessage } from "@/lib/db/schema";
 import { IrisError } from "@/lib/errors";
 import type { GovernanceStatus } from "@/lib/federation";
 import { getPermittedTools, type ToolName } from "@/lib/federation";
+import {
+  buildPersonGatePromptContext,
+  commitPersonalContext,
+  type PersonGateAssessment,
+} from "@/lib/person-gate";
 import { checkIpRateLimit } from "@/lib/ratelimit";
 import type { ChatMessage } from "@/lib/types";
 import { convertToUIMessages, generateUUID } from "@/lib/utils";
@@ -227,6 +232,21 @@ export async function POST(request: Request) {
       country,
     };
 
+    const latestUserTextForTurn = message?.parts
+      ? extractTextFromParts(
+          message.parts as Array<{ type: string; text?: string }>
+        )
+      : "";
+
+    let personGateAssessment: PersonGateAssessment | undefined;
+    if (latestUserTextForTurn) {
+      personGateAssessment = await commitPersonalContext({
+        label: `chat:${id}:${message?.id ?? "turn"}`,
+        facts: latestUserTextForTurn,
+        tags: ["chat-turn"],
+      });
+    }
+
     if (message?.role === "user") {
       await saveMessages({
         messages: [
@@ -288,11 +308,7 @@ export async function POST(request: Request) {
         // ---------------------------------------------------------------
         // Intelligence layer: memory, templates, and routing label
         // ---------------------------------------------------------------
-        const latestUserText = message?.parts
-          ? extractTextFromParts(
-              message.parts as Array<{ type: string; text?: string }>
-            )
-          : "";
+        const latestUserText = latestUserTextForTurn;
 
         // Query MemPalace for relevant user context (non-blocking fallback)
         let memoryContext: string | undefined;
@@ -320,7 +336,10 @@ export async function POST(request: Request) {
         const templateInstruction = templateResult
           ? `\n\n${templateResult.instruction}`
           : "";
-        const enhancedSystemPrompt = `${irisIdentity}\n\n${basePrompt}${templateInstruction}`;
+        const personGateInstruction = personGateAssessment
+          ? `\n\n${buildPersonGatePromptContext(personGateAssessment)}`
+          : "";
+        const enhancedSystemPrompt = `${irisIdentity}\n\n${basePrompt}${templateInstruction}${personGateInstruction}`;
 
         // Log routing decision for observability
         if (routingLabel) {
@@ -372,6 +391,15 @@ export async function POST(request: Request) {
           governanceStatus: (governanceStatus ?? "SOVEREIGN") as
             | "SOVEREIGN"
             | "NULL",
+          personGateCommitment: personGateAssessment?.commitment,
+          decisionReason: [
+            routingLabel,
+            personGateAssessment?.requiresSovereignHandling
+              ? `PersonGate ${personGateAssessment.sensitivity} context`
+              : undefined,
+          ]
+            .filter(Boolean)
+            .join(" · "),
         };
 
         saveChatAuditEntry(auditEntry).catch((firstError) => {
