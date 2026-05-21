@@ -1,4 +1,5 @@
 const CERTIFICATION_MARK = "UK00004343685";
+const TEXT_ENCODER = new TextEncoder();
 
 const AMBIGUOUS_VALUES = new Set([
   "ambiguous",
@@ -77,7 +78,7 @@ function stableStringify(value) {
 }
 
 async function sha256Hex(value) {
-  const encoded = new TextEncoder().encode(value);
+  const encoded = TEXT_ENCODER.encode(value);
 
   if (globalThis.crypto?.subtle) {
     const digest = await globalThis.crypto.subtle.digest("SHA-256", encoded);

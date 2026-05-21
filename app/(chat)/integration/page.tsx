@@ -19,7 +19,9 @@ export default function IntegrationPage() {
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "failed">(
     "idle"
   );
-  const resetTimer = useRef<number | null>(null);
+  const resetTimer = useRef<number | ReturnType<typeof setTimeout> | null>(
+    null
+  );
 
   const systemPrompt = useMemo(
     () => buildSystemPrompt(institution, decisionTypes),
@@ -29,7 +31,7 @@ export default function IntegrationPage() {
   useEffect(
     () => () => {
       if (resetTimer.current) {
-        window.clearTimeout(resetTimer.current);
+        clearTimeout(resetTimer.current);
       }
     },
     []
@@ -45,7 +47,7 @@ export default function IntegrationPage() {
       await navigator.clipboard.writeText(systemPrompt);
       setCopyStatus("copied");
       if (resetTimer.current) {
-        window.clearTimeout(resetTimer.current);
+        clearTimeout(resetTimer.current);
       }
       resetTimer.current = window.setTimeout(() => setCopyStatus("idle"), 1800);
     } catch {
