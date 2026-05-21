@@ -1,13 +1,13 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  type BinaryTestResponses,
   buildCertificationSummary,
   buildCommitmentPayload,
   buildLedgerEntry,
-  classifyCertification,
-  type BinaryTestResponses,
   type CertificationIntake,
   type CertificationRecord,
+  classifyCertification,
 } from "@/lib/certification/workflow";
 
 const intake: CertificationIntake = {

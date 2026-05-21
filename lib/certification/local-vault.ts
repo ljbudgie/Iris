@@ -35,7 +35,7 @@ function bytesToHex(bytes: Uint8Array) {
     .join("");
 }
 
-async function getVaultKey() {
+function getVaultKey() {
   const existing = localStorage.getItem(KEY_MATERIAL_KEY);
   const rawKey = existing
     ? base64ToBytes(existing)

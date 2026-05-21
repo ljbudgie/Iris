@@ -17,17 +17,17 @@ import {
   saveCertificationRecords,
 } from "@/lib/certification/local-vault";
 import {
+  type BinaryAnswer,
+  type BinaryTestResponses,
   buildCertificationSummary,
   buildCommitmentPayload,
   buildLedgerEntry,
   CERTIFICATION_DISCLAIMER,
   CERTIFICATION_MARK,
-  classifyCertification,
-  type BinaryAnswer,
-  type BinaryTestResponses,
   type CertificationClassification,
   type CertificationIntake,
   type CertificationRecord,
+  classifyCertification,
   type DecisionType,
 } from "@/lib/certification/workflow";
 
@@ -170,9 +170,7 @@ function Certificate({ record }: { record: CertificationRecord }) {
             <dt className="font-mono text-[10px] text-zinc-500 uppercase tracking-[0.18em]">
               Assessor reference
             </dt>
-            <dd className="text-zinc-200">
-              {record.intake.assessorReference}
-            </dd>
+            <dd className="text-zinc-200">{record.intake.assessorReference}</dd>
           </div>
           {record.signing?.commitment && (
             <div>
@@ -198,7 +196,9 @@ export default function CertificationPage() {
   const [activeRecord, setActiveRecord] = useState<CertificationRecord | null>(
     null
   );
-  const [storageStatus, setStorageStatus] = useState("Loading encrypted vault…");
+  const [storageStatus, setStorageStatus] = useState(
+    "Loading encrypted vault…"
+  );
 
   useEffect(() => {
     loadCertificationRecords()
@@ -314,27 +314,30 @@ export default function CertificationPage() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <label className="space-y-2">
+            <label className="space-y-2" htmlFor="institution-name">
               <span className="text-sm">Institution name *</span>
               <Input
+                id="institution-name"
                 onChange={(event) =>
                   setIntake({ ...intake, institutionName: event.target.value })
                 }
                 value={intake.institutionName}
               />
             </label>
-            <label className="space-y-2">
+            <label className="space-y-2" htmlFor="process-assessed">
               <span className="text-sm">Decision process being assessed *</span>
               <Input
+                id="process-assessed"
                 onChange={(event) =>
                   setIntake({ ...intake, processAssessed: event.target.value })
                 }
                 value={intake.processAssessed}
               />
             </label>
-            <label className="space-y-2">
+            <label className="space-y-2" htmlFor="decision-reference">
               <span className="text-sm">Decision reference</span>
               <Input
+                id="decision-reference"
                 onChange={(event) =>
                   setIntake({
                     ...intake,
@@ -344,10 +347,11 @@ export default function CertificationPage() {
                 value={intake.decisionReference}
               />
             </label>
-            <label className="space-y-2">
+            <label className="space-y-2" htmlFor="decision-type">
               <span className="text-sm">Decision type</span>
               <select
                 className="h-9 w-full rounded-4xl border border-input bg-input/30 px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                id="decision-type"
                 onChange={(event) =>
                   setIntake({
                     ...intake,
@@ -363,9 +367,10 @@ export default function CertificationPage() {
                 <option>other</option>
               </select>
             </label>
-            <label className="space-y-2">
+            <label className="space-y-2" htmlFor="decision-date">
               <span className="text-sm">Date of decision *</span>
               <Input
+                id="decision-date"
                 onChange={(event) =>
                   setIntake({ ...intake, decisionDate: event.target.value })
                 }
@@ -373,11 +378,15 @@ export default function CertificationPage() {
                 value={intake.decisionDate}
               />
             </label>
-            <label className="space-y-2">
+            <label className="space-y-2" htmlFor="assessor-reference">
               <span className="text-sm">Assessor reference</span>
               <Input
+                id="assessor-reference"
                 onChange={(event) =>
-                  setIntake({ ...intake, assessorReference: event.target.value })
+                  setIntake({
+                    ...intake,
+                    assessorReference: event.target.value,
+                  })
                 }
                 placeholder="Auto-generated if left blank"
                 value={intake.assessorReference}
@@ -525,7 +534,9 @@ export default function CertificationPage() {
           ) : (
             <div className="rounded-3xl border border-dashed border-zinc-700 bg-card/30 p-8 text-center">
               <AwardIcon className="mx-auto size-10 text-[#d6bc8f]" />
-              <p className="mt-3 text-zinc-300">No certificate generated yet.</p>
+              <p className="mt-3 text-zinc-300">
+                No certificate generated yet.
+              </p>
             </div>
           )}
 

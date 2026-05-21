@@ -2,12 +2,14 @@ export const CERTIFICATION_MARK = "UK00004343685";
 export const CERTIFICATION_DISCLAIMER =
   "This assessment was conducted under The Burgess Principle framework. It does not constitute legal advice.";
 
-export type DecisionType = "PCN" | "SAR" | "credit marker" | "warrant" | "other";
+export type DecisionType =
+  | "PCN"
+  | "SAR"
+  | "credit marker"
+  | "warrant"
+  | "other";
 export type BinaryAnswer = "yes" | "no";
-export type CertificationClassification =
-  | "SOVEREIGN"
-  | "NULL"
-  | "AMBIGUOUS";
+export type CertificationClassification = "SOVEREIGN" | "NULL" | "AMBIGUOUS";
 
 export type CertificationIntake = {
   institutionName: string;
