@@ -13,11 +13,11 @@ type EncryptedPayload = {
 };
 
 function bytesToBase64(bytes: Uint8Array) {
-  let binary = "";
+  const chunks: string[] = [];
   for (const byte of bytes) {
-    binary += String.fromCharCode(byte);
+    chunks.push(String.fromCharCode(byte));
   }
-  return btoa(binary);
+  return btoa(chunks.join(""));
 }
 
 function base64ToBytes(value: string) {
