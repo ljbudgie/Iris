@@ -23,7 +23,9 @@
 
   <path class="arrow" d="M400 124 L400 145" />
 
-  <polygon points="400,148 594,220 400,292 206,220" fill="#FCFBF9" stroke="#B8952A" stroke-width="3" />
+  <polygon points="400,148 594,220 400,292 206,220" fill="#FCFBF9" stroke="#B8952A" stroke-width="3">
+    <title>Binary question decision point</title>
+  </polygon>
   <text x="400" y="202" text-anchor="middle" class="heading" font-size="18" fill="#1C3A5E">Was a named human being&apos;s mind</text>
   <text x="400" y="228" text-anchor="middle" class="heading" font-size="18" fill="#1C3A5E">applied to the specific facts of this case?</text>
 
