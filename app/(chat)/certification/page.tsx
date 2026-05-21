@@ -544,7 +544,7 @@ export default function CertificationPage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <h2 className="font-semibold text-xl">
-                  5. History and case management
+                  History and case management
                 </h2>
                 <p className="mt-1 text-sm text-zinc-400">
                   Completed certifications are encrypted locally with
