@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-labelledby="title desc">
+  <title id="title">Burgess Principle binary decision flow</title>
+  <desc id="desc">A decision flow from institutional decision, through a named human review question, to sovereign, null, or ambiguous outcomes.</desc>
+  <defs>
+    <marker id="arrow-navy" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
+      <path d="M2 2 L10 6 L2 10 Z" fill="#1C3A5E" />
+    </marker>
+    <style>
+      .heading { font-family: Georgia, 'Times New Roman', serif; font-weight: 700; letter-spacing: 0.06em; }
+      .subcopy { font-family: Georgia, 'Times New Roman', serif; font-weight: 400; letter-spacing: 0.01em; }
+      .label { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace; font-weight: 700; letter-spacing: 0.14em; }
+      .footer { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace; font-weight: 500; letter-spacing: 0.08em; }
+      .arrow { fill: none; stroke: #1C3A5E; stroke-width: 2.5; marker-end: url(#arrow-navy); }
+    </style>
+  </defs>
+
+  <rect width="800" height="600" fill="#FCFBF9" />
+  <rect x="24" y="24" width="752" height="510" fill="none" stroke="#B8952A" stroke-width="2" />
+
+  <rect x="250" y="42" width="300" height="82" fill="#1C3A5E" stroke="#B8952A" stroke-width="2" />
+  <text x="400" y="78" text-anchor="middle" class="heading" font-size="20" fill="#FCFBF9">Institutional Decision Made</text>
+  <text x="400" y="105" text-anchor="middle" class="subcopy" font-size="14" fill="#FCFBF9">Affecting an identified individual</text>
+
+  <path class="arrow" d="M400 124 L400 145" />
+
+  <polygon points="400,148 594,220 400,292 206,220" fill="#FCFBF9" stroke="#1C3A5E" stroke-width="3" />
+  <text x="400" y="202" text-anchor="middle" class="heading" font-size="18" fill="#1C3A5E">Was a named human being&apos;s mind</text>
+  <text x="400" y="228" text-anchor="middle" class="heading" font-size="18" fill="#1C3A5E">applied to the specific facts of this case?</text>
+
+  <path class="arrow" d="M296 259 L159 344" />
+  <path class="arrow" d="M504 259 L641 344" />
+  <path class="arrow" d="M400 292 L400 344" />
+
+  <rect x="192" y="284" width="58" height="28" fill="#FCFBF9" stroke="#B8952A" stroke-width="1.5" />
+  <text x="221" y="303" text-anchor="middle" class="label" font-size="13" fill="#1C3A5E">YES</text>
+
+  <rect x="550" y="284" width="50" height="28" fill="#FCFBF9" stroke="#B8952A" stroke-width="1.5" />
+  <text x="575" y="303" text-anchor="middle" class="label" font-size="13" fill="#1C3A5E">NO</text>
+
+  <rect x="352" y="315" width="96" height="28" fill="#FCFBF9" stroke="#B8952A" stroke-width="1.5" />
+  <text x="400" y="334" text-anchor="middle" class="label" font-size="13" fill="#1C3A5E">UNCLEAR</text>
+
+  <rect x="54" y="350" width="210" height="116" fill="#0a2e1a" stroke="#34d399" stroke-width="2" />
+  <text x="159" y="392" text-anchor="middle" class="heading" font-size="23" fill="#34d399">SOVEREIGN</text>
+  <text x="159" y="422" text-anchor="middle" class="subcopy" font-size="14" fill="#34d399">Named individual confirmed.</text>
+  <text x="159" y="443" text-anchor="middle" class="subcopy" font-size="14" fill="#34d399">Review verified.</text>
+
+  <rect x="295" y="350" width="210" height="116" fill="#2e2a0a" stroke="#fbbf24" stroke-width="2" />
+  <text x="400" y="392" text-anchor="middle" class="heading" font-size="23" fill="#fbbf24">AMBIGUOUS</text>
+  <text x="400" y="425" text-anchor="middle" class="subcopy" font-size="14" fill="#fbbf24">Under active assessment.</text>
+
+  <rect x="536" y="350" width="210" height="116" fill="#2e0a0a" stroke="#f87171" stroke-width="2" />
+  <text x="641" y="392" text-anchor="middle" class="heading" font-size="23" fill="#f87171">NULL</text>
+  <text x="641" y="422" text-anchor="middle" class="subcopy" font-size="14" fill="#f87171">No individual review.</text>
+  <text x="641" y="443" text-anchor="middle" class="subcopy" font-size="14" fill="#f87171">Decision contested.</text>
+
+  <rect x="24" y="534" width="752" height="42" fill="#1C3A5E" />
+  <text x="400" y="560" text-anchor="middle" class="footer" font-size="12" fill="#FCFBF9">UK Certification Mark UK00004343685 | The Burgess Principle Ltd</text>
+</svg>
