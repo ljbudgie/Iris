@@ -21,20 +21,24 @@ export default function IntegrationDocsPage() {
       </header>
 
       <section className="rounded-3xl border border-zinc-800 bg-card/50 p-6 print:border-zinc-300 print:bg-white">
-        <h2 className="font-semibold text-2xl">1. Purpose of the binary test</h2>
+        <h2 className="font-semibold text-2xl">
+          1. Purpose of the binary test
+        </h2>
         <p className="mt-3 text-sm text-zinc-300 leading-6 print:text-zinc-700">
           The Burgess Principle binary test asks whether a named human member of
           the team was able to personally review the specific facts of the
           specific person&apos;s case before an action affecting that person was
           taken or recommended. It converts that oversight position into a
           simple operational classification: SOVEREIGN where review is
-          confirmed, NULL where it is absent, and AMBIGUOUS where the position is
-          unclear.
+          confirmed, NULL where it is absent, and AMBIGUOUS where the position
+          is unclear.
         </p>
       </section>
 
       <section className="rounded-3xl border border-zinc-800 bg-card/50 p-6 print:border-zinc-300 print:bg-white">
-        <h2 className="font-semibold text-2xl">2. burgess-gate.js API reference</h2>
+        <h2 className="font-semibold text-2xl">
+          2. burgess-gate.js API reference
+        </h2>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <div>
             <h3 className="font-semibold text-lg">Input schema</h3>
@@ -116,7 +120,9 @@ export default function IntegrationDocsPage() {
       </section>
 
       <section className="rounded-3xl border border-zinc-800 bg-card/50 p-6 print:border-zinc-300 print:bg-white">
-        <h2 className="font-semibold text-2xl">5. Legal and regulatory basis</h2>
+        <h2 className="font-semibold text-2xl">
+          5. Legal and regulatory basis
+        </h2>
         <p className="mt-3 text-sm text-zinc-300 leading-6 print:text-zinc-700">
           The integration package is designed to support documented human
           oversight for decisions affecting identified individuals, including

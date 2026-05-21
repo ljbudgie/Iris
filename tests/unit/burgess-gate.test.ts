@@ -1,17 +1,33 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { describe, it } from "node:test";
-import { pathToFileURL } from "node:url";
 
-const gateModule = await import(
-  pathToFileURL(
-    "/home/runner/work/Iris/Iris/public/burgess-gate.js"
-  ).toString()
-);
+type BurgessGate = (decisionRecord: unknown) => Promise<{
+  classification: "SOVEREIGN" | "NULL" | "AMBIGUOUS";
+  commitment: string;
+  mark: string;
+}>;
 
-const { burgessGate } = gateModule;
+let cachedGate: BurgessGate | undefined;
+
+async function getBurgessGate() {
+  if (!cachedGate) {
+    const source = await readFile(
+      "/home/runner/work/Iris/Iris/public/burgess-gate.js",
+      "utf8"
+    );
+    const gateModule = await import(
+      `data:text/javascript;charset=utf-8,${encodeURIComponent(source)}`
+    );
+    cachedGate = gateModule.burgessGate;
+  }
+
+  return cachedGate;
+}
 
 describe("Tier 1 Burgess Gate API", () => {
   it("classifies sovereign when all binary checks are confirmed", async () => {
+    const burgessGate = await getBurgessGate();
     const result = await burgessGate({
       institution: "Example Bank",
       decisionType: "credit marker",
@@ -27,6 +43,7 @@ describe("Tier 1 Burgess Gate API", () => {
   });
 
   it("classifies null when named individual review is absent", async () => {
+    const burgessGate = await getBurgessGate();
     const result = await burgessGate({
       institution: "Example Council",
       decisionType: "PCN",
@@ -40,6 +57,7 @@ describe("Tier 1 Burgess Gate API", () => {
   });
 
   it("classifies ambiguous when required fields are missing", async () => {
+    const burgessGate = await getBurgessGate();
     const result = await burgessGate({
       institution: "Example Hiring Ltd",
       decisionType: "hiring shortlist",
@@ -53,6 +71,7 @@ describe("Tier 1 Burgess Gate API", () => {
   });
 
   it("creates stable commitments for identical input records", async () => {
+    const burgessGate = await getBurgessGate();
     const record = {
       institution: "Example Bank",
       decisionType: "credit marker",
