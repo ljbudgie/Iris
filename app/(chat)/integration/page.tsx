@@ -16,7 +16,9 @@ function buildSystemPrompt(institution: string, decisionTypes: string) {
 export default function IntegrationPage() {
   const [institution, setInstitution] = useState("");
   const [decisionTypes, setDecisionTypes] = useState("");
-  const [copied, setCopied] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "failed">(
+    "idle"
+  );
 
   const systemPrompt = useMemo(
     () => buildSystemPrompt(institution, decisionTypes),
@@ -24,9 +26,18 @@ export default function IntegrationPage() {
   );
 
   const copyPrompt = async () => {
-    await navigator.clipboard?.writeText(systemPrompt);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1800);
+    if (!navigator.clipboard) {
+      setCopyStatus("failed");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(systemPrompt);
+      setCopyStatus("copied");
+      window.setTimeout(() => setCopyStatus("idle"), 1800);
+    } catch {
+      setCopyStatus("failed");
+    }
   };
 
   return (
@@ -108,14 +119,20 @@ export default function IntegrationPage() {
               </h2>
             </div>
             <Button onClick={copyPrompt} variant="outline">
-              {copied ? (
+              {copyStatus === "copied" ? (
                 <CheckIcon className="size-4" />
               ) : (
                 <ClipboardIcon className="size-4" />
               )}
-              {copied ? "Copied" : "Copy"}
+              {copyStatus === "copied" ? "Copied" : "Copy"}
             </Button>
           </div>
+
+          {copyStatus === "failed" && (
+            <p className="rounded-2xl border border-amber-300/40 bg-amber-400/10 p-3 text-amber-100 text-sm">
+              Copy failed. Please select the snippet and copy it manually.
+            </p>
+          )}
 
           <pre className="whitespace-pre-wrap rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 text-sm text-zinc-200 leading-6">
             {systemPrompt}

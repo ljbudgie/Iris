@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { describe, it } from "node:test";
 
 type BurgessGate = (decisionRecord: unknown) => Promise<{
@@ -13,7 +14,7 @@ let cachedGate: BurgessGate | undefined;
 async function getBurgessGate() {
   if (!cachedGate) {
     const source = await readFile(
-      "/home/runner/work/Iris/Iris/public/burgess-gate.js",
+      join(process.cwd(), "public", "burgess-gate.js"),
       "utf8"
     );
     const gateModule = await import(

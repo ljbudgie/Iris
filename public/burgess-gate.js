@@ -87,7 +87,7 @@ async function sha256Hex(value) {
   }
 
   const { createHash } = await import("node:crypto");
-  return createHash("sha256").update(value).digest("hex");
+  return createHash("sha256").update(encoded).digest("hex");
 }
 
 function classify(record) {
