@@ -1,7 +1,7 @@
 "use client";
 
 import { CheckIcon, ClipboardIcon, ShieldCheckIcon } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,10 +19,20 @@ export default function IntegrationPage() {
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "failed">(
     "idle"
   );
+  const resetTimer = useRef<number | null>(null);
 
   const systemPrompt = useMemo(
     () => buildSystemPrompt(institution, decisionTypes),
     [institution, decisionTypes]
+  );
+
+  useEffect(
+    () => () => {
+      if (resetTimer.current) {
+        window.clearTimeout(resetTimer.current);
+      }
+    },
+    []
   );
 
   const copyPrompt = async () => {
@@ -34,7 +44,10 @@ export default function IntegrationPage() {
     try {
       await navigator.clipboard.writeText(systemPrompt);
       setCopyStatus("copied");
-      window.setTimeout(() => setCopyStatus("idle"), 1800);
+      if (resetTimer.current) {
+        window.clearTimeout(resetTimer.current);
+      }
+      resetTimer.current = window.setTimeout(() => setCopyStatus("idle"), 1800);
     } catch {
       setCopyStatus("failed");
     }

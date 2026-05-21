@@ -43,12 +43,18 @@
 })();
 
 function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
+  const replacements = {
+    "&": "&amp;",
+    '"': "&quot;",
+    "'": "&#39;",
+    "<": "&lt;",
+    ">": "&gt;",
+  };
+
+  return String(value).replace(
+    /[&"'<>]/g,
+    (character) => replacements[character]
+  );
 }
 
 function escapeAttribute(value) {
