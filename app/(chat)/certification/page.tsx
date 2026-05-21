@@ -12,12 +12,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  buildEvidenceBundle,
+  buildEvidenceBundleHtml,
+  type EvidenceBundle,
+} from "@/lib/certification/evidence-bundle";
+import {
   createPersonGateCommitment,
   loadCertificationRecords,
   loadStatutoryChallenges,
   saveCertificationRecords,
   saveStatutoryChallenges,
 } from "@/lib/certification/local-vault";
+import {
+  buildRegisterExport,
+  type RegisterClassificationFilter,
+} from "@/lib/certification/register-export";
 import {
   type BinaryAnswer,
   type BinaryTestResponses,
@@ -105,6 +114,16 @@ function downloadJson(filename: string, data: unknown) {
   URL.revokeObjectURL(url);
 }
 
+function downloadText(filename: string, text: string, type: string) {
+  const blob = new Blob([text], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 function copyText(value: string) {
   navigator.clipboard?.writeText(value);
 }
@@ -116,6 +135,10 @@ function deadlineClass(deadline: string) {
   }
 
   return "border-[#d6bc8f]/30 bg-[#d6bc8f]/10 text-[#f8e7bd]";
+}
+
+function registerSummary(record: CertificationRecord) {
+  return `${record.intake.institutionName} was assessed under The Burgess Principle. The decision process ${record.intake.processAssessed} was classified ${record.classification} on ${record.assessedAt.slice(0, 10)}.`;
 }
 
 function AnswerToggle({
@@ -264,6 +287,87 @@ function ChallengeDocument({
   );
 }
 
+function EvidenceBundlePreview({ bundle }: { bundle: EvidenceBundle }) {
+  return (
+    <article className="print:cert-print rounded-3xl border border-[#d6bc8f]/35 bg-[#071527] p-6 text-[#f8f1df] shadow-[0_0_40px_rgba(214,188,143,0.12)]">
+      <div className="mb-6 flex flex-col gap-4 border-[#d6bc8f]/25 border-b pb-5 md:flex-row md:items-start md:justify-between">
+        <div>
+          <p className="font-mono text-[#d6bc8f] text-xs uppercase tracking-[0.32em]">
+            The Burgess Principle evidence bundle
+          </p>
+          <h2 className="mt-2 font-semibold text-2xl text-[#f8e7bd]">
+            {bundle.cover_page.institution_name}
+          </h2>
+          <p className="mt-1 text-sm text-zinc-300">
+            {bundle.cover_page.case_reference} · {bundle.cover_page.date_range}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-[#d6bc8f]/40 bg-[#d6bc8f]/10 px-4 py-3 text-right">
+          <p className="font-mono text-[#d6bc8f] text-xs uppercase tracking-[0.2em]">
+            UK Certification Mark
+          </p>
+          <p className="mt-1 font-semibold text-lg text-zinc-50">
+            {bundle.cover_page.certification_mark}
+          </p>
+        </div>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-3">
+        <div className="rounded-2xl border border-[#d6bc8f]/25 bg-[#0b1b2f] p-4">
+          <p className="font-mono text-[#d6bc8f] text-[10px] uppercase tracking-[0.18em]">
+            Classification
+          </p>
+          <p className="mt-2 text-sm leading-6">
+            {bundle.cover_page.classification_summary}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-[#d6bc8f]/25 bg-[#0b1b2f] p-4">
+          <p className="font-mono text-[#d6bc8f] text-[10px] uppercase tracking-[0.18em]">
+            Challenge letters
+          </p>
+          <p className="mt-2 font-semibold text-2xl">
+            {bundle.challenge_letters.length}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-[#d6bc8f]/25 bg-[#0b1b2f] p-4">
+          <p className="font-mono text-[#d6bc8f] text-[10px] uppercase tracking-[0.18em]">
+            Timeline events
+          </p>
+          <p className="mt-2 font-semibold text-2xl">
+            {bundle.timeline.length}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-5 space-y-3">
+        <h3 className="font-semibold text-[#f8e7bd] text-lg">Timeline</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <tbody>
+              {bundle.timeline.map((event) => (
+                <tr
+                  className="border-[#d6bc8f]/15 border-t"
+                  key={`${event.date}-${event.label}-${event.detail}`}
+                >
+                  <th className="py-2 pr-3 font-mono text-[#d6bc8f] text-xs">
+                    {event.date}
+                  </th>
+                  <td className="py-2 pr-3 text-zinc-100">{event.label}</td>
+                  <td className="py-2 text-zinc-300">{event.detail}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <p className="mt-5 rounded-2xl border border-[#d6bc8f]/20 bg-[#d6bc8f]/10 p-4 text-sm leading-6">
+        {bundle.closing_statement}
+      </p>
+    </article>
+  );
+}
+
 export default function CertificationPage() {
   const [intake, setIntake] = useState<CertificationIntake>(initialIntake);
   const [responses, setResponses] =
@@ -284,6 +388,12 @@ export default function CertificationPage() {
     useState<PreferredRemedy>("combination");
   const [reasonableAdjustmentEmailOnly, setReasonableAdjustmentEmailOnly] =
     useState(false);
+  const [registerFilter, setRegisterFilter] =
+    useState<RegisterClassificationFilter>("all");
+  const [selectedRegisterIds, setSelectedRegisterIds] = useState<string[]>([]);
+  const [evidenceBundle, setEvidenceBundle] = useState<EvidenceBundle | null>(
+    null
+  );
   const [storageStatus, setStorageStatus] = useState(
     "Loading encrypted vault…"
   );
@@ -294,6 +404,7 @@ export default function CertificationPage() {
         const preferences = readPreferences();
         setRecords(loadedRecords);
         setActiveRecord(loadedRecords[0] ?? null);
+        setSelectedRegisterIds(loadedRecords.map((record) => record.id));
         setChallenges(loadedChallenges);
         setActiveChallenge(loadedChallenges[0] ?? null);
         setReasonableAdjustmentEmailOnly(
@@ -361,6 +472,7 @@ export default function CertificationPage() {
     await saveCertificationRecords(nextRecords);
     setRecords(nextRecords);
     setActiveRecord(record);
+    setSelectedRegisterIds((current) => [record.id, ...current]);
     setStorageStatus("Certification saved locally with AES-256-GCM");
   };
 
@@ -376,6 +488,44 @@ export default function CertificationPage() {
 
   const exportChallengePrintable = (challenge: StatutoryChallengeRecord) => {
     setActiveChallenge(challenge);
+    window.setTimeout(() => window.print(), 50);
+  };
+
+  const toggleRegisterRecord = (recordId: string) => {
+    setSelectedRegisterIds((current) =>
+      current.includes(recordId)
+        ? current.filter((item) => item !== recordId)
+        : [...current, recordId]
+    );
+  };
+
+  const filteredRegisterRecords = records.filter(
+    (record) =>
+      registerFilter === "all" || record.classification === registerFilter
+  );
+  const selectedRegisterRecords = filteredRegisterRecords.filter((record) =>
+    selectedRegisterIds.includes(record.id)
+  );
+
+  const exportRegister = () => {
+    downloadJson(
+      "burgess-register-export.json",
+      buildRegisterExport({ records: selectedRegisterRecords })
+    );
+  };
+
+  const createEvidenceBundle = (record: CertificationRecord) => {
+    const bundle = buildEvidenceBundle({
+      record,
+      challenges,
+      producedAt: new Date().toISOString(),
+      today: todayIsoDate(),
+    });
+    setEvidenceBundle(bundle);
+    setActiveRecord(record);
+  };
+
+  const printEvidenceBundle = () => {
     window.setTimeout(() => window.print(), 50);
   };
 
@@ -684,6 +834,13 @@ export default function CertificationPage() {
                   <FileJsonIcon className="size-4" />
                   Ledger JSON
                 </Button>
+                <Button
+                  onClick={() => createEvidenceBundle(activeRecord)}
+                  variant="outline"
+                >
+                  <FileJsonIcon className="size-4" />
+                  Build Evidence Bundle
+                </Button>
               </div>
               {isChallengeable(activeRecord) && (
                 <div className="rounded-3xl border border-[#d6bc8f]/25 bg-[#08080c]/80 p-5">
@@ -874,6 +1031,58 @@ export default function CertificationPage() {
             </div>
           )}
 
+          {evidenceBundle && (
+            <div className="space-y-4 rounded-3xl border border-[#d6bc8f]/25 bg-card/50 p-5">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="font-mono text-[#d6bc8f] text-xs uppercase tracking-[0.24em]">
+                    Evidence bundle builder
+                  </p>
+                  <h2 className="mt-2 font-semibold text-xl">
+                    {evidenceBundle.cover_page.institution_name}
+                  </h2>
+                  <p className="mt-1 text-sm text-zinc-400">
+                    Printable HTML, browser PDF, and JSON export. All records
+                    remain local.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button onClick={printEvidenceBundle} variant="outline">
+                    <PrinterIcon className="size-4" />
+                    Print / save PDF
+                  </Button>
+                  <Button
+                    onClick={() =>
+                      downloadText(
+                        `evidence-bundle-${evidenceBundle.certification_record.id}.html`,
+                        buildEvidenceBundleHtml(evidenceBundle),
+                        "text/html"
+                      )
+                    }
+                    variant="outline"
+                  >
+                    <DownloadIcon className="size-4" />
+                    HTML
+                  </Button>
+                  <Button
+                    onClick={() =>
+                      downloadJson(
+                        `evidence-bundle-${evidenceBundle.certification_record.id}.json`,
+                        evidenceBundle
+                      )
+                    }
+                    variant="outline"
+                  >
+                    <FileJsonIcon className="size-4" />
+                    JSON
+                  </Button>
+                </div>
+              </div>
+
+              <EvidenceBundlePreview bundle={evidenceBundle} />
+            </div>
+          )}
+
           <div className="rounded-3xl border border-zinc-800 bg-card/50 p-5">
             <div>
               <h2 className="font-semibold text-xl">Deadline dashboard</h2>
@@ -1034,6 +1243,109 @@ export default function CertificationPage() {
               >
                 Bulk export
               </Button>
+            </div>
+
+            <div className="mt-5 rounded-2xl border border-[#d6bc8f]/25 bg-[#08080c]/70 p-4">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="font-mono text-[#d6bc8f] text-xs uppercase tracking-[0.24em]">
+                    Institutional register export
+                  </p>
+                  <h3 className="mt-2 font-semibold text-lg">
+                    Framer CMS-ready JSON
+                  </h3>
+                  <p className="mt-1 text-sm text-zinc-400">
+                    Preview completed vault records, deselect entries, and
+                    export burgess-register-export.json locally.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <select
+                    className="h-9 rounded-xl border border-input bg-input/30 px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                    onChange={(event) =>
+                      setRegisterFilter(
+                        event.target.value as RegisterClassificationFilter
+                      )
+                    }
+                    value={registerFilter}
+                  >
+                    <option value="all">All classifications</option>
+                    <option value="SOVEREIGN">SOVEREIGN only</option>
+                    <option value="NULL">NULL only</option>
+                  </select>
+                  <Button
+                    disabled={selectedRegisterRecords.length === 0}
+                    onClick={exportRegister}
+                    variant="outline"
+                  >
+                    <DownloadIcon className="size-4" />
+                    Export register
+                  </Button>
+                </div>
+              </div>
+
+              <div className="mt-4 overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <thead>
+                    <tr className="border-zinc-800 border-b text-zinc-400">
+                      <th className="py-2 pr-3">Include</th>
+                      <th className="py-2 pr-3">Entity</th>
+                      <th className="py-2 pr-3">Process</th>
+                      <th className="py-2 pr-3">Classification</th>
+                      <th className="py-2 pr-3">Date</th>
+                      <th className="py-2">Summary</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredRegisterRecords.length === 0 ? (
+                      <tr>
+                        <td className="py-3 text-zinc-500" colSpan={6}>
+                          No completed certifications match this filter.
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredRegisterRecords.map((record) => (
+                        <tr
+                          className="border-zinc-900 border-t"
+                          key={record.id}
+                        >
+                          <td className="py-2 pr-3">
+                            <input
+                              checked={selectedRegisterIds.includes(record.id)}
+                              onChange={() => toggleRegisterRecord(record.id)}
+                              type="checkbox"
+                            />
+                          </td>
+                          <td className="py-2 pr-3 text-zinc-200">
+                            {record.intake.institutionName}
+                          </td>
+                          <td className="py-2 pr-3 text-zinc-300">
+                            {record.intake.processAssessed}
+                          </td>
+                          <td className="py-2 pr-3">
+                            <span
+                              className={`rounded-full border px-2 py-1 font-mono text-[10px] ${classificationClass(record.classification)}`}
+                            >
+                              {record.classification}
+                            </span>
+                          </td>
+                          <td className="py-2 pr-3 font-mono text-zinc-400 text-xs">
+                            {record.assessedAt.slice(0, 10)}
+                          </td>
+                          <td className="py-2 text-zinc-400">
+                            {record.summary || registerSummary(record)}
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              <p className="mt-3 text-zinc-500 text-xs">
+                Export header includes timestamp and total count. No external
+                transmission is performed.
+              </p>
             </div>
 
             <div className="mt-4 space-y-2">
