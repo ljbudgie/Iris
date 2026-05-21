@@ -5,6 +5,7 @@ import {
   ClipboardListIcon,
   EyeIcon,
   FileTextIcon,
+  LandmarkIcon,
   ListTodoIcon,
   PanelLeftIcon,
   PenSquareIcon,
@@ -170,6 +171,23 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                     <span className="font-medium">New chat</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
+                {user && (
+                  <SidebarMenuItem>
+                    <SidebarMenuButton
+                      asChild
+                      className="rounded-lg text-sidebar-foreground/60 transition-colors duration-150 hover:text-sidebar-foreground"
+                      tooltip="Institutional Certification"
+                    >
+                      <Link
+                        href="/certification"
+                        onClick={() => setOpenMobile(false)}
+                      >
+                        <LandmarkIcon className="size-4" />
+                        <span className="text-[13px]">Certification</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                )}
                 {user && (
                   <SidebarMenuItem>
                     <SidebarMenuButton
