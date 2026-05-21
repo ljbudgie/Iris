@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-labelledby="title" aria-describedby="desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-labelledby="title" aria-describedby="desc" lang="en">
   <title id="title">Burgess Principle binary decision flow</title>
   <desc id="desc">A decision flow from institutional decision, through a diamond question asking whether a named human being's mind was applied to the specific facts of the case, to sovereign, null, or ambiguous outcomes.</desc>
   <defs>
@@ -24,8 +24,10 @@
   <path class="arrow" d="M400 124 L400 145" />
 
   <polygon points="400,148 594,220 400,292 206,220" fill="#FCFBF9" stroke="#1C3A5E" stroke-width="3" />
-  <text x="400" y="202" text-anchor="middle" class="heading" font-size="18" fill="#1C3A5E">Was a named human being&apos;s mind</text>
-  <text x="400" y="228" text-anchor="middle" class="heading" font-size="18" fill="#1C3A5E">applied to the specific facts of this case?</text>
+  <g role="text">
+    <text x="400" y="202" text-anchor="middle" class="heading" font-size="18" fill="#1C3A5E">Was a named human being&apos;s mind</text>
+    <text x="400" y="228" text-anchor="middle" class="heading" font-size="18" fill="#1C3A5E">applied to the specific facts of this case?</text>
+  </g>
 
   <path class="arrow" d="M296 259 L159 344" />
   <path class="arrow" d="M504 259 L641 344" />
