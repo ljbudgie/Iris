@@ -21,6 +21,8 @@ export type IrisPreferences = {
   calmMode: boolean;
   /** Sovereign Hub Mode — see docs/sovereign-hub.md. */
   hubMode: boolean;
+  /** Preferred reasonable adjustment for statutory notices. */
+  reasonableAdjustmentEmailOnly?: boolean;
 };
 
 export const PREFERENCES_KEY = "iris.preferences.v1";

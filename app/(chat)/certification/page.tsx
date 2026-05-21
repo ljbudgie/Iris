@@ -14,7 +14,9 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   createPersonGateCommitment,
   loadCertificationRecords,
+  loadStatutoryChallenges,
   saveCertificationRecords,
+  saveStatutoryChallenges,
 } from "@/lib/certification/local-vault";
 import {
   type BinaryAnswer,
@@ -30,6 +32,18 @@ import {
   classifyCertification,
   type DecisionType,
 } from "@/lib/certification/workflow";
+import {
+  buildChallengeRecord,
+  CHALLENGE_ROUTES,
+  calculateStatutoryDeadline,
+  formatDate,
+  type PreferredRemedy,
+  type ResponseType,
+  type StatutoryChallengeRecord,
+  type StatutoryChallengeType,
+  todayIsoDate,
+} from "@/lib/challenges/workflow";
+import { readPreferences } from "@/lib/setup/preferences";
 
 const initialIntake: CertificationIntake = {
   institutionName: "",
@@ -46,6 +60,26 @@ const initialResponses: BinaryTestResponses = {
   namedIndividual: { answer: "no", evidence: "" },
   specificFactsReview: { answer: "no", evidence: "" },
 };
+
+const remedyOptions: { label: string; value: PreferredRemedy }[] = [
+  { label: "Compliance", value: "compliance" },
+  { label: "Rectification", value: "rectification" },
+  { label: "Erasure", value: "erasure" },
+  { label: "Compensation", value: "compensation" },
+  { label: "Combination", value: "combination" },
+];
+
+const responseTypeOptions: { label: string; value: ResponseType }[] = [
+  { label: "Substantive", value: "substantive" },
+  { label: "Holding", value: "holding" },
+  { label: "No response", value: "no response" },
+];
+
+function isChallengeable(record: CertificationRecord | null) {
+  return (
+    record?.classification === "NULL" || record?.classification === "AMBIGUOUS"
+  );
+}
 
 function classificationClass(classification: CertificationClassification) {
   if (classification === "SOVEREIGN") {
@@ -69,6 +103,19 @@ function downloadJson(filename: string, data: unknown) {
   link.download = filename;
   link.click();
   URL.revokeObjectURL(url);
+}
+
+function copyText(value: string) {
+  navigator.clipboard?.writeText(value);
+}
+
+function deadlineClass(deadline: string) {
+  const today = todayIsoDate();
+  if (deadline < today) {
+    return "border-red-400/50 bg-red-500/10 text-red-100";
+  }
+
+  return "border-[#d6bc8f]/30 bg-[#d6bc8f]/10 text-[#f8e7bd]";
 }
 
 function AnswerToggle({
@@ -188,6 +235,35 @@ function Certificate({ record }: { record: CertificationRecord }) {
   );
 }
 
+function ChallengeDocument({
+  challenge,
+}: {
+  challenge: StatutoryChallengeRecord;
+}) {
+  return (
+    <article
+      className="print:cert-print rounded-3xl border border-[#d6bc8f]/35 bg-[#f8f1df] p-6 text-[#111827] shadow-[0_0_40px_rgba(214,188,143,0.12)]"
+      id="statutory-challenge-letter"
+    >
+      <div className="mb-6 border-[#a67c38]/40 border-b pb-4">
+        <p className="font-mono text-[#8a5f16] text-xs uppercase tracking-[0.32em]">
+          The Burgess Principle
+        </p>
+        <h2 className="mt-2 font-semibold text-2xl text-[#071527]">
+          Statutory Challenge Notice
+        </h2>
+        <p className="mt-1 text-[#334155] text-sm">
+          {challenge.challengeLabel}
+        </p>
+      </div>
+
+      <div className="space-y-3 whitespace-pre-wrap text-sm leading-7">
+        {challenge.plainText}
+      </div>
+    </article>
+  );
+}
+
 export default function CertificationPage() {
   const [intake, setIntake] = useState<CertificationIntake>(initialIntake);
   const [responses, setResponses] =
@@ -196,15 +272,33 @@ export default function CertificationPage() {
   const [activeRecord, setActiveRecord] = useState<CertificationRecord | null>(
     null
   );
+  const [challenges, setChallenges] = useState<StatutoryChallengeRecord[]>([]);
+  const [activeChallenge, setActiveChallenge] =
+    useState<StatutoryChallengeRecord | null>(null);
+  const [selectedChallengeTypes, setSelectedChallengeTypes] = useState<
+    StatutoryChallengeType[]
+  >([]);
+  const [institutionAddress, setInstitutionAddress] = useState("");
+  const [submissionDate, setSubmissionDate] = useState(todayIsoDate());
+  const [preferredRemedy, setPreferredRemedy] =
+    useState<PreferredRemedy>("combination");
+  const [reasonableAdjustmentEmailOnly, setReasonableAdjustmentEmailOnly] =
+    useState(false);
   const [storageStatus, setStorageStatus] = useState(
     "Loading encrypted vault…"
   );
 
   useEffect(() => {
-    loadCertificationRecords()
-      .then((loaded) => {
-        setRecords(loaded);
-        setActiveRecord(loaded[0] ?? null);
+    Promise.all([loadCertificationRecords(), loadStatutoryChallenges()])
+      .then(([loadedRecords, loadedChallenges]) => {
+        const preferences = readPreferences();
+        setRecords(loadedRecords);
+        setActiveRecord(loadedRecords[0] ?? null);
+        setChallenges(loadedChallenges);
+        setActiveChallenge(loadedChallenges[0] ?? null);
+        setReasonableAdjustmentEmailOnly(
+          Boolean(preferences.reasonableAdjustmentEmailOnly)
+        );
         setStorageStatus("Local AES-256-GCM vault ready");
       })
       .catch(() => {
@@ -279,6 +373,67 @@ export default function CertificationPage() {
     setActiveRecord(record);
     window.setTimeout(() => window.print(), 50);
   };
+
+  const exportChallengePrintable = (challenge: StatutoryChallengeRecord) => {
+    setActiveChallenge(challenge);
+    window.setTimeout(() => window.print(), 50);
+  };
+
+  const toggleChallengeType = (challengeType: StatutoryChallengeType) => {
+    setSelectedChallengeTypes((current) =>
+      current.includes(challengeType)
+        ? current.filter((item) => item !== challengeType)
+        : [...current, challengeType]
+    );
+  };
+
+  const generateChallenges = async () => {
+    if (!activeRecord || !isChallengeable(activeRecord)) {
+      return;
+    }
+
+    const createdAt = new Date().toISOString();
+    const generated = selectedChallengeTypes.map((challengeType) =>
+      buildChallengeRecord({
+        id: crypto.randomUUID(),
+        record: activeRecord,
+        challengeType,
+        submissionDate,
+        institutionAddress,
+        preferredRemedy,
+        reasonableAdjustmentEmailOnly,
+        createdAt,
+      })
+    );
+    const nextChallenges = [...generated, ...challenges];
+    await saveStatutoryChallenges(nextChallenges);
+    setChallenges(nextChallenges);
+    setActiveChallenge(generated[0] ?? null);
+    setStorageStatus("Statutory challenge saved locally with AES-256-GCM");
+  };
+
+  const updateChallenge = async (
+    challenge: StatutoryChallengeRecord,
+    patch: Partial<StatutoryChallengeRecord>
+  ) => {
+    const nextChallenge = { ...challenge, ...patch };
+    const nextChallenges = challenges.map((item) =>
+      item.id === challenge.id ? nextChallenge : item
+    );
+    await saveStatutoryChallenges(nextChallenges);
+    setChallenges(nextChallenges);
+    setActiveChallenge((current) =>
+      current?.id === challenge.id ? nextChallenge : current
+    );
+  };
+
+  const activeDeadlines = challenges
+    .filter(
+      (challenge) => challenge.responseLog?.updatedFinding !== "SOVEREIGN"
+    )
+    .sort((left, right) =>
+      left.statutoryDeadline.localeCompare(right.statutoryDeadline)
+    );
 
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-8">
@@ -530,6 +685,128 @@ export default function CertificationPage() {
                   Ledger JSON
                 </Button>
               </div>
+              {isChallengeable(activeRecord) && (
+                <div className="rounded-3xl border border-[#d6bc8f]/25 bg-[#08080c]/80 p-5">
+                  <div>
+                    <p className="font-mono text-[#d6bc8f] text-xs uppercase tracking-[0.24em]">
+                      Statutory challenge generator
+                    </p>
+                    <h2 className="mt-2 font-semibold text-xl">
+                      Generate notices from this {activeRecord.classification}{" "}
+                      certification
+                    </h2>
+                    <p className="mt-1 text-sm text-zinc-400">
+                      Select one or more routes. Each route creates a separate
+                      encrypted local record with plain text, printable HTML,
+                      and JSON output.
+                    </p>
+                  </div>
+
+                  <div className="mt-4 grid gap-3">
+                    {CHALLENGE_ROUTES.map((route) => (
+                      <label
+                        className="flex gap-3 rounded-2xl border border-zinc-800 bg-zinc-950/35 p-3 text-sm transition hover:border-[#d6bc8f]/40"
+                        key={route.type}
+                      >
+                        <input
+                          checked={selectedChallengeTypes.includes(route.type)}
+                          onChange={() => toggleChallengeType(route.type)}
+                          type="checkbox"
+                        />
+                        <span>{route.label}</span>
+                      </label>
+                    ))}
+                  </div>
+
+                  <div className="mt-4 grid gap-4 md:grid-cols-2">
+                    <label className="space-y-2" htmlFor="institution-address">
+                      <span className="text-sm">Institution address</span>
+                      <Textarea
+                        id="institution-address"
+                        onChange={(event) =>
+                          setInstitutionAddress(event.target.value)
+                        }
+                        placeholder="Optional postal address"
+                        value={institutionAddress}
+                      />
+                    </label>
+                    <div className="grid gap-4">
+                      <label className="space-y-2" htmlFor="submission-date">
+                        <span className="text-sm">Submission date</span>
+                        <Input
+                          id="submission-date"
+                          onChange={(event) =>
+                            setSubmissionDate(event.target.value)
+                          }
+                          type="date"
+                          value={submissionDate}
+                        />
+                      </label>
+                      <label className="space-y-2" htmlFor="preferred-remedy">
+                        <span className="text-sm">Preferred remedy</span>
+                        <select
+                          className="h-9 w-full rounded-xl border border-input bg-input/30 px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                          id="preferred-remedy"
+                          onChange={(event) =>
+                            setPreferredRemedy(
+                              event.target.value as PreferredRemedy
+                            )
+                          }
+                          value={preferredRemedy}
+                        >
+                          {remedyOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    </div>
+                  </div>
+
+                  <label className="mt-4 flex items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-950/35 p-3 text-sm">
+                    <input
+                      checked={reasonableAdjustmentEmailOnly}
+                      onChange={(event) =>
+                        setReasonableAdjustmentEmailOnly(event.target.checked)
+                      }
+                      type="checkbox"
+                    />
+                    Reasonable adjustment on file: email only
+                  </label>
+
+                  {selectedChallengeTypes.length > 0 && (
+                    <div className="mt-4 rounded-2xl border border-zinc-800 bg-zinc-950/35 p-3">
+                      <p className="font-mono text-[10px] text-zinc-500 uppercase tracking-[0.18em]">
+                        Calculated deadlines
+                      </p>
+                      <div className="mt-2 space-y-1 text-sm text-zinc-300">
+                        {selectedChallengeTypes.map((type) => {
+                          const route = CHALLENGE_ROUTES.find(
+                            (item) => item.type === type
+                          );
+                          return (
+                            <p key={type}>
+                              {route?.label}:{" "}
+                              {formatDate(
+                                calculateStatutoryDeadline(submissionDate, type)
+                              )}
+                            </p>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  <Button
+                    className="mt-4"
+                    disabled={selectedChallengeTypes.length === 0}
+                    onClick={generateChallenges}
+                  >
+                    Generate selected challenge documents
+                  </Button>
+                </div>
+              )}
             </>
           ) : (
             <div className="rounded-3xl border border-dashed border-zinc-700 bg-card/30 p-8 text-center">
@@ -539,6 +816,203 @@ export default function CertificationPage() {
               </p>
             </div>
           )}
+
+          {activeChallenge && (
+            <div className="space-y-4 rounded-3xl border border-zinc-800 bg-card/50 p-5">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="font-mono text-[#d6bc8f] text-xs uppercase tracking-[0.24em]">
+                    Challenge output
+                  </p>
+                  <h2 className="mt-2 font-semibold text-xl">
+                    {activeChallenge.challengeLabel}
+                  </h2>
+                  <p className="mt-1 text-sm text-zinc-400">
+                    Deadline: {formatDate(activeChallenge.statutoryDeadline)}
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    onClick={() => exportChallengePrintable(activeChallenge)}
+                    variant="outline"
+                  >
+                    <PrinterIcon className="size-4" />
+                    Print letter
+                  </Button>
+                  <Button
+                    onClick={() => copyText(activeChallenge.plainText)}
+                    variant="outline"
+                  >
+                    Copy plain text
+                  </Button>
+                  <Button
+                    onClick={() =>
+                      downloadJson(
+                        `statutory-challenge-${activeChallenge.id}.json`,
+                        activeChallenge
+                      )
+                    }
+                    variant="outline"
+                  >
+                    <FileJsonIcon className="size-4" />
+                    JSON
+                  </Button>
+                </div>
+              </div>
+
+              <ChallengeDocument challenge={activeChallenge} />
+
+              <label className="block space-y-2" htmlFor="plain-text-copy">
+                <span className="text-sm">Plain text copy</span>
+                <Textarea
+                  className="min-h-64 font-mono text-xs"
+                  id="plain-text-copy"
+                  readOnly
+                  value={activeChallenge.plainText}
+                />
+              </label>
+            </div>
+          )}
+
+          <div className="rounded-3xl border border-zinc-800 bg-card/50 p-5">
+            <div>
+              <h2 className="font-semibold text-xl">Deadline dashboard</h2>
+              <p className="mt-1 text-sm text-zinc-400">
+                Active statutory challenges are sorted by urgency. Overdue
+                deadlines are flagged in red.
+              </p>
+            </div>
+
+            <div className="mt-4 space-y-3">
+              {activeDeadlines.length === 0 ? (
+                <p className="text-sm text-zinc-500">
+                  No active statutory challenge deadlines.
+                </p>
+              ) : (
+                activeDeadlines.map((challenge) => (
+                  <div
+                    className={`rounded-2xl border p-3 ${deadlineClass(
+                      challenge.statutoryDeadline
+                    )}`}
+                    key={challenge.id}
+                  >
+                    <button
+                      className="w-full text-left"
+                      onClick={() => setActiveChallenge(challenge)}
+                      type="button"
+                    >
+                      <div className="flex flex-wrap items-start justify-between gap-2">
+                        <div>
+                          <p className="font-medium">
+                            {challenge.institutionName}
+                          </p>
+                          <p className="mt-1 text-sm opacity-80">
+                            {challenge.challengeLabel}
+                          </p>
+                        </div>
+                        <p className="font-mono text-xs uppercase tracking-[0.18em]">
+                          {formatDate(challenge.statutoryDeadline)}
+                        </p>
+                      </div>
+                    </button>
+
+                    <div className="mt-3 grid gap-3 border-current/20 border-t pt-3 md:grid-cols-3">
+                      <label
+                        className="space-y-2"
+                        htmlFor={`response-date-${challenge.id}`}
+                      >
+                        <span className="text-xs">Response date</span>
+                        <Input
+                          id={`response-date-${challenge.id}`}
+                          onChange={(event) =>
+                            updateChallenge(challenge, {
+                              responseLog: {
+                                responseDate: event.target.value,
+                                responseType:
+                                  challenge.responseLog?.responseType ??
+                                  "substantive",
+                                updatedFinding:
+                                  challenge.responseLog?.updatedFinding ??
+                                  "NULL",
+                              },
+                            })
+                          }
+                          type="date"
+                          value={challenge.responseLog?.responseDate ?? ""}
+                        />
+                      </label>
+                      <label
+                        className="space-y-2"
+                        htmlFor={`response-type-${challenge.id}`}
+                      >
+                        <span className="text-xs">Response type</span>
+                        <select
+                          className="h-9 w-full rounded-xl border border-input bg-input/30 px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                          id={`response-type-${challenge.id}`}
+                          onChange={(event) =>
+                            updateChallenge(challenge, {
+                              responseLog: {
+                                responseDate:
+                                  challenge.responseLog?.responseDate ??
+                                  todayIsoDate(),
+                                responseType: event.target
+                                  .value as ResponseType,
+                                updatedFinding:
+                                  challenge.responseLog?.updatedFinding ??
+                                  "NULL",
+                              },
+                            })
+                          }
+                          value={
+                            challenge.responseLog?.responseType ?? "substantive"
+                          }
+                        >
+                          {responseTypeOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      <label
+                        className="space-y-2"
+                        htmlFor={`updated-finding-${challenge.id}`}
+                      >
+                        <span className="text-xs">NULL finding updated</span>
+                        <select
+                          className="h-9 w-full rounded-xl border border-input bg-input/30 px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                          id={`updated-finding-${challenge.id}`}
+                          onChange={(event) =>
+                            updateChallenge(challenge, {
+                              responseLog: {
+                                responseDate:
+                                  challenge.responseLog?.responseDate ??
+                                  todayIsoDate(),
+                                responseType:
+                                  challenge.responseLog?.responseType ??
+                                  "substantive",
+                                updatedFinding: event.target.value as
+                                  | "SOVEREIGN"
+                                  | "NULL",
+                              },
+                            })
+                          }
+                          value={
+                            challenge.responseLog?.updatedFinding ?? "NULL"
+                          }
+                        >
+                          <option value="NULL">NULL maintained</option>
+                          <option value="SOVEREIGN">
+                            SOVEREIGN if resolved
+                          </option>
+                        </select>
+                      </label>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
 
           <div className="rounded-3xl border border-zinc-800 bg-card/50 p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">

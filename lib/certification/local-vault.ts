@@ -1,6 +1,8 @@
 import type { CertificationRecord } from "@/lib/certification/workflow";
+import type { StatutoryChallengeRecord } from "@/lib/challenges/workflow";
 
 const RECORDS_KEY = "iris.certification.records.v1";
+const CHALLENGES_KEY = "iris.certification.challenges.v1";
 const KEY_MATERIAL_KEY = "iris.certification.key.v1";
 const ENCODER = new TextEncoder();
 const DECODER = new TextDecoder();
@@ -62,7 +64,11 @@ export async function createPersonGateCommitment(label: string, facts: string) {
 export async function loadCertificationRecords(): Promise<
   CertificationRecord[]
 > {
-  const stored = localStorage.getItem(RECORDS_KEY);
+  return await loadEncryptedList<CertificationRecord>(RECORDS_KEY);
+}
+
+async function loadEncryptedList<T>(storageKey: string): Promise<T[]> {
+  const stored = localStorage.getItem(storageKey);
   if (!stored) {
     return [];
   }
@@ -75,10 +81,10 @@ export async function loadCertificationRecords(): Promise<
     base64ToBytes(payload.ciphertext)
   );
 
-  return JSON.parse(DECODER.decode(plaintext)) as CertificationRecord[];
+  return JSON.parse(DECODER.decode(plaintext)) as T[];
 }
 
-export async function saveCertificationRecords(records: CertificationRecord[]) {
+async function saveEncryptedList<T>(storageKey: string, records: T[]) {
   const key = await getVaultKey();
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const ciphertext = await crypto.subtle.encrypt(
@@ -94,5 +100,21 @@ export async function saveCertificationRecords(records: CertificationRecord[]) {
     ciphertext: bytesToBase64(new Uint8Array(ciphertext)),
   };
 
-  localStorage.setItem(RECORDS_KEY, JSON.stringify(payload));
+  localStorage.setItem(storageKey, JSON.stringify(payload));
+}
+
+export async function saveCertificationRecords(records: CertificationRecord[]) {
+  await saveEncryptedList(RECORDS_KEY, records);
+}
+
+export async function loadStatutoryChallenges(): Promise<
+  StatutoryChallengeRecord[]
+> {
+  return await loadEncryptedList<StatutoryChallengeRecord>(CHALLENGES_KEY);
+}
+
+export async function saveStatutoryChallenges(
+  records: StatutoryChallengeRecord[]
+) {
+  await saveEncryptedList(CHALLENGES_KEY, records);
 }
