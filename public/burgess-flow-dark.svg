@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600" role="img" aria-labelledby="title desc">
   <title id="title">Burgess Principle binary decision flow</title>
   <desc id="desc">A decision flow from institutional decision, through a named human review question, to sovereign, null, or ambiguous outcomes.</desc>
-  <desc id="decision-point-desc">The diamond asks whether a named human being's mind was applied to the specific facts of the case.</desc>
   <defs>
+    <desc id="decision-point-desc">The diamond asks whether a named human being's mind was applied to the specific facts of the case.</desc>
     <marker id="arrow-cream" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="strokeWidth">
       <path d="M2 2 L10 6 L2 10 Z" fill="#FCFBF9" />
     </marker>
