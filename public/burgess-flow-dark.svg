@@ -23,7 +23,7 @@
 
   <path class="arrow" d="M400 124 L400 145" />
 
-  <polygon points="400,148 594,220 400,292 206,220" fill="#FCFBF9" stroke="#B8952A" stroke-width="3" role="img" aria-label="Binary question decision point" />
+  <polygon points="400,148 594,220 400,292 206,220" fill="#FCFBF9" stroke="#B8952A" stroke-width="3" />
   <text x="400" y="202" text-anchor="middle" class="heading" font-size="18" fill="#1C3A5E">Was a named human being&apos;s mind</text>
   <text x="400" y="228" text-anchor="middle" class="heading" font-size="18" fill="#1C3A5E">applied to the specific facts of this case?</text>
 
@@ -54,6 +54,6 @@
   <text x="641" y="422" text-anchor="middle" class="subcopy" font-size="14" fill="#f87171">No individual review.</text>
   <text x="641" y="443" text-anchor="middle" class="subcopy" font-size="14" fill="#f87171">Decision contested.</text>
 
-  <rect x="24" y="534" width="752" height="42" fill="#1C3A5E" stroke="#B8952A" stroke-width="2" />
+  <rect x="24" y="534" width="752" height="42" fill="#1C3A5E" />
   <text x="400" y="560" text-anchor="middle" class="footer" font-size="12" fill="#FCFBF9">UK Certification Mark UK00004343685 | The Burgess Principle Ltd</text>
 </svg>
