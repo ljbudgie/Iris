@@ -39,6 +39,16 @@
     `<a href="${escapeAttribute(registerUrl)}" rel="noopener noreferrer" style="display:inline-flex;margin-top:14px;color:#8af5e8;font-size:12px;text-decoration:none;" target="_blank">View public institutional register →</a>`,
   ].join("");
 
+  const registerLink = badge.querySelector("a");
+  registerLink?.addEventListener("focus", function handleFocus() {
+    this.style.outline = "2px solid #8af5e8";
+    this.style.outlineOffset = "4px";
+    this.style.borderRadius = "4px";
+  });
+  registerLink?.addEventListener("blur", function handleBlur() {
+    this.style.outline = "none";
+  });
+
   mount.appendChild(badge);
 })();
 
