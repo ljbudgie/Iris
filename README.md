@@ -40,6 +40,57 @@ Recent upgrades that the rest of this README expands on:
 - **Local-first / self-hostable** — runs end-to-end without cloud services; see [`docs/self-hosting.md`](./docs/self-hosting.md).
 - **Tests** — `tsx --test` unit tests (`tests/unit/`) and Playwright E2E (`playwright.config.ts`).
 
+## Resilience by design
+
+On 12–13 June 2026, the US Commerce Department ordered Anthropic to suspend
+access to its newest models — Claude Fable 5 and Claude Mythos 5 — for
+export-control reasons. Anthropic complied by disabling both models
+**globally, for every user, including paying enterprise customers and
+Anthropic's own staff** — not as a targeted block on one country's users,
+but as a complete, overnight withdrawal because the order's scope made
+anything narrower impractical.
+
+Nobody using those models — anywhere, including in the US — had any warning,
+and no recourse. One regulatory letter to one company removed a tool that
+hundreds of millions of people had access to three days earlier.
+
+This is exactly the failure mode Iris is built to survive, and it isn't a
+hypothetical anymore.
+
+**How Iris handles it:**
+
+- **Local-first is the default.** `IRIS_LOCAL_ONLY=1` runs Iris entirely on
+  your own machine via Ollama — no cloud provider, no API call, nothing for
+  any company or government to switch off. See
+  [`docs/self-hosting.md`](./docs/self-hosting.md).
+
+- **No single provider is "the" provider.** When running with cloud models,
+  Iris's [smart router](./lib/ai/smart-router.ts) draws from eight models
+  across seven providers (Mistral, Moonshot AI, DeepSeek, OpenAI, xAI, and
+  others via the Vercel AI Gateway). The default model is Kimi K2 — not a
+  model from the provider whose models were just pulled. Anthropic models
+  are not part of Iris's default pool at all.
+
+- **Automatic fallback within a session.** If your chosen model returns an
+  availability-shaped error — withdrawn, rate-limited, region-blocked,
+  overloaded — Iris automatically tries the next model in its resilience
+  pool and tells you plainly what happened ("Switched to Kimi K2 0905 —
+  Codestral was temporarily unavailable"). Your conversation continues. See
+  [`lib/ai/providers.resilient.ts`](./lib/ai/providers.resilient.ts).
+
+- **Defence-in-depth for local-only mode.** When `IRIS_LOCAL_ONLY=1` is set,
+  the smart router refuses to select any cloud model — even if one is
+  explicitly requested — and the provider layer enforces the same rule
+  independently. Two layers, so a bug in one doesn't silently leak a request
+  to the cloud.
+
+**The point:** whatever happens to any one AI company's models — a
+regulatory order, a policy change, a pricing shift, a jailbreak finding, a
+company shutting down — Iris keeps working. Not because Iris bet on the
+"safe" provider, but because it never bet on one provider at all. If you
+want the strongest version of that guarantee, run Iris locally; nothing
+above the hardware you own can take it away.
+
 ---
 
 ## Screenshots

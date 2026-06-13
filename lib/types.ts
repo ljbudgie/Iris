@@ -43,6 +43,7 @@ export type CustomUIDataTypes = {
   clear: null;
   finish: null;
   "chat-title": string;
+  "fallback-notice": string;
 };
 
 export type ChatMessage = UIMessage<
