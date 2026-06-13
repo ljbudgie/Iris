@@ -144,7 +144,7 @@ export function todayIsoDate() {
 
 function addCalendarDays(date: Date, days: number) {
   const next = new Date(date);
-  next.setDate(next.getDate() + days);
+  next.setUTCDate(next.getUTCDate() + days);
   return next;
 }
 
@@ -153,8 +153,8 @@ function addWorkingDays(date: Date, days: number) {
   let remaining = days;
 
   while (remaining > 0) {
-    next.setDate(next.getDate() + 1);
-    const day = next.getDay();
+    next.setUTCDate(next.getUTCDate() + 1);
+    const day = next.getUTCDay();
     if (day !== 0 && day !== 6) {
       remaining -= 1;
     }
@@ -164,7 +164,10 @@ function addWorkingDays(date: Date, days: number) {
 }
 
 function toIsoDate(date: Date) {
-  return date.toISOString().slice(0, 10);
+  const y = date.getUTCFullYear();
+  const m = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const d = String(date.getUTCDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
 }
 
 export function calculateStatutoryDeadline(
@@ -172,7 +175,7 @@ export function calculateStatutoryDeadline(
   challengeType: StatutoryChallengeType
 ) {
   const route = getChallengeRoute(challengeType);
-  const start = new Date(`${submissionDate}T00:00:00`);
+  const start = new Date(`${submissionDate}T00:00:00Z`);
 
   if (route.deadlineRule === "twenty_working_days") {
     return toIsoDate(addWorkingDays(start, 20));
