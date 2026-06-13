@@ -27,6 +27,13 @@ export function DataStreamHandler() {
         mutate(unstable_serialize(getChatHistoryPaginationKey));
         continue;
       }
+
+      if (delta.type === "data-fallback-notice") {
+        window.dispatchEvent(
+          new CustomEvent("iris:fallback-notice", { detail: delta.data })
+        );
+        continue;
+      }
       const artifactDefinition = artifactDefinitions.find(
         (currentArtifactDefinition) =>
           currentArtifactDefinition.kind === artifact.kind

@@ -25,7 +25,7 @@ import {
   getCapabilities,
 } from "@/lib/ai/models";
 import { type RequestHints, systemPrompt } from "@/lib/ai/prompts";
-import { getLanguageModel } from "@/lib/ai/providers";
+import { getResilientLanguageModel } from "@/lib/ai/providers.resilient";
 import {
   AUTO_MODEL_ID,
   extractTextFromParts,
@@ -346,8 +346,18 @@ export async function POST(request: Request) {
           console.log(`[Iris] ${routingLabel}`);
         }
 
+        const { model: resolvedModel, result: fallbackResult } =
+          await getResilientLanguageModel(chatModel);
+
+        if (fallbackResult.didFallback && fallbackResult.message) {
+          dataStream.write({
+            type: "data-fallback-notice",
+            data: fallbackResult.message,
+          });
+        }
+
         const result = streamText({
-          model: getLanguageModel(chatModel),
+          model: resolvedModel,
           system: enhancedSystemPrompt,
           messages: modelMessages,
           stopWhen: stepCountIs(5),
