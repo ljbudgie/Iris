@@ -215,3 +215,100 @@ export const assistantTask = pgTable("AssistantTask", {
 });
 
 export type AssistantTask = InferSelectModel<typeof assistantTask>;
+
+// ---------------------------------------------------------------------------
+// Accountability & Data Retention
+// ---------------------------------------------------------------------------
+
+export const accountabilityRecord = pgTable("AccountabilityRecord", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  userId: uuid("userId")
+    .notNull()
+    .references(() => user.id),
+  category: varchar("category", {
+    enum: [
+      "institutional_decision",
+      "accountability_evidence",
+      "personal_sensitive",
+      "model_context",
+      "system_log",
+    ],
+  }).notNull(),
+  title: text("title").notNull(),
+  content: text("content"),
+  /** Name of the specific individual who made the decision (SOVEREIGN test anchor). */
+  namedDecisionMaker: text("namedDecisionMaker"),
+  /** Role or title of the named decision-maker at time of decision. */
+  decisionMakerRole: text("decisionMakerRole"),
+  /** Institution name (e.g. Darlington Borough Council, Durham Constabulary). */
+  institutionName: text("institutionName"),
+  /** External reference (complaint ref, FOI ref, collar number, PCN reference, etc.). */
+  sourceRef: text("sourceRef"),
+  /** Date the institutional decision was made (may differ from record creation date). */
+  decisionDate: timestamp("decisionDate"),
+  /** Optional link to the originating chat session. */
+  chatId: uuid("chatId").references(() => chat.id),
+  /** Optional link to the specific message that created this record. */
+  messageId: uuid("messageId"),
+  /** Date after which the record may be considered for deletion. null = indefinite. */
+  retainUntil: timestamp("retainUntil"),
+  /** Whether any active hold is blocking deletion. */
+  onHold: boolean("onHold").notNull().default(false),
+  holdType: varchar("holdType", {
+    enum: ["legal_hold", "accountability_hold", "user_hold"],
+  }),
+  holdReason: text("holdReason"),
+  holdAppliedAt: timestamp("holdAppliedAt"),
+  /** Whether the user has requested deletion (must be approved before purge). */
+  markedForDeletion: boolean("markedForDeletion").notNull().default(false),
+  deletionRequestedAt: timestamp("deletionRequestedAt"),
+  /** Set only after explicit human approval gate is passed. */
+  deletionApprovedAt: timestamp("deletionApprovedAt"),
+  metadata: json("metadata").$type<Record<string, unknown>>().default({}),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+});
+
+export type AccountabilityRecord = InferSelectModel<
+  typeof accountabilityRecord
+>;
+
+/**
+ * Immutable audit log for all retention actions.
+ * Intentionally does NOT foreign-key to AccountabilityRecord so the log
+ * survives record deletion and provides a complete provenance chain.
+ */
+export const retentionAuditLog = pgTable("RetentionAuditLog", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  /** ID of the affected AccountabilityRecord (not FK — log outlives records). */
+  recordId: uuid("recordId").notNull(),
+  userId: uuid("userId")
+    .notNull()
+    .references(() => user.id),
+  action: varchar("action", {
+    enum: [
+      "created",
+      "hold_applied",
+      "hold_released",
+      "deletion_requested",
+      "deletion_approved",
+      "deletion_rejected",
+      "exported",
+      "policy_checked",
+    ],
+  }).notNull(),
+  category: varchar("category", {
+    enum: [
+      "institutional_decision",
+      "accountability_evidence",
+      "personal_sensitive",
+      "model_context",
+      "system_log",
+    ],
+  }).notNull(),
+  reason: text("reason"),
+  metadata: json("metadata").$type<Record<string, unknown>>().default({}),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+});
+
+export type RetentionAuditLog = InferSelectModel<typeof retentionAuditLog>;

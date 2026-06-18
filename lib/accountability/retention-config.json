@@ -1,0 +1,37 @@
+{
+  "_comment": "Iris Data Retention & Accountability Configuration",
+  "_version": "1.0.0",
+  "_docs": "defaultDays: null means indefinite retention. requireHumanReviewBeforeDeletion: true means Iris will gate deletion behind explicit user confirmation. autoHoldOnCreate: true means records are placed on accountability hold automatically and cannot be purged without deliberate action.",
+  "policies": {
+    "institutional_decision": {
+      "defaultDays": null,
+      "requireHumanReviewBeforeDeletion": true,
+      "autoHoldOnCreate": true,
+      "description": "Records of specific decisions made by named public officials — police officers, council officers, LGO staff, named individuals in institutions. Held indefinitely by default. Named human review required before any deletion."
+    },
+    "accountability_evidence": {
+      "defaultDays": null,
+      "requireHumanReviewBeforeDeletion": true,
+      "autoHoldOnCreate": true,
+      "description": "Records explicitly flagged by the user as important for legal, FOI, complaint, or historical accountability purposes. Held indefinitely by default. Named human review required before any deletion."
+    },
+    "personal_sensitive": {
+      "defaultDays": 730,
+      "requireHumanReviewBeforeDeletion": true,
+      "autoHoldOnCreate": false,
+      "description": "Health information, disability status, personal communications. Default retention 2 years (730 days). Human review required before deletion even after retention period expires."
+    },
+    "model_context": {
+      "defaultDays": 90,
+      "requireHumanReviewBeforeDeletion": false,
+      "autoHoldOnCreate": false,
+      "description": "Normal conversation history and temporary AI outputs. Purged automatically after 90 days unless the user places a hold."
+    },
+    "system_log": {
+      "defaultDays": 30,
+      "requireHumanReviewBeforeDeletion": false,
+      "autoHoldOnCreate": false,
+      "description": "Iris internal audit logs and system events. Purged automatically after 30 days."
+    }
+  }
+}
