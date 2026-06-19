@@ -107,11 +107,24 @@ export const CHALLENGE_ROUTES: ChallengeRoute[] = [
   },
   {
     type: "equality_act_adjustment",
-    label: "Equality Act 2010 Reasonable Adjustment Notice (ss.20 and 29)",
+    label:
+      "Equality Act 2010 Reasonable Adjustment & Anticipatory Duty Notice (ss.6, 19, 20, 21, 27, 29 + Sch.1, Sch.2, s.149 PSED)",
     statutoryBasis:
-      "Equality Act 2010 sections 20 and 29: duty to make reasonable adjustments in service provision.",
+      "Equality Act 2010: " +
+      "s.6 + Sch.1 (definition of disability — hidden disabilities protected, no diagnosis required); " +
+      "ss.20–21 (duty to make reasonable adjustments — substantial disadvantage triggers the duty); " +
+      "s.29 + Sch.2 (anticipatory duty in service provision — institutions must plan ahead, not wait to be asked); " +
+      "s.149 (Public Sector Equality Duty — public authorities must individually consider disabled people's needs, not rely on blanket process); " +
+      "s.19 (indirect discrimination — neutral rules that put disabled people at particular disadvantage are unlawful without justification); " +
+      "s.27 (victimisation — asserting these rights must not lead to worse treatment). " +
+      "Case law: ZH v Commissioner of Police for the Metropolis [2013] EWCA Civ 69 (public authority must adapt procedure once disability known — RA duty + PSED breach); " +
+      "FirstGroup plc v Paulley [2017] UKSC 4 (Supreme Court — anticipatory duty in service provision, cannot take wait-and-see approach); " +
+      "Royal Bank of Scotland v Allen [2009] EWCA Civ 1213 (courts will order injunctive relief requiring institution to change practice, not merely pay compensation).",
     demand:
-      "Record and apply the requested reasonable adjustment, including email-only communication where selected, and confirm that it is attached to the file.",
+      "Confirm in writing that the requested reasonable adjustment has been recorded and applied (including email-only communication where requested). " +
+      "Confirm that a named person has personally reviewed the specific facts of this individual's situation and adjustment request (Burgess Principle Human Lens). " +
+      "Confirm that the adjustment is attached to the file and will apply to all future contact. " +
+      "If you are a public authority, confirm that your s.149 PSED obligation has been individually considered in relation to this person's circumstances, not applied as a blanket process.",
     deadlineRule: "fourteen_calendar_days",
   },
   {
