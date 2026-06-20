@@ -217,6 +217,46 @@ export const assistantTask = pgTable("AssistantTask", {
 export type AssistantTask = InferSelectModel<typeof assistantTask>;
 
 // ---------------------------------------------------------------------------
+// Certification Inquiries
+// ---------------------------------------------------------------------------
+
+export const certificationInquiry = pgTable("CertificationInquiry", {
+  id: uuid("id").primaryKey().notNull().defaultRandom(),
+  /** Optional — anonymous inquiries are allowed at intake stage. */
+  userId: uuid("userId").references(() => user.id),
+  institutionName: text("institutionName").notNull(),
+  contactName: text("contactName").notNull(),
+  contactEmail: text("contactEmail").notNull(),
+  sector: text("sector"),
+  /** Tier 1 = standard certification. Tier 2 = sales/commercial partner. */
+  tierRequested: varchar("tierRequested", { enum: ["tier_1", "tier_2"] })
+    .notNull()
+    .default("tier_1"),
+  /** Free-text context provided by the institution during intake. */
+  context: text("context"),
+  /** Access/communication needs declared at intake (anticipatory duty). */
+  accessNeeds: text("accessNeeds"),
+  status: varchar("status", {
+    enum: ["pending", "approved", "rejected", "withdrawn"],
+  })
+    .notNull()
+    .default("pending"),
+  /** Set when Lewis approves — this is the human gate. */
+  approvedAt: timestamp("approvedAt"),
+  approvedBy: text("approvedBy"),
+  /** Set when payment confirmed. */
+  paymentConfirmedAt: timestamp("paymentConfirmedAt"),
+  rejectionReason: text("rejectionReason"),
+  /** Optional chat link so Lewis can review the intake conversation. */
+  chatId: uuid("chatId").references(() => chat.id),
+  metadata: json("metadata").$type<Record<string, unknown>>().default({}),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+});
+
+export type CertificationInquiry = InferSelectModel<typeof certificationInquiry>;
+
+// ---------------------------------------------------------------------------
 // Accountability & Data Retention
 // ---------------------------------------------------------------------------
 

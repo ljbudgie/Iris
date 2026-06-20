@@ -299,7 +299,7 @@ export async function POST(request: Request) {
       execute: async ({ writer: dataStream }) => {
         // Build the tools object from the skill registry, passing runtime
         // context for factory-style skills and filtering by governance.
-        const skillContext = { session, dataStream, modelId: chatModel };
+        const skillContext = { session, dataStream, modelId: chatModel, chatId: id };
         const registryTools = skillRegistry.buildTools(
           skillContext,
           governanceStatus
