@@ -18,7 +18,8 @@ export type Surface =
   | "suggestions"
   | "activate_gateway"
   | "federation"
-  | "review";
+  | "review"
+  | "certify";
 
 export type ErrorCode = `${ErrorType}:${Surface}`;
 
@@ -37,6 +38,7 @@ export const visibilityBySurface: Record<Surface, ErrorVisibility> = {
   activate_gateway: "response",
   federation: "response",
   review: "response",
+  certify: "response",
 };
 
 export class IrisError extends Error {
