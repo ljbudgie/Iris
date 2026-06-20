@@ -20,6 +20,8 @@ import { IrisError } from "../errors";
 import { generateUUID } from "../utils";
 import {
   assistantTask,
+  certificationInquiry,
+  type CertificationInquiry,
   type Chat,
   chat,
   chatAuditLog,
@@ -1032,4 +1034,93 @@ export async function exportUserData({ userId }: { userId: string }) {
   } catch (_error) {
     throw new IrisError("bad_request:database", "Failed to export user data");
   }
+}
+
+// ---------------------------------------------------------------------------
+// Certification Inquiry queries
+// ---------------------------------------------------------------------------
+
+export async function getCertificationInquiryById({
+  id,
+}: {
+  id: string;
+}): Promise<CertificationInquiry | null> {
+  const rows = await db
+    .select()
+    .from(certificationInquiry)
+    .where(eq(certificationInquiry.id, id))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+export async function listPendingCertificationInquiries(): Promise<
+  CertificationInquiry[]
+> {
+  return db
+    .select()
+    .from(certificationInquiry)
+    .where(eq(certificationInquiry.status, "pending"))
+    .orderBy(certificationInquiry.createdAt);
+}
+
+export async function approveCertificationInquiry({
+  id,
+  approvedBy,
+}: {
+  id: string;
+  approvedBy: string;
+}): Promise<CertificationInquiry> {
+  const now = new Date();
+  const [updated] = await db
+    .update(certificationInquiry)
+    .set({
+      status: "approved",
+      approvedAt: now,
+      approvedBy,
+      updatedAt: now,
+    })
+    .where(eq(certificationInquiry.id, id))
+    .returning();
+  if (!updated) throw new IrisError("not_found:certify", "Inquiry not found.");
+  return updated;
+}
+
+export async function rejectCertificationInquiry({
+  id,
+  approvedBy,
+  reason,
+}: {
+  id: string;
+  approvedBy: string;
+  reason?: string;
+}): Promise<CertificationInquiry> {
+  const now = new Date();
+  const [updated] = await db
+    .update(certificationInquiry)
+    .set({
+      status: "rejected",
+      approvedAt: now,
+      approvedBy,
+      rejectionReason: reason ?? null,
+      updatedAt: now,
+    })
+    .where(eq(certificationInquiry.id, id))
+    .returning();
+  if (!updated) throw new IrisError("not_found:certify", "Inquiry not found.");
+  return updated;
+}
+
+export async function confirmCertificationPayment({
+  id,
+}: {
+  id: string;
+}): Promise<CertificationInquiry> {
+  const now = new Date();
+  const [updated] = await db
+    .update(certificationInquiry)
+    .set({ paymentConfirmedAt: now, updatedAt: now })
+    .where(eq(certificationInquiry.id, id))
+    .returning();
+  if (!updated) throw new IrisError("not_found:certify", "Inquiry not found.");
+  return updated;
 }

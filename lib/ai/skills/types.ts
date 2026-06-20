@@ -49,6 +49,7 @@ export type SkillContext = {
   session: unknown;
   dataStream: unknown;
   modelId: string;
+  chatId?: string;
 };
 
 /**

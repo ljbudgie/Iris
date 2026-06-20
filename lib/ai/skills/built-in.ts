@@ -9,6 +9,9 @@
  * self-declares its metadata (name, sensitivity, tags, context requirements)
  * so the registry can enforce governance rules automatically.
  */
+import type { Session } from "next-auth";
+import { getCertifiedPartners, getLedgerEvents } from "@/lib/ai/tools/get-certified-partners";
+import { submitCertificationInquiry } from "@/lib/ai/tools/submit-certification-inquiry";
 import { createDocument } from "@/lib/ai/tools/create-document";
 import { editDocument } from "@/lib/ai/tools/edit-document";
 import { generateBurgessLetter } from "@/lib/ai/tools/generate-burgess-letter";
@@ -186,6 +189,50 @@ const updateAssistantTaskSkill: SkillDefinition = {
 // Registration
 // ---------------------------------------------------------------------------
 
+const getCertifiedPartnersSkill: SkillDefinition = {
+  metadata: {
+    name: "getCertifiedPartners",
+    description:
+      "Read the live Burgess Principle institutional register from GitHub — certified partners, NULL findings, and pending assessments.",
+    version: "1.0.0",
+    sensitivity: "standard",
+    tags: ["burgess-principle", "register", "certification", "transparency"],
+    requiresContext: false,
+  },
+  tool: getCertifiedPartners,
+};
+
+const getLedgerEventsSkill: SkillDefinition = {
+  metadata: {
+    name: "getLedgerEvents",
+    description:
+      "Read the Burgess Principle live findings ledger — chronological events, NULL findings, SOVEREIGN outcomes.",
+    version: "1.0.0",
+    sensitivity: "standard",
+    tags: ["burgess-principle", "ledger", "findings", "transparency"],
+    requiresContext: false,
+  },
+  tool: getLedgerEvents,
+};
+
+const submitCertificationInquirySkill: SkillDefinition = {
+  metadata: {
+    name: "submitCertificationInquiry",
+    description:
+      "Submit a Burgess Principle certification inquiry after collecting required details from an institution's representative. Requires access needs to be asked before submission (EA 2010 anticipatory duty).",
+    version: "1.0.0",
+    sensitivity: "sensitive",
+    tags: ["burgess-principle", "certification", "intake"],
+    requiresApproval: false,
+    requiresContext: true,
+  },
+  factory: (ctx) =>
+    submitCertificationInquiry({
+      session: ctx.session as Session | null,
+      chatId: ctx.chatId as string | undefined,
+    }),
+};
+
 const builtInSkills: SkillDefinition[] = [
   weatherSkill,
   createDocumentSkill,
@@ -197,6 +244,9 @@ const builtInSkills: SkillDefinition[] = [
   createAssistantTaskSkill,
   listAssistantTasksSkill,
   updateAssistantTaskSkill,
+  getCertifiedPartnersSkill,
+  getLedgerEventsSkill,
+  submitCertificationInquirySkill,
   // Tool execution skills
   {
     metadata: {
