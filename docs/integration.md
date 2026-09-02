@@ -340,6 +340,38 @@ from the AI Gateway and cached. Models that don't support tools have
 
 ---
 
+## Loop Classifier API
+
+**Location:** `app/(chat)/api/loop/classify/route.ts`, `lib/loop/`
+
+`POST /api/loop/classify` runs the local-first, advisory loop classifier
+(`classifyThread`, ported from burgess-principle `iris/loop_classifier.py`)
+against a correspondence thread. It never sends content anywhere else and
+never writes to the live findings ledger.
+
+Request body:
+
+```json
+{
+  "institution": "Example Institution",
+  "named_individual": null,
+  "messages": [
+    { "date": "2026-08-01", "sender": "Council", "content_summary": "..." }
+  ]
+}
+```
+
+The response is a provisional `LoopFinding` — `schema_version: 1`,
+`provisional: true`, `requires_human_confirmation: true`, and the
+`LOOP_DISCLAIMER` text. The `accountability_finding` (`SOVEREIGN`/`NULL`) is
+`SOVEREIGN` only when a non-empty `named_individual` is supplied; it is a
+separate question from whether a loop was detected. Invalid payloads
+return `bad_request:loop`. Same classifier is exposed to the AI as the
+`classifyLoop` tool (`sensitive` sensitivity, filtered out under NULL
+governance).
+
+---
+
 ## Full Request Flow
 
 ```

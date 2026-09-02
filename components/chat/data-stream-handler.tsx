@@ -34,6 +34,13 @@ export function DataStreamHandler() {
         );
         continue;
       }
+
+      if (delta.type === "data-loop-finding") {
+        window.dispatchEvent(
+          new CustomEvent("iris:loop-finding", { detail: delta.data })
+        );
+        continue;
+      }
       const artifactDefinition = artifactDefinitions.find(
         (currentArtifactDefinition) =>
           currentArtifactDefinition.kind === artifact.kind

@@ -2,6 +2,7 @@ import { smoothStream, streamText, tool, type UIMessageStreamWriter } from "ai";
 import type { Session } from "next-auth";
 import { z } from "zod";
 import { saveDocument } from "@/lib/db/queries";
+import { MODEL_CLAUSE_LETTER_PROMPT } from "@/lib/loop";
 import type { ChatMessage } from "@/lib/types";
 import { generateUUID } from "@/lib/utils";
 import { getLanguageModel } from "../providers";
@@ -25,6 +26,7 @@ const templateTypes = [
   "medical_device",
   "music_copyright",
   "reasonable_adjustments",
+  "model_clause",
 ] as const;
 
 type TemplateType = (typeof templateTypes)[number];
@@ -64,6 +66,8 @@ const templateDescriptions: Record<TemplateType, string> = {
     "For wrongful Content ID claims, blocked monetisation, incorrect royalty allocation, and automated music copyright decisions — requests human review of the specific track and claim.",
   reasonable_adjustments:
     "Guided reasonable adjustment requests for disability — templates for 31+ adjustment categories referencing country-specific legislation (Equality Act 2010, ADA, etc.).",
+  model_clause:
+    "An adoption letter for the Burgess Principle Model Clause (UK00004343685) — asks an organisation to insert the named-officer checkpoint clause into standing orders, procurement specifications, complaints procedures, regulatory licence conditions, or court/tribunal protocols.",
 };
 
 const letterSystemPrompt = `You are a letter-writing assistant for The Burgess Principle (UK Certification Mark UK00004343685), created by Lewis James Burgess.
@@ -315,6 +319,7 @@ How you work:
    - Flags any point where the user's specific situation needs individual human attention
 
 You know about 31+ common adjustment categories including: ADHD, anxiety, autism, chronic pain, chronic fatigue, depression, dyslexia, epilepsy, fibromyalgia, hearing impairment, mobility impairment, PTSD, sensory processing, visual impairment, and custom/unlisted adjustments.`,
+  model_clause: MODEL_CLAUSE_LETTER_PROMPT,
 };
 
 type GenerateBurgessLetterProps = {

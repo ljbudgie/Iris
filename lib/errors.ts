@@ -19,7 +19,8 @@ export type Surface =
   | "activate_gateway"
   | "federation"
   | "review"
-  | "certify";
+  | "certify"
+  | "loop";
 
 export type ErrorCode = `${ErrorType}:${Surface}`;
 
@@ -39,6 +40,7 @@ export const visibilityBySurface: Record<Surface, ErrorVisibility> = {
   federation: "response",
   review: "response",
   certify: "response",
+  loop: "response",
 };
 
 export class IrisError extends Error {
@@ -133,6 +135,9 @@ export function getMessageByErrorCode(errorCode: ErrorCode): string {
       return "The review request was invalid. Please check your input and try again.";
     case "forbidden:review":
       return "You do not have permission to access this review.";
+
+    case "bad_request:loop":
+      return "The loop classification request was invalid. Please check your input and try again.";
 
     default:
       return "Something went wrong. Please try again later.";

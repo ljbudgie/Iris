@@ -1,6 +1,7 @@
 import type { InferUITool, UIMessage } from "ai";
 import { z } from "zod";
 import type { ArtifactKind } from "@/components/chat/artifact";
+import type { LoopFinding } from "@/lib/loop";
 import type { createDocument } from "./ai/tools/create-document";
 import type { getWeather } from "./ai/tools/get-weather";
 import type { requestSuggestions } from "./ai/tools/request-suggestions";
@@ -44,6 +45,7 @@ export type CustomUIDataTypes = {
   finish: null;
   "chat-title": string;
   "fallback-notice": string;
+  "loop-finding": LoopFinding;
 };
 
 export type ChatMessage = UIMessage<

@@ -10,8 +10,12 @@
  * so the registry can enforce governance rules automatically.
  */
 import type { Session } from "next-auth";
-import { getCertifiedPartners, getLedgerEvents } from "@/lib/ai/tools/get-certified-partners";
+import {
+  getCertifiedPartners,
+  getLedgerEvents,
+} from "@/lib/ai/tools/get-certified-partners";
 import { submitCertificationInquiry } from "@/lib/ai/tools/submit-certification-inquiry";
+import { classifyLoop } from "@/lib/ai/tools/classify-loop";
 import { createDocument } from "@/lib/ai/tools/create-document";
 import { editDocument } from "@/lib/ai/tools/edit-document";
 import { generateBurgessLetter } from "@/lib/ai/tools/generate-burgess-letter";
@@ -128,7 +132,7 @@ const burgessLetterSkill: SkillDefinition = {
   metadata: {
     name: "generateBurgessLetter",
     description:
-      "Generate a personalised Burgess Principle letter from 18 templates.",
+      "Generate a personalised Burgess Principle letter from 19 templates.",
     version: "1.0.0",
     sensitivity: "sensitive",
     tags: ["burgess-principle", "legal", "advocacy"],
@@ -136,6 +140,19 @@ const burgessLetterSkill: SkillDefinition = {
   },
   factory: (ctx) =>
     generateBurgessLetter(ctx as Parameters<typeof generateBurgessLetter>[0]),
+};
+
+const classifyLoopSkill: SkillDefinition = {
+  metadata: {
+    name: "classifyLoop",
+    description:
+      "Classify a local correspondence thread for a provisional institutional delay pattern. Advisory only — a named human must confirm any finding before it is recorded.",
+    version: "1.0.0",
+    sensitivity: "sensitive",
+    tags: ["burgess-principle", "loop", "accountability"],
+    requiresContext: false,
+  },
+  tool: classifyLoop,
 };
 
 const createAssistantTaskSkill: SkillDefinition = {
@@ -241,6 +258,7 @@ const builtInSkills: SkillDefinition[] = [
   requestSuggestionsSkill,
   followUpSkill,
   burgessLetterSkill,
+  classifyLoopSkill,
   createAssistantTaskSkill,
   listAssistantTasksSkill,
   updateAssistantTaskSkill,
