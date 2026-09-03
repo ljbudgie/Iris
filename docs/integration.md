@@ -188,6 +188,55 @@ the SOVEREIGN/NULL binary.
 
 ---
 
+## Integration Contract v2.0 Endpoints
+
+Iris exposes the [Integration Contract v2.0](https://github.com/ljbudgie/burgess-principle)
+core verification surface locally. All classifications are **advisory only**
+until a named human attributes the finding.
+
+### `POST /api/verify`
+
+Verify Burgess reasoning text against a SHA-256 digest
+(`app/(chat)/api/verify/route.ts`, `lib/certification/verify-digest.ts`).
+
+```json
+{ "text": "reasoning text…", "digest": "64-char sha-256 hex" }
+```
+
+Returns `{ "match": true|false, "algorithm": "SHA-256", "computed_digest": "…" }`.
+
+### `POST /api/scrutiny/assess`
+
+Run the pre-decision Burgess gate before a system acts on an identified
+individual (`app/(chat)/api/scrutiny/assess/route.ts`, `lib/scrutiny/assess.ts`).
+Accepts the Model Clause limb answers (`namedOfficer`, `role`,
+`reviewedSpecificFacts`, `adjustmentApplied`, `liveProceedingChecked`,
+`recordedAndDisclosable`, `processLanguage`) and returns SOVEREIGN, NULL, or
+AMBIGUOUS plus the required next action.
+
+Optionally include an `attribution` block (`{ "name", "role", "reviewedAt" }`)
+to have a named human attribute the finding
+(`lib/scrutiny/attribution.ts`). Attribution is refused for collective or
+process language ("the team", "customer services", "automated process") —
+the Burgess standard requires a specific named human being.
+
+### `POST /api/loop/classify`
+
+Classify a local correspondence thread for institutional delay patterns
+(`app/(chat)/api/loop/classify/route.ts`, `lib/loop/classify-thread.ts`).
+
+### `/api/challenges`
+
+- `GET` lists the statutory challenge routes Iris can draft (SAR, Article
+  15(1)(h), Article 16, Article 17, DUAA 2025 notice, Equality Act 2010
+  adjustment notice, pre-action protocol) with their statutory bases and
+  deadline rules.
+- `POST` generates a statutory challenge letter from a completed NULL or
+  AMBIGUOUS certification record (`lib/challenges/workflow.ts`). SOVEREIGN
+  records are rejected — there is nothing to challenge.
+
+---
+
 ## Tool Permission Gating
 
 **Location:** `lib/federation/tool-permissions.ts`

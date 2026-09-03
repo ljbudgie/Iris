@@ -20,7 +20,10 @@ export type Surface =
   | "federation"
   | "review"
   | "certify"
-  | "loop";
+  | "loop"
+  | "scrutiny"
+  | "verify"
+  | "challenges";
 
 export type ErrorCode = `${ErrorType}:${Surface}`;
 
@@ -41,6 +44,9 @@ export const visibilityBySurface: Record<Surface, ErrorVisibility> = {
   review: "response",
   certify: "response",
   loop: "response",
+  scrutiny: "response",
+  verify: "response",
+  challenges: "response",
 };
 
 export class IrisError extends Error {
@@ -93,6 +99,12 @@ export function getMessageByErrorCode(errorCode: ErrorCode): string {
       return "The request couldn't be processed. Please check your input and try again.";
     case "bad_request:loop":
       return "The loop classifier could not read that correspondence. Check the dates and summaries and try again.";
+    case "bad_request:scrutiny":
+      return "The scrutiny gate could not read that assessment. Check the officer, role, and limb answers and try again.";
+    case "bad_request:verify":
+      return "The digest verification request was invalid. Provide the reasoning text and a SHA-256 hex digest.";
+    case "bad_request:challenges":
+      return "The challenge request was invalid. Provide a NULL or AMBIGUOUS certification record and a challenge type.";
 
     case "bad_request:activate_gateway":
       return "AI Gateway requires a valid credit card on file to service requests. Please visit https://vercel.com/d?to=%2F%5Bteam%5D%2F%7E%2Fai%3Fmodal%3Dadd-credit-card to add a card and unlock your free credits.";
