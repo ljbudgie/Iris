@@ -276,6 +276,13 @@ The audit trail is written non-blocking via `saveChatAuditEntry()` after
 each `streamText()` completion. It captures token usage and tool
 invocations for compliance tracking.
 
+`POST /api/receipts/verify` verifies an advisory request receipt by
+recomputing the SHA-256 digest from the supplied `receipt` object. The
+endpoint is digest-first and does not require or accept raw prompt text;
+receipts record what ran (requested model, actual model, fallback status,
+token counts, tools, governance status, and any PersonGate commitment), not
+pricing, invoices, or live findings-ledger entries.
+
 ### Viewing Audit Logs
 
 The audit UI is at `/audit` (requires authentication). It shows per-turn

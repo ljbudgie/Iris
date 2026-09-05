@@ -37,6 +37,7 @@ import { Messages } from "./messages";
 import { MultimodalInput } from "./multimodal-input";
 import { FallbackNoticeChip } from "./fallback-notice-chip";
 import { PersonGateChip } from "./person-gate-chip";
+import { RequestReceiptChip } from "./request-receipt-chip";
 
 export function ChatShell() {
   const {
@@ -159,6 +160,7 @@ export function ChatShell() {
 
             <div className="sticky bottom-0 z-10 mx-auto flex w-full max-w-4xl flex-col gap-1 border-t-0 px-2 pb-3 md:px-4 md:pb-4">
               <FallbackNoticeChip />
+              <RequestReceiptChip />
               {!isReadonly && <PersonGateChip text={input} />}
               <div className="flex w-full gap-2">
                 {!isReadonly && (

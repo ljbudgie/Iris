@@ -6,6 +6,7 @@ import {
   issueRequestReceipt,
   verifyRequestReceipt,
 } from "../../lib/receipts";
+import { IrisError } from "../../lib/errors";
 
 const base = {
   requested_model_id: "moonshotai/kimi-k2-0905",
@@ -78,5 +79,19 @@ describe("verifyRequestReceipt", () => {
     const tampered = { ...receipt, total_tokens: 9_999 };
     const result = verifyRequestReceipt(tampered);
     assert.equal(result.match, false);
+  });
+});
+
+describe("receipt errors", () => {
+  it("surfaces invalid receipt verification requests to the response", async () => {
+    const response = new IrisError("bad_request:receipt").toResponse();
+    const body = await response.json();
+
+    assert.equal(response.status, 400);
+    assert.equal(body.code, "bad_request:receipt");
+    assert.equal(
+      body.message,
+      "The request receipt could not be verified. Provide the receipt object with its SHA-256 digest."
+    );
   });
 });

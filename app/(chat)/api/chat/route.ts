@@ -62,6 +62,7 @@ import {
   type PersonGateAssessment,
 } from "@/lib/person-gate";
 import { checkIpRateLimit } from "@/lib/ratelimit";
+import { issueRequestReceipt } from "@/lib/receipts";
 import type { ChatMessage } from "@/lib/types";
 import { convertToUIMessages, generateUUID } from "@/lib/utils";
 import { generateTitleFromUserMessage } from "../../actions";
@@ -388,6 +389,19 @@ export async function POST(request: Request) {
         const toolsInvoked = toolCalls.map(
           (tc: { toolName: string }) => tc.toolName
         );
+
+        const receipt = issueRequestReceipt({
+          requested_model_id: fallbackResult.requestedModelId,
+          actual_model_id: fallbackResult.modelId,
+          did_fallback: fallbackResult.didFallback,
+          prompt_tokens: usage?.inputTokens ?? 0,
+          completion_tokens: usage?.outputTokens ?? 0,
+          total_tokens: usage?.totalTokens ?? 0,
+          tools_invoked: toolsInvoked,
+          governance_status: governanceStatus ?? "SOVEREIGN",
+          person_gate_commitment: personGateAssessment?.commitment,
+        });
+        dataStream.write({ type: "data-request-receipt", data: receipt });
 
         // Audit trail: persist turn metadata (non-blocking, with retry)
         const auditEntry = {

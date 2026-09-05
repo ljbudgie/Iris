@@ -23,7 +23,8 @@ export type Surface =
   | "loop"
   | "scrutiny"
   | "verify"
-  | "challenges";
+  | "challenges"
+  | "receipt";
 
 export type ErrorCode = `${ErrorType}:${Surface}`;
 
@@ -47,6 +48,7 @@ export const visibilityBySurface: Record<Surface, ErrorVisibility> = {
   scrutiny: "response",
   verify: "response",
   challenges: "response",
+  receipt: "response",
 };
 
 export class IrisError extends Error {
@@ -105,6 +107,8 @@ export function getMessageByErrorCode(errorCode: ErrorCode): string {
       return "The digest verification request was invalid. Provide the reasoning text and a SHA-256 hex digest.";
     case "bad_request:challenges":
       return "The challenge request was invalid. Provide a NULL or AMBIGUOUS certification record and a challenge type.";
+    case "bad_request:receipt":
+      return "The request receipt could not be verified. Provide the receipt object with its SHA-256 digest.";
 
     case "bad_request:activate_gateway":
       return "AI Gateway requires a valid credit card on file to service requests. Please visit https://vercel.com/d?to=%2F%5Bteam%5D%2F%7E%2Fai%3Fmodal%3Dadd-credit-card to add a card and unlock your free credits.";
