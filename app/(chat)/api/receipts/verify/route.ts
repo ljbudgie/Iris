@@ -15,12 +15,12 @@ export async function POST(request: Request) {
   try {
     body = (await request.json()) as { receipt?: RequestReceipt };
   } catch {
-    return new IrisError("bad_request:receipt").toResponse();
+    return new IrisError("bad_request:verify").toResponse();
   }
 
   if (!body.receipt || typeof body.receipt.digest !== "string") {
     return new IrisError(
-      "bad_request:receipt",
+      "bad_request:verify",
       "Provide `receipt` with a SHA-256 digest."
     ).toResponse();
   }
@@ -30,6 +30,6 @@ export async function POST(request: Request) {
   } catch (error) {
     const cause =
       error instanceof Error ? error.message : "Invalid receipt payload.";
-    return new IrisError("bad_request:receipt", cause).toResponse();
+    return new IrisError("bad_request:verify", cause).toResponse();
   }
 }
