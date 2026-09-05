@@ -34,6 +34,13 @@ export function DataStreamHandler() {
         );
         continue;
       }
+
+      if (delta.type === "data-request-receipt") {
+        window.dispatchEvent(
+          new CustomEvent("iris:request-receipt", { detail: delta.data })
+        );
+        continue;
+      }
       const artifactDefinition = artifactDefinitions.find(
         (currentArtifactDefinition) =>
           currentArtifactDefinition.kind === artifact.kind
