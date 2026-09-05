@@ -44,6 +44,14 @@ export type CustomUIDataTypes = {
   finish: null;
   "chat-title": string;
   "fallback-notice": string;
+  "request-receipt": {
+    digest: string;
+    actual_model_id: string;
+    requested_model_id: string;
+    did_fallback: boolean;
+    total_tokens: number;
+    advisory: true;
+  };
 };
 
 export type ChatMessage = UIMessage<
