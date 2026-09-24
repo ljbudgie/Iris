@@ -15,7 +15,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { User } from "next-auth";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { useSWRConfig } from "swr";
 import { unstable_serialize } from "swr/infinite";
@@ -50,6 +50,7 @@ import {
 } from "../ui/alert-dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { SparklesIcon } from "./icons";
+import { useGateStatus } from "./use-gate-status";
 
 export function AppSidebar({ user }: { user: User | undefined }) {
   const router = useRouter();
@@ -57,41 +58,13 @@ export function AppSidebar({ user }: { user: User | undefined }) {
   const { mutate } = useSWRConfig();
   const [showDeleteAllDialog, setShowDeleteAllDialog] = useState(false);
 
-  // Fetch aggregate governance status from federation providers
-  const [governanceLabel, setGovernanceLabel] = useState<
-    "SOVEREIGN" | "NULL" | "NO_PROVIDERS"
-  >("NO_PROVIDERS");
-
-  const refreshGovernance = useCallback(async () => {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/api/federation/register`
-      );
-      if (!res.ok) {
-        return;
-      }
-      const providers: { governanceStatus: string }[] = await res.json();
-      if (providers.length === 0) {
-        setGovernanceLabel("NO_PROVIDERS");
-        return;
-      }
-      const allSovereign = providers.every(
-        (p) => p.governanceStatus === "SOVEREIGN"
-      );
-      setGovernanceLabel(allSovereign ? "SOVEREIGN" : "NULL");
-    } catch {
-      // Governance badge is non-critical; log in dev for debugging
-      if (process.env.NODE_ENV === "development") {
-        console.warn("Failed to fetch governance status");
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      refreshGovernance();
-    }
-  }, [user, refreshGovernance]);
+  const { peerCount, allSovereign } = useGateStatus();
+  const governanceLabel =
+    peerCount > 0 && allSovereign
+      ? "SOVEREIGN"
+      : peerCount > 0
+        ? "NULL"
+        : "GATE";
 
   const handleDeleteAll = () => {
     setShowDeleteAllDialog(false);
@@ -321,7 +294,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                 ? "Sovereign"
                 : governanceLabel === "NULL"
                   ? "Null"
-                  : "No providers"}
+                  : "Gate on"}
             </span>
           </div>
           {user && <SidebarUserNav user={user} />}
