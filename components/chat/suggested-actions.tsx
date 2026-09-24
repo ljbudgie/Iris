@@ -37,13 +37,13 @@ function PureSuggestedActions({ chatId, sendMessage }: SuggestedActionsProps) {
   return (
     <div className="flex w-full flex-col gap-3">
       <div
-        className="flex w-full gap-2.5 overflow-x-auto pb-1 no-scrollbar"
+        className="hidden w-full flex-wrap justify-center gap-2 md:flex"
         data-testid="suggested-actions"
       >
         {suggestedActions.map((suggestedAction, index) => (
           <motion.div
             animate={{ opacity: 1, y: 0 }}
-            className="shrink-0"
+            className="max-w-full"
             exit={{ opacity: 0, y: 16 }}
             initial={{ opacity: 0, y: 16 }}
             key={suggestedAction}
@@ -54,7 +54,7 @@ function PureSuggestedActions({ chatId, sendMessage }: SuggestedActionsProps) {
             }}
           >
             <Suggestion
-              className="h-auto whitespace-nowrap rounded-full border px-4 py-2 text-left text-[13px] leading-relaxed transition-all duration-200 hover:border-[rgba(124,58,237,0.4)]"
+              className="h-auto max-w-full whitespace-normal rounded-full border px-3 py-2 text-left text-[13px] leading-snug transition-all duration-200 hover:border-[rgba(124,58,237,0.4)] md:whitespace-nowrap"
               onClick={(suggestion) => {
                 window.history.pushState(
                   {},

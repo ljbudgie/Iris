@@ -81,18 +81,6 @@ function PureMessages({
 
   return (
     <div className="relative flex-1" style={{ background: "var(--surface-1)" }}>
-      {messages.length === 0 && !isLoading && (
-        <div className="pointer-events-auto absolute inset-0 z-10 flex items-center justify-center">
-          <Greeting
-            onQuickAction={(text) => {
-              sendMessage({
-                role: "user" as const,
-                parts: [{ type: "text" as const, text }],
-              });
-            }}
-          />
-        </div>
-      )}
       <div
         className={cn(
           "absolute inset-0 touch-pan-y overflow-y-auto",
@@ -101,7 +89,19 @@ function PureMessages({
         ref={messagesContainerRef}
         style={isArtifactVisible ? { scrollbarWidth: "none" } : undefined}
       >
-        <div className="mx-auto flex min-h-full min-w-0 max-w-4xl flex-col gap-5 px-2 py-6 md:gap-7 md:px-4">
+        <div className="mx-auto flex min-h-full min-w-0 max-w-4xl flex-col gap-5 px-2 py-4 md:gap-7 md:px-4 md:py-6">
+          {messages.length === 0 && !isLoading && (
+            <div className="flex flex-1 items-start justify-center pt-2 pb-2 md:items-center md:pt-10">
+              <Greeting
+                onQuickAction={(text) => {
+                  sendMessage({
+                    role: "user" as const,
+                    parts: [{ type: "text" as const, text }],
+                  });
+                }}
+              />
+            </div>
+          )}
           {messages.map((message, index) => (
             <PreviewMessage
               addToolApprovalResponse={addToolApprovalResponse}
