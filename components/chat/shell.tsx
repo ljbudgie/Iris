@@ -1,12 +1,5 @@
 "use client";
 
-import {
-  BrainIcon,
-  FileTextIcon,
-  ListTodoIcon,
-  ShieldCheckIcon,
-} from "lucide-react";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { InstallPrompt } from "@/components/install-prompt";
 import {
@@ -71,7 +64,6 @@ export function ChatShell() {
   const stopRef = useRef(stop);
   stopRef.current = stop;
 
-  // Honour Calm mode / reduced-motion / save-data / low battery.
   const perfMode = usePerfMode();
   useEffect(() => {
     if (typeof document === "undefined") {
@@ -162,26 +154,6 @@ export function ChatShell() {
               <FallbackNoticeChip />
               <GoverningFindingChip />
               {!isReadonly && <PersonGateChip text={input} />}
-              <nav
-                aria-label="Iris tools"
-                className="grid grid-cols-4 gap-1 rounded-2xl border border-[rgba(15,118,110,0.24)] bg-[rgba(8,8,12,0.76)] p-1 backdrop-blur-xl md:hidden"
-              >
-                {[
-                  { href: "/templates", label: "Letters", icon: FileTextIcon },
-                  { href: "/memory", label: "Memory", icon: BrainIcon },
-                  { href: "/tasks", label: "Tasks", icon: ListTodoIcon },
-                  { href: "/audit", label: "Audit", icon: ShieldCheckIcon },
-                ].map(({ href, label, icon: Icon }) => (
-                  <Link
-                    className="flex flex-col items-center gap-0.5 rounded-xl px-1 py-1.5 text-[10px] text-[#a1a1aa] transition-colors hover:bg-[rgba(15,118,110,0.12)] hover:text-[#ccfbf1]"
-                    href={href}
-                    key={href}
-                  >
-                    <Icon className="size-4" />
-                    <span>{label}</span>
-                  </Link>
-                ))}
-              </nav>
               <div className="flex w-full gap-2">
                 {!isReadonly && (
                   <MultimodalInput

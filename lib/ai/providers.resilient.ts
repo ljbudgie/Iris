@@ -19,16 +19,6 @@ export const myProvider = isTestEnvironment
     })()
   : null;
 
-/**
- * Resolve a language model for the given id.
- *
- * Order of preference:
- *   1. Test environment uses the in-process mock provider.
- *   2. When `IRIS_LOCAL_ONLY=1` we route through Ollama (failing loudly
- *      with a friendly message that points at the onboarding wizard if
- *      nothing local is configured).
- *   3. Otherwise we fall back to the Vercel AI Gateway.
- */
 function resolveProvider(modelId: string) {
   if (isTestEnvironment && myProvider) {
     return myProvider.languageModel(modelId);
@@ -54,25 +44,8 @@ export function getTitleModel() {
   return resolveProvider(titleModel.id);
 }
 
-// ─────────────────────────────────────────────────────────────────────────
-// Provider resilience — automatic cross-provider fallback
-// ─────────────────────────────────────────────────────────────────────────
-//
-// If a cloud model becomes unavailable mid-session — withdrawn by its
-// provider, rate-limited, or the subject of a regulatory restriction —
-// Iris should not hard-fail. It should quietly try the next model in the
-// resilience pool and tell the user plainly what happened.
-//
-// This is deliberately a *pool*, not a primary/backup pair: no single
-// provider is "the main one with a fallback". Every model in chatModels
-// is both a possible first choice (via the smart router) and a possible
-// fallback for every other model. The pool order below is the order in
-// which Iris will try alternatives — it favours providers that have shown
-// the broadest availability, but any entry can become unavailable without
-// the others being affected.
-
 const RESILIENCE_POOL: string[] = [
-  DEFAULT_CHAT_MODEL, // moonshotai/kimi-k2-0905 — current default
+  DEFAULT_CHAT_MODEL,
   "deepseek/deepseek-v3.2",
   "openai/gpt-oss-120b",
   "mistral/mistral-small",
@@ -82,15 +55,6 @@ const RESILIENCE_POOL: string[] = [
   "mistral/codestral",
 ];
 
-/**
- * Returns true if an error from the gateway/provider layer looks like a
- * model- or provider-level outage (as opposed to e.g. a bad request from
- * malformed input, which retrying on a different model won't fix).
- *
- * Deliberately conservative: only treat errors as "try the next model"
- * when they look like availability problems. Anything else is surfaced
- * immediately so it doesn't masquerade as a routing decision.
- */
 export function isProviderAvailabilityError(error: unknown): boolean {
   if (!(error instanceof Error)) {
     return false;
@@ -99,8 +63,6 @@ export function isProviderAvailabilityError(error: unknown): boolean {
   const message = error.message.toLowerCase();
   const name = error.name.toLowerCase();
 
-  // Common shapes for "this model/provider is down or withdrawn" across
-  // the providers the Vercel AI Gateway fronts.
   const availabilitySignals = [
     "model not found",
     "model is not available",
@@ -110,13 +72,16 @@ export function isProviderAvailabilityError(error: unknown): boolean {
     "no healthy upstream",
     "service unavailable",
     "503",
-    "529", // Anthropic overloaded
+    "529",
     "rate limit",
     "429",
     "temporarily unavailable",
-    "access denied", // e.g. export-control style restrictions
+    "access denied",
     "forbidden",
     "403",
+    "free tier",
+    "paid credits",
+    "unrestricted access",
   ];
 
   return availabilitySignals.some(
@@ -125,49 +90,20 @@ export function isProviderAvailabilityError(error: unknown): boolean {
 }
 
 export type ResilientModelResult = {
-  /** The model id that was actually resolved and should be used. */
   modelId: string;
-  /** The originally requested model id, if different from `modelId`. */
   requestedModelId: string;
-  /** True if Iris had to fall back to an alternative model. */
   didFallback: boolean;
-  /**
-   * Human-readable explanation, suitable for showing the user, e.g.
-   * "Switched to Kimi K2 0905 — Codestral was temporarily unavailable."
-   * Undefined when no fallback occurred.
-   */
   message?: string;
 };
 
-/**
- * Resolve a language model with automatic cross-provider fallback.
- *
- * Tries `preferredModelId` first. If resolving or a first lightweight call
- * to that model throws an availability-shaped error (see
- * `isProviderAvailabilityError`), tries each model in `RESILIENCE_POOL` in
- * turn (skipping the one that just failed and any that fail the same way),
- * until one succeeds or the pool is exhausted.
- *
- * In `IRIS_LOCAL_ONLY=1` mode this is a no-op: Ollama is the only provider,
- * and `resolveProvider` already throws a friendly, actionable error if it
- * isn't configured. We don't want to "fall back" away from local-only —
- * sovereignty must not be silently bypassed.
- *
- * Callers should use the returned `modelId` for the actual generation call,
- * and may surface `message` to the user (e.g. as a small system note in
- * the chat) when `didFallback` is true.
- */
 export async function getResilientLanguageModel(
   preferredModelId: string,
-  // Injected for testability; defaults to the real resolver.
   resolve: (modelId: string) => ReturnType<typeof resolveProvider> = resolveProvider
 ): Promise<{
   model: ReturnType<typeof resolveProvider>;
   result: ResilientModelResult;
 }> {
   if (isLocalOnly() || isTestEnvironment) {
-    // No cross-provider fallback in local-only / test mode. Let
-    // resolveProvider's own error handling do its job.
     return {
       model: resolve(preferredModelId),
       result: {
