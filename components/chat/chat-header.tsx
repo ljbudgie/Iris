@@ -47,7 +47,7 @@ function PureChatHeader({
       <div
         aria-label={`Iris gate on. ${modelCount} models. ${peerCount} federation peers.`}
         aria-live="polite"
-        className="flex h-7 items-center gap-0 border-b px-3 text-[10px] tracking-[0.12em] uppercase transition-colors duration-200"
+        className="hidden h-7 items-center gap-0 border-b px-3 text-[10px] tracking-[0.12em] uppercase transition-colors duration-200 md:flex"
         role="status"
         style={{
           fontFamily: "var(--font-geist-mono), 'JetBrains Mono', monospace",

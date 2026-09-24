@@ -158,10 +158,30 @@ export function ChatShell() {
               votes={votes}
             />
 
-            <div className="sticky bottom-0 z-10 mx-auto flex w-full max-w-4xl flex-col gap-1 border-t-0 px-2 pb-3 md:px-4 md:pb-4">
+            <div className="sticky bottom-0 z-10 mx-auto flex w-full max-w-4xl flex-col gap-2 border-t-0 px-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:px-4 md:pb-4">
               <FallbackNoticeChip />
               <GoverningFindingChip />
               {!isReadonly && <PersonGateChip text={input} />}
+              <nav
+                aria-label="Iris tools"
+                className="grid grid-cols-4 gap-1 rounded-2xl border border-[rgba(15,118,110,0.24)] bg-[rgba(8,8,12,0.76)] p-1 backdrop-blur-xl md:hidden"
+              >
+                {[
+                  { href: "/templates", label: "Letters", icon: FileTextIcon },
+                  { href: "/memory", label: "Memory", icon: BrainIcon },
+                  { href: "/tasks", label: "Tasks", icon: ListTodoIcon },
+                  { href: "/audit", label: "Audit", icon: ShieldCheckIcon },
+                ].map(({ href, label, icon: Icon }) => (
+                  <Link
+                    className="flex flex-col items-center gap-0.5 rounded-xl px-1 py-1.5 text-[10px] text-[#a1a1aa] transition-colors hover:bg-[rgba(15,118,110,0.12)] hover:text-[#ccfbf1]"
+                    href={href}
+                    key={href}
+                  >
+                    <Icon className="size-4" />
+                    <span>{label}</span>
+                  </Link>
+                ))}
+              </nav>
               <div className="flex w-full gap-2">
                 {!isReadonly && (
                   <MultimodalInput
@@ -223,24 +243,6 @@ export function ChatShell() {
           stop={stop}
           votes={votes}
         />
-
-        <nav className="fixed right-3 bottom-24 left-3 z-20 grid grid-cols-4 gap-2 rounded-3xl border border-[rgba(15,118,110,0.24)] bg-[rgba(8,8,12,0.76)] p-2 shadow-[var(--shadow-float)] backdrop-blur-xl md:hidden">
-          {[
-            { href: "/templates", label: "Letters", icon: FileTextIcon },
-            { href: "/memory", label: "Memory", icon: BrainIcon },
-            { href: "/tasks", label: "Tasks", icon: ListTodoIcon },
-            { href: "/audit", label: "Audit", icon: ShieldCheckIcon },
-          ].map(({ href, label, icon: Icon }) => (
-            <Link
-              className="flex flex-col items-center gap-1 rounded-2xl px-2 py-2 text-[10px] text-[#a1a1aa] transition-colors hover:bg-[rgba(15,118,110,0.12)] hover:text-[#ccfbf1]"
-              href={href}
-              key={href}
-            >
-              <Icon className="size-4" />
-              <span>{label}</span>
-            </Link>
-          ))}
-        </nav>
       </div>
 
       <DataStreamHandler />
