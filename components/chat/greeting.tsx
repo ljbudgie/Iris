@@ -81,6 +81,15 @@ export const Greeting = ({
         >
           Tell me what they did. We'll work out what to ask, together.
         </p>
+        <p
+          className="max-w-md text-[11px] leading-relaxed text-[#71717a]"
+          style={{
+            fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace",
+          }}
+        >
+          SOVEREIGN is a named person. NULL is nobody. AMBIGUOUS is a process.
+          UK00004343685. Not legal advice.
+        </p>
       </motion.div>
 
       <motion.div
@@ -103,7 +112,7 @@ export const Greeting = ({
           {
             label: "Test a reply they sent me",
             message:
-              "I am pasting a reply from an institution. Classify it SOVEREIGN, NULL, or AMBIGUOUS before you answer, and do not change that finding.",
+              'They sent this. Classify it and do not change the finding:\n\n"Your claim has been processed. This is an automated message. It was reviewed in line with our policy and is subject to human oversight by a member of the team."\n\nNot legal advice.',
           },
         ].map((action) => (
           <button

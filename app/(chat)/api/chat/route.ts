@@ -17,6 +17,7 @@ import {
   countAssistantTurns,
 } from "@/lib/ai/conversation-budget";
 import { entitlementsByUserType } from "@/lib/ai/entitlements";
+import { governTurn } from "@/lib/ai/governing-layer";
 import { queryMemoryContext } from "@/lib/ai/memory";
 import {
   allowedModelIds,
@@ -328,9 +329,11 @@ export async function POST(request: Request) {
         // Build the enhanced system prompt
         const modelName =
           chatModels.find((m) => m.id === chatModel)?.name ?? chatModel;
+        const governing = latestUserText ? governTurn(latestUserText) : null;
         const irisIdentity = buildIrisSystemPrompt({
           modelName,
           memoryContext,
+          governingNote: governing?.note,
         });
         const basePrompt = systemPrompt({ requestHints, supportsTools });
         const templateInstruction = templateResult
@@ -353,6 +356,13 @@ export async function POST(request: Request) {
           dataStream.write({
             type: "data-fallback-notice",
             data: fallbackResult.message,
+          });
+        }
+
+        if (governing?.stamp) {
+          dataStream.write({
+            type: "data-governing-finding",
+            data: governing.stamp,
           });
         }
 

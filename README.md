@@ -2,7 +2,7 @@
 
 **[Run Iris offline →](./docs/self-hosting.md)** &nbsp; · &nbsp; [One-command local setup](#quick-start) &nbsp; · &nbsp; [30-second offline guide](./docs/deploy.md)
 
-**Hosted:** [iris-gate.vercel.app](https://iris-gate.vercel.app) is deployed and answering. It looked broken because the home screen counted federation peers and showed “Providers 0” when none were registered, even though chat models were available. This update makes Iris the governing layer: the gate is on with or without peers, and a model speaks underneath it. See [`docs/governing-layer.md`](./docs/governing-layer.md).
+**Hosted:** [iris-gate.vercel.app](https://iris-gate.vercel.app) is deployed and answering. It looked broken because the home screen counted federation peers and showed “Providers 0” when none were registered, even though chat models were available. This update makes Iris the governing layer: the gate is on with or without peers, a pasted reply is classified in Iris before the model speaks, and that finding binds the model. See [`docs/governing-layer.md`](./docs/governing-layer.md). The live site picks this up after `main` is redeployed.
 
 Open-source, mobile-first AI companion governed by the [Burgess Principle](https://github.com/ljbudgie/burgess-principle) (UK00004343685). Iris helps ordinary people ask institutions to treat them as real individuals — calmly, clearly, and on their own terms.
 

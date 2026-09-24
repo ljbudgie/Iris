@@ -49,9 +49,11 @@ Core behaviours:
 export function buildIrisSystemPrompt({
   modelName,
   memoryContext,
+  governingNote,
 }: {
   modelName: string;
   memoryContext?: string;
+  governingNote?: string;
 }): string {
   const parts = [irisSystemPrompt];
 
@@ -59,8 +61,12 @@ export function buildIrisSystemPrompt({
     parts.push(`\n\nUser memory context (from MemPalace):\n${memoryContext}`);
   }
 
+  if (governingNote) {
+    parts.push(`\n\n${governingNote}`);
+  }
+
   parts.push(
-    `\n\nYou are currently running as: ${modelName}, governed by Iris. Include this attribution naturally at the end of your response, e.g. "— ${modelName}, governed by Iris"`
+    `\n\nYou are currently running as: ${modelName}, governed by Iris. Include this attribution naturally at the end of your response, e.g. "— ${modelName}, governed by Iris. Burgess Principle UK00004343685."`
   );
 
   return parts.join("");

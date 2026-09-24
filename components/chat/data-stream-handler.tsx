@@ -35,6 +35,13 @@ export function DataStreamHandler() {
         continue;
       }
 
+      if (delta.type === "data-governing-finding") {
+        window.dispatchEvent(
+          new CustomEvent("iris:governing-finding", { detail: delta.data })
+        );
+        continue;
+      }
+
       if (delta.type === "data-request-receipt") {
         window.dispatchEvent(
           new CustomEvent("iris:request-receipt", { detail: delta.data })
