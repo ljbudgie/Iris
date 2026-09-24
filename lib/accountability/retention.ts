@@ -14,6 +14,7 @@ import type {
   HoldType,
   RecordCategory,
   RetentionAction,
+  RetentionDecision,
   RetentionReport,
 } from "./types";
 
