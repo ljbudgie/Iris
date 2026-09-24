@@ -43,7 +43,6 @@ function PureChatHeader({
       className="sticky top-0 z-10 flex flex-col"
       style={{ background: "var(--surface-0)" }}
     >
-      {/* Telemetry status bar — single line, flush left, monospace */}
       <div
         aria-label={`Iris gate on. ${modelCount} models. ${peerCount} federation peers.`}
         aria-live="polite"
@@ -70,7 +69,6 @@ function PureChatHeader({
         <span>GOVERNANCE: {governanceLabel}</span>
       </div>
 
-      {/* Main header bar */}
       <div
         className="flex h-12 items-center gap-2 border-b px-3"
         style={{
@@ -103,19 +101,16 @@ function PureChatHeader({
           >
             Iris
           </span>
-          <span className="hidden rounded-full border border-[rgba(34,197,94,0.24)] bg-[rgba(34,197,94,0.08)] px-2 py-0.5 text-[10px] font-semibold tracking-[0.14em] text-[#86efac] uppercase sm:inline">
-            Governs
-          </span>
         </Link>
 
-        {!isReadonly && (
+        {!isReadonly && !isMobile && (
           <VisibilitySelector
             chatId={chatId}
             selectedVisibilityType={selectedVisibilityType}
           />
         )}
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto hidden items-center gap-2 sm:flex">
           {isAutoMode ? (
             <div
               className="flex items-center gap-1.5 rounded-md border px-2.5 py-1"
