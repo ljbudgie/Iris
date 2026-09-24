@@ -2,16 +2,15 @@
 
 import { PanelLeftIcon } from "lucide-react";
 import Link from "next/link";
-import { memo, useCallback, useEffect, useState } from "react";
+import { memo } from "react";
 import { ModelSelectorLogo } from "@/components/ai-elements/model-selector";
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
 import { chatModels } from "@/lib/ai/models";
 import { AUTO_MODEL_ID } from "@/lib/ai/smart-router";
 import { SparklesIcon } from "./icons";
+import { useGateStatus } from "./use-gate-status";
 import { VisibilitySelector, type VisibilityType } from "./visibility-selector";
-
-type GovernanceStatus = "SOVEREIGN" | "NULL" | "NO_PROVIDERS";
 
 function PureChatHeader({
   chatId,
@@ -25,36 +24,7 @@ function PureChatHeader({
   currentModelId?: string;
 }) {
   const { state, toggleSidebar, isMobile } = useSidebar();
-  const [governanceStatus, setGovernanceStatus] =
-    useState<GovernanceStatus>("NO_PROVIDERS");
-  const [providerCount, setProviderCount] = useState(0);
-
-  const refreshGovernance = useCallback(async () => {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/api/federation/register`
-      );
-      if (!res.ok) {
-        return;
-      }
-      const providers: { governanceStatus: string }[] = await res.json();
-      setProviderCount(providers.length);
-      if (providers.length === 0) {
-        setGovernanceStatus("NO_PROVIDERS");
-        return;
-      }
-      const allSovereign = providers.every(
-        (p) => p.governanceStatus === "SOVEREIGN"
-      );
-      setGovernanceStatus(allSovereign ? "SOVEREIGN" : "NULL");
-    } catch {
-      /* governance ribbon is non-critical */
-    }
-  }, []);
-
-  useEffect(() => {
-    refreshGovernance();
-  }, [refreshGovernance]);
+  const { modelCount, peerCount } = useGateStatus();
 
   const isAutoMode = currentModelId === AUTO_MODEL_ID;
   const currentModel = currentModelId
@@ -65,15 +35,8 @@ function PureChatHeader({
     return null;
   }
 
-  const statusLabel =
-    governanceStatus === "SOVEREIGN"
-      ? "ACTIVE"
-      : governanceStatus === "NULL"
-        ? "PENDING"
-        : "STANDBY";
-
-  const governanceLabel =
-    governanceStatus === "NO_PROVIDERS" ? "\u2014" : governanceStatus;
+  const statusLabel = "GATE";
+  const governanceLabel = "GOVERNED";
 
   return (
     <header
@@ -82,13 +45,7 @@ function PureChatHeader({
     >
       {/* Telemetry status bar — single line, flush left, monospace */}
       <div
-        aria-label={
-          governanceStatus === "SOVEREIGN"
-            ? "Sovereign mode active"
-            : governanceStatus === "NULL"
-              ? "Null mode — awaiting human review"
-              : "No federation providers registered"
-        }
+        aria-label={`Iris gate on. ${modelCount} models. ${peerCount} federation peers.`}
         aria-live="polite"
         className="flex h-7 items-center gap-0 border-b px-3 text-[10px] tracking-[0.12em] uppercase transition-colors duration-200"
         role="status"
@@ -103,7 +60,11 @@ function PureChatHeader({
         <span>{statusLabel}</span>
         <span className="mx-2">&middot;</span>
         <span>
-          {providerCount} PROVIDER{providerCount === 1 ? "" : "S"}
+          {modelCount} MODEL{modelCount === 1 ? "" : "S"}
+        </span>
+        <span className="mx-2">&middot;</span>
+        <span>
+          {peerCount} PEER{peerCount === 1 ? "" : "S"}
         </span>
         <span className="mx-2">&middot;</span>
         <span>GOVERNANCE: {governanceLabel}</span>
@@ -143,7 +104,7 @@ function PureChatHeader({
             Iris
           </span>
           <span className="hidden rounded-full border border-[rgba(34,197,94,0.24)] bg-[rgba(34,197,94,0.08)] px-2 py-0.5 text-[10px] font-semibold tracking-[0.14em] text-[#86efac] uppercase sm:inline">
-            Sovereign
+            Governs
           </span>
         </Link>
 

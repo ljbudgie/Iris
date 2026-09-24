@@ -1,63 +1,21 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useCallback, useEffect, useState } from "react";
 import { SparklesIcon } from "./icons";
-
-type GovernanceStatus = "SOVEREIGN" | "NULL" | "NO_PROVIDERS";
+import { useGateStatus } from "./use-gate-status";
 
 export const Greeting = ({
   onQuickAction,
 }: {
   onQuickAction?: (text: string) => void;
 }) => {
-  const [governanceStatus, setGovernanceStatus] =
-    useState<GovernanceStatus>("NO_PROVIDERS");
-  const [providerCount, setProviderCount] = useState(0);
-
-  const refreshGovernance = useCallback(async () => {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/api/federation/register`
-      );
-      if (!res.ok) {
-        return;
-      }
-      const providers: { governanceStatus: string }[] = await res.json();
-      setProviderCount(providers.length);
-      if (providers.length === 0) {
-        setGovernanceStatus("NO_PROVIDERS");
-        return;
-      }
-      const allSovereign = providers.every(
-        (p) => p.governanceStatus === "SOVEREIGN"
-      );
-      setGovernanceStatus(allSovereign ? "SOVEREIGN" : "NULL");
-    } catch {
-      /* non-critical */
-    }
-  }, []);
-
-  useEffect(() => {
-    refreshGovernance();
-  }, [refreshGovernance]);
-
-  const federationLabel =
-    governanceStatus === "SOVEREIGN"
-      ? "Active"
-      : governanceStatus === "NULL"
-        ? "Pending"
-        : "Standby";
-
-  const governanceLabel =
-    governanceStatus === "NO_PROVIDERS" ? "\u2014" : governanceStatus;
+  const { modelCount, peerCount } = useGateStatus();
 
   return (
     <div
       className="flex w-full max-w-2xl flex-col items-center gap-10 px-4"
       key="overview"
     >
-      {/* Iris brand mark — icon with barely-visible radial violet glow */}
       <motion.div
         animate={{ opacity: 1, scale: 1 }}
         className="flex flex-col items-center gap-4"
@@ -71,10 +29,10 @@ export const Greeting = ({
               width: 200,
               height: 200,
               background:
-                "radial-gradient(circle, rgba(124, 58, 237, 0.03) 0%, transparent 70%)",
+                "radial-gradient(circle, rgba(15, 118, 110, 0.16) 0%, transparent 70%)",
             }}
           />
-          <div className="relative flex size-10 items-center justify-center text-[#7c3aed]">
+          <div className="relative flex size-10 items-center justify-center text-[#5eead4]">
             <SparklesIcon size={24} />
           </div>
         </div>
@@ -91,7 +49,6 @@ export const Greeting = ({
         </div>
       </motion.div>
 
-      {/* Welcome message */}
       <motion.div
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col items-center gap-3 text-center"
@@ -104,22 +61,28 @@ export const Greeting = ({
             fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace",
           }}
         >
-          I&apos;m not like other AI assistants. I don&apos;t belong to one
-          company or run on one model. I use the best AI available for whatever
-          you need — and everything I do is accountable.
+          I am the governing layer. The model underneath me can explain a
+          finding. It does not get to change one.
         </p>
         <p
-          className="text-[13px] text-[#e4e4e7]"
+          className="max-w-md text-[13px] leading-relaxed text-[#e4e4e7]"
           style={{
             fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace",
           }}
         >
-          {/* FOUNDER-VOICE: confirm wording with Lewis before merge. */}
+          Was a human member of the team able to personally review the specific
+          facts of my specific situation?
+        </p>
+        <p
+          className="text-[13px] text-[#a1a1aa]"
+          style={{
+            fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace",
+          }}
+        >
           Tell me what they did. We'll work out what to ask, together.
         </p>
       </motion.div>
 
-      {/* Quick action buttons */}
       <motion.div
         animate={{ opacity: 1, y: 0 }}
         className="flex w-full max-w-sm flex-col gap-2"
@@ -128,24 +91,24 @@ export const Greeting = ({
       >
         {[
           {
-            label: "Help me draft a letter to an institution",
+            label: "Draft the question to an institution",
             message:
-              "Help me draft a calm, factual letter to an institution about a decision they made.",
+              "Help me draft a calm letter that asks whether a named human reviewed the specific facts of my situation. Not legal advice.",
           },
           {
             label: "A reasonable adjustment was refused",
             message:
-              "A reasonable adjustment I asked for was refused. Help me push back, calmly and with the right framing.",
+              "A reasonable adjustment I asked for was refused. Help me ask, calmly, whether a named person reviewed my specific circumstances. Email only if I need it. Not legal advice.",
           },
           {
-            label: "Show me what you can do",
+            label: "Test a reply they sent me",
             message:
-              "What can you do? Show me your capabilities across different models and tools.",
+              "I am pasting a reply from an institution. Classify it SOVEREIGN, NULL, or AMBIGUOUS before you answer, and do not change that finding.",
           },
         ].map((action) => (
           <button
             aria-label={action.label}
-            className="w-full rounded-lg border px-4 py-2.5 text-left text-[12px] text-[#a1a1aa] transition-all duration-200 hover:border-[rgba(124,58,237,0.3)] hover:text-[#e4e4e7]"
+            className="w-full rounded-lg border px-4 py-2.5 text-left text-[12px] text-[#a1a1aa] transition-all duration-200 hover:border-[rgba(15,118,110,0.45)] hover:text-[#e4e4e7]"
             key={action.label}
             onClick={() => onQuickAction?.(action.message)}
             style={{
@@ -160,82 +123,52 @@ export const Greeting = ({
         ))}
       </motion.div>
 
-      {/* Federation status — key-value pairs in a single row, no cards */}
       <motion.div
         animate={{ opacity: 1, y: 0 }}
         className="flex w-full max-w-sm items-center justify-center gap-16"
         initial={{ opacity: 0, y: 12 }}
         transition={{ delay: 0.45, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       >
-        <div className="flex flex-col items-center gap-1.5">
-          <span
-            className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#52525b]"
-            style={{
-              fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace",
-            }}
-          >
-            Federation
-          </span>
-          <span
-            className="text-[14px] tabular-nums"
-            style={{
-              fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace",
-              color:
-                governanceStatus === "SOVEREIGN"
-                  ? "var(--sovereign)"
-                  : governanceStatus === "NULL"
-                    ? "var(--null-review)"
-                    : "#a1a1aa",
-            }}
-          >
-            {federationLabel}
-          </span>
-        </div>
-
-        <div className="flex flex-col items-center gap-1.5">
-          <span
-            className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#52525b]"
-            style={{
-              fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace",
-            }}
-          >
-            Providers
-          </span>
-          <span
-            className="text-[14px] tabular-nums text-[#a1a1aa]"
-            style={{
-              fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace",
-            }}
-          >
-            {providerCount}
-          </span>
-        </div>
-
-        <div className="flex flex-col items-center gap-1.5">
-          <span
-            className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#52525b]"
-            style={{
-              fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace",
-            }}
-          >
-            Governance
-          </span>
-          <span
-            className="text-[14px]"
-            style={{
-              fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace",
-              color:
-                governanceStatus === "SOVEREIGN"
-                  ? "var(--sovereign)"
-                  : governanceStatus === "NULL"
-                    ? "var(--null-review)"
-                    : "#a1a1aa",
-            }}
-          >
-            {governanceLabel}
-          </span>
-        </div>
+        <Status label="Gate" value="On" tone="on" />
+        <Status label="Models" value={String(modelCount)} tone="muted" />
+        <Status
+          label="Peers"
+          value={peerCount === 0 ? "None" : String(peerCount)}
+          tone="muted"
+        />
       </motion.div>
     </div>
   );
 };
+
+function Status({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone: "on" | "muted";
+}) {
+  return (
+    <div className="flex flex-col items-center gap-1.5">
+      <span
+        className="text-[9px] font-medium uppercase tracking-[0.15em] text-[#52525b]"
+        style={{
+          fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace",
+        }}
+      >
+        {label}
+      </span>
+      <span
+        className="text-[14px] tabular-nums"
+        style={{
+          fontFamily: "'JetBrains Mono', var(--font-geist-mono), monospace",
+          color: tone === "on" ? "#5eead4" : "#a1a1aa",
+        }}
+      >
+        {value}
+      </span>
+    </div>
+  );
+}
